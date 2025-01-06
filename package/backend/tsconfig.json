@@ -1,0 +1,44 @@
+{
+    "compilerOptions": {
+        // Określa docelową wersję JavaScript
+        "target": "ES2022",
+
+        // Typ modułu: ECMAScript Modules (ESM)
+        "module": "ES2022",
+
+        // Lokacja wyjściowych plików JavaScript
+        "outDir": "./dist",
+
+        // Lokacja źródłowych plików TypeScript
+        "rootDir": "./src",
+
+        // Obsługa plików z typami, np. Node.js
+        "moduleResolution": "node",
+
+        // Generuj deklaracje typów
+        "declaration": true,
+
+        // Lokacja dla plików `.d.ts` (jeśli inna niż `outDir`)
+        "declarationDir": "./dist/types",
+
+        // Dołącz plik z mapą źródłową (source maps)
+        "sourceMap": true,
+
+        // Zachowanie ścisłej kontroli typów
+        "strict": true,
+
+        // Automatyczna obsługa JSX (dla Reacta, jeśli używasz)
+        "jsx": "react-jsx",
+
+        // Pozwala na domyślny eksport (dla kompatybilności ESM)
+        "esModuleInterop": true,
+
+        // Generuj importy w stylu ESM
+        "allowSyntheticDefaultImports": true,
+
+        // Eksportuj plik jako "pakiet ESM"
+        "emitDeclarationOnly": false
+    },
+    "include": ["src"], // Pliki do skompilowania
+    "exclude": ["node_modules", "dist"] // Wykluczenia
+}

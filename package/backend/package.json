@@ -1,0 +1,32 @@
+{
+    "name": "planet-goals-api",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "tsc && nodemon dist/index.js",
+        "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+        "build": "tsc",
+        "deploy:test": "echo 'Skrypt deploy test w przyszłości...'",
+        "deploy:prod": "echo 'Skrypt deploy prod w przyszłości...'"
+    },
+    "author": "Mateusz Rusak",
+    "license": "CC0-1.0",
+    "devDependencies": {
+        "@types/cors": "^2.8.17",
+        "@types/express": "^5.0.0",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.7.2"
+    },
+    "dependencies": {
+        "@sentry/node": "^8.47.0",
+        "@sentry/profiling-node": "^8.47.0",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.7",
+        "express": "^4.21.2",
+        "helmet": "^8.0.0",
+        "hpp": "^0.2.3",
+        "joi": "^17.13.3",
+        "mongoose": "^8.9.3"
+    }
+}
