@@ -4,8 +4,8 @@
     "tabWidth": 4,
     "useTabs": false,
     "trailingComma": "es5",
-    "printWidth": 80,
-    "arrowParens": "avoid",
+    "arrowParens": "always",
     "endOfLine": "lf",
-    "bracketSpacing": true
+    "bracketSpacing": true,
+    "printWidth": 1000
 }

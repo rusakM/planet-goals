@@ -1,15 +1,14 @@
-import Express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
+import 'express-async-errors';
+import { ConstantsEnv } from './core/constants';
+import initDB from './core/initDB';
 
-dotenv.config();
+const { HOST, PORT } = ConstantsEnv.Main;
 
-const app = Express();
-app.use(cors());
+initDB().then(async () => {
+    const app = await import('./app');
+    const server = await app.default();
 
-console.log(`App mode ${process.env.APP_MODE}`);
-console.log('hello');
-
-app.listen(process.env.PORT, () =>
-    console.log(`Server is running on port ${process.env.PORT}`)
-);
+    server.listen(PORT, HOST, () => {
+        console.info(`Planet-goals API started on ${HOST}:${PORT}.`);
+    });
+});

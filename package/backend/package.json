@@ -3,10 +3,16 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
+    "type": "module",
     "scripts": {
-        "start": "tsc && nodemon dist/index.js",
-        "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-        "build": "tsc",
+        "build": "tsc --module esnext && npm run copy-files",
+        "copy-files": "copyfiles -u 1 \"src/assets/**/*\" dist",
+        "debug": "cross-env NODE_ENV=test nodemon --watch 'src/**/*.ts' --exec node --loader ts-node/esm src/index.ts",
+        "deploy": "node dist/index.js",
+        "init": "npm install",
+        "lint": "eslint ./**/*.ts --quiet",
+        "refresh": "rm -rf ./node_modules ./dist ./package-lock.json && npm install",
+        "start": "npm run lint && npm run debug",
         "deploy:test": "echo 'Skrypt deploy test w przyszłości...'",
         "deploy:prod": "echo 'Skrypt deploy prod w przyszłości...'"
     },
@@ -15,6 +21,11 @@
     "devDependencies": {
         "@types/cors": "^2.8.17",
         "@types/express": "^5.0.0",
+        "@types/jsonwebtoken": "^9.0.7",
+        "@types/multer": "^1.4.12",
+        "@typescript-eslint/eslint-plugin": "^8.20.0",
+        "@typescript-eslint/parser": "^8.20.0",
+        "cross-env": "^7.0.3",
         "ts-node-dev": "^2.0.0",
         "typescript": "^5.7.2"
     },
@@ -22,11 +33,20 @@
         "@sentry/node": "^8.47.0",
         "@sentry/profiling-node": "^8.47.0",
         "cors": "^2.8.5",
+        "countries-and-timezones": "^3.7.2",
+        "date-fns": "^4.1.0",
         "dotenv": "^16.4.7",
+        "eslint": "^9.18.0",
         "express": "^4.21.2",
+        "express-async-errors": "^3.1.1",
         "helmet": "^8.0.0",
         "hpp": "^0.2.3",
+        "iso-3166-2": "^1.0.0",
         "joi": "^17.13.3",
-        "mongoose": "^8.9.3"
+        "jsonwebtoken": "^9.0.2",
+        "mongoose": "^8.9.3",
+        "multer": "^1.4.5-lts.1",
+        "nodemon": "^3.1.9",
+        "uuid": "^11.0.5"
     }
 }
