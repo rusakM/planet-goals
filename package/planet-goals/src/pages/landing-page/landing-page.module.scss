@@ -1,0 +1,37 @@
+@use "@styles/fonts.scss";
+@use "@styles/colors.scss";
+
+.img {
+    padding: 3em 25%;
+    width: 100%;
+    max-height: 50%;
+}
+
+.container {
+    padding: 10px;
+}
+
+.buttonsContainer {
+    align-items: stretch !important;
+
+    & > * {
+        margin: 0.5em 1em;
+    }
+}
+
+.header {
+    text-align: center;
+    padding: 1em;
+    font-family: fonts.$rubik-one, sans-serif;
+    text-transform: none;
+    font-size: 24px;
+}
+
+.primaryText {
+    text-align: center;
+    color: colors.$dark-text;
+    font-size: 14px;
+    font-family: fonts.$poppins-regular, sans-serif;
+    margin-left: 1.5em;
+    margin-right: 1.5em;
+}

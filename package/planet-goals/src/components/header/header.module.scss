@@ -1,0 +1,58 @@
+@use "@styles/colors.scss";
+
+.headerContainer {
+    height: 50px;
+    background-color: colors.$header-background;
+    border-bottom: 4px solid colors.$light-grey;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.header {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.logo {
+    height: 100%;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.control {
+    padding: 5px;
+    background-color: colors.$header-background;
+    height: 80%;
+    margin: 5px 5px 5px 0;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: colors.$light-grey;
+    }
+
+    & > img {
+        height: 100%;
+    }
+}
+
+.controlActive {
+    background-color: colors.$grey;
+}
+
+.controls {
+    height: 100%;
+    width: 100%;
+    justify-content: flex-end;
+    display: flex;
+}

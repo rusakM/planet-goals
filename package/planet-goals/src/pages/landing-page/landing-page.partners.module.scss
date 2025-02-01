@@ -1,0 +1,28 @@
+.partnersSpinner {
+    width: 100%;
+    max-height: 250px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+.scrollingTrack {
+    display: flex;
+    gap: 60px;
+    animation: scroll 30s linear infinite;
+    width: fit-content;
+}
+
+.partnerLogo {
+    height: 100px;
+    object-fit: contain;
+}
+
+@keyframes scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}

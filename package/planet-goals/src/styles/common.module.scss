@@ -1,0 +1,55 @@
+@use "./colors.scss";
+
+.orangeText {
+    color: colors.$orange;
+}
+
+.darkText {
+    color: colors.$dark-text;
+}
+
+.blueText {
+    color: colors.$blue;
+}
+
+.redText {
+    color: colors.$red;
+}
+
+.noPadding {
+    padding: 0 !important;
+}
+
+.defaultHorizontalPadding {
+    padding-top: 2em !important;
+    padding-bottom: 2em !important;
+}
+
+.largeHorizontalPadding {
+    padding-top: 4em !important;
+    padding-bottom: 4em !important;
+}
+
+.lightestGreyBackground {
+    background-color: colors.$light-background !important;
+}
+
+.lightGreyBackground {
+    background-color: colors.$light-grey !important;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.centerFlex {
+    display: flex;
+    justify-content: center !important;
+    align-items: center !important;
+}

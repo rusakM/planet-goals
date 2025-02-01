@@ -1,0 +1,19 @@
+@use "@styles/colors.scss";
+
+.separator {
+    height: 5px;
+    width: 90%;
+    margin: 1em;
+}
+
+.orange {
+    background-color: colors.$orange;
+}
+
+.blue {
+    background-color: colors.$blue;
+}
+
+.white {
+    background-color: colors.$white;
+}

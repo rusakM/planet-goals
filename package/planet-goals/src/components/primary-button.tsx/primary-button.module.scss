@@ -1,0 +1,63 @@
+@use "@styles/colors.scss";
+@use "@styles/fonts.scss";
+
+.button {
+    border-radius: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: fonts.$rubik-one, sans-serif;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-transform: uppercase;
+    border-width: 3px;
+    border-style: solid;
+    border-bottom-width: 5px;
+
+    &:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+.smallSize {
+    border-radius: 6px;
+    border-width: 2px;
+    border-bottom-width: 3px;
+    font-size: 12px;
+    padding: 5px 12px;
+}
+
+.orange {
+    background-color: colors.$orange;
+    color: colors.$white;
+    border-color: colors.$border-orange;
+
+    &:hover {
+        color: colors.$light-grey;
+    }
+}
+
+.white {
+    background-color: colors.$white;
+    color: colors.$blue;
+    border-color: colors.$border-white;
+
+    &:hover {
+        color: colors.$border-blue;
+    }
+}
+
+.blue {
+    background-color: colors.$blue;
+    color: colors.$white;
+    border-color: colors.$border-blue;
+
+    &:hover {
+        color: colors.$light-grey;
+    }
+}

@@ -1,0 +1,17 @@
+@font-face {
+    font-family: "RubikOne";
+    src: url("../assets/fonts/RubikOne-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-size: normal;
+}
+
+$rubik-one: "RubikOne";
+
+@font-face {
+    font-family: "PoppinsRegular";
+    src: url("../assets/fonts/Poppins-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-size: normal;
+}
+
+$poppins-regular: "PoppinsRegular";
