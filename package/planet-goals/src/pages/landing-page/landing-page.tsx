@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useTranslate } from "@tolgee/react";
 // styles
 import styles from "./landing-page.module.scss";
 import partnersStyles from "./landing-page.partners.module.scss";
@@ -14,6 +14,7 @@ import Footer from "../../components/footer/footer";
 //helpers
 import { handleClick } from "../../helpers/onClick.functions";
 import { constantsUrls } from "../../helpers/constants";
+import { formatNewLines } from "../../translations/utils";
 
 //svg
 import EnterGameImg from "../../assets/landing-page/enter_game.svg";
@@ -24,6 +25,8 @@ import LearnInGroupImg from "../../assets/landing-page/learn_in_group.svg";
 import LearnAnyywhereMobileImg from "../../assets/landing-page/learn_anywhere_moible.svg";
 
 const landingPage: React.FC = () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { t } = useTranslate();
     const containersDirection = "column";
     const partnersImgNames = [
         "Fonix.png",
@@ -53,20 +56,17 @@ const landingPage: React.FC = () => {
                     <p
                         className={`${commonStyles.orangeText} ${styles.header}`}
                     >
-                        Wejdź do gry
-                        <br />o zrównoważony
-                        <br />
-                        rozwój!
+                        {formatNewLines(t("landing-page.headers.enter-game"))}
                     </p>
                     <PrimaryContainer
                         direction="column"
                         additionalClassess={`${styles.container} ${styles.buttonsContainer} ${commonStyles.lightestGreyBackground}`}
                     >
                         <PrimaryButton color="orange">
-                            Zaloguj się
+                            {t("main.signin")}
                         </PrimaryButton>
                         <PrimaryButton color="white">
-                            Zarejestruj się
+                            {t("main.signup")}
                         </PrimaryButton>
                     </PrimaryContainer>
                 </PrimaryContainer>
@@ -88,12 +88,10 @@ const landingPage: React.FC = () => {
                     <p
                         className={`${commonStyles.orangeText} ${styles.header}`}
                     >
-                        Welcome to the <br /> Planet Goals Project
+                        {formatNewLines(t("landing-page.headers.welcome"))}
                     </p>
                     <p className={styles.primaryText}>
-                        EU co-funded international initiative aimed at raising
-                        the awareness of the 17 Sustainable Development Goals
-                        and providing high-quality knowledge for VET educators.
+                        {t("landing-page.descriptions.welcome")}
                     </p>
                 </PrimaryContainer>
             </PrimaryContainer>
@@ -114,14 +112,10 @@ const landingPage: React.FC = () => {
                     <p
                         className={`${commonStyles.orangeText} ${styles.header}`}
                     >
-                        Dla Nauczycieli
+                        {t("landing-page.headers.for-teachers")}
                     </p>
                     <p className={styles.primaryText}>
-                        Aplikacja pozwala nauczycielom tworzyć quizy, które
-                        angażują uczniów, czyniąc go bardziej dynamicznym i
-                        przyjemnym. To idealne narzędzie do wzbogacenia
-                        tradycyjnych metod nauczaniao interaktywne
-                        doświadczenia.
+                        {t("landing-page.descriptions.for-teachers")}
                     </p>
                 </PrimaryContainer>
             </PrimaryContainer>
@@ -142,13 +136,10 @@ const landingPage: React.FC = () => {
                     <p
                         className={`${commonStyles.orangeText} ${styles.header}`}
                     >
-                        Dla Uczniów
+                        {t("landing-page.headers.for-students")}
                     </p>
                     <p className={styles.primaryText}>
-                        Nasza aplikacja oferuje interaktywne quizy, które
-                        sprawiają, że nauka staje się przyjemnością. Dzięki
-                        różnorodnym pytaniom, uczniowie mogą rozwijać swoją
-                        wiedzę w sposób angażujący i efektywny.
+                        {t("landing-page.descriptions.for-students")}
                     </p>
                 </PrimaryContainer>
             </PrimaryContainer>
@@ -167,15 +158,12 @@ const landingPage: React.FC = () => {
                     additionalClassess={commonStyles.lightGreyBackground}
                 >
                     <p className={`${commonStyles.darkText} ${styles.header}`}>
-                        Ucz się w grupie
-                        <br />
-                        lub indywidualnie!
+                        {formatNewLines(
+                            t("landing-page.headers.learn-in-group")
+                        )}
                     </p>
                     <p className={styles.primaryText}>
-                        Zdecyduj, czy chcesz realizować lekcję indywidualnie,
-                        dopasowując tempo do swoich potrzeb, czy w grupie,
-                        korzystając z energii wspólnej nauki i wymiany
-                        doświadczeń!
+                        {t("landing-page.descriptions.learn-in-group")}
                     </p>
                 </PrimaryContainer>
             </PrimaryContainer>
@@ -206,10 +194,7 @@ const landingPage: React.FC = () => {
                     <p
                         className={`${commonStyles.orangeText} ${styles.header}`}
                     >
-                        Chcesz wiedzieć
-                        <br />
-                        więcej?
-                        <br /> Zajrzyj na nasz blog!
+                        {formatNewLines(t("landing-page.headers.visit-blog"))}
                     </p>
                     <PrimaryButton
                         color="orange"
@@ -218,7 +203,7 @@ const landingPage: React.FC = () => {
                             "_blank"
                         )}
                     >
-                        odwiedź blog
+                        {t("landing-page.buttons.visit-blog")}
                     </PrimaryButton>
                 </PrimaryContainer>
                 <img

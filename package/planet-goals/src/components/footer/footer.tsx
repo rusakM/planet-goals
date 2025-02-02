@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslate } from "@tolgee/react";
 import styles from "./footer.module.scss";
 import commonStyles from "../../styles/common.module.scss";
 
@@ -15,6 +16,7 @@ import CoFundedByEUImg from "../../assets/icons/co_funded_by_the_european_union_
 import CcIcon from "../../assets/icons/cc.svg";
 
 const Footer: React.FC = () => {
+    const { t } = useTranslate();
     return (
         <footer className={styles.footer}>
             <PrimaryContainer direction="column">
@@ -55,18 +57,10 @@ const Footer: React.FC = () => {
                     alt="Co-funded by the European Union"
                     className={styles.coFundedImg}
                 />
-                <p className={commonStyles.darkText}>
-                    Sfinansowane ze środków UE. Wyrażone poglądy i opinie są
-                    jedynie opiniami autora lub autorów i niekoniecznie
-                    odzwierciedlają poglądy i opinie Unii Europejskiej lub
-                    Europejskiej Agencji Wykonawczej ds. Edukacji i Kultury
-                    (EACEA). Unia Europejska ani EACEA nie ponoszą za nie
-                    odpowiedzialności.
-                </p>
+                <p className={commonStyles.darkText}>{t("footer.text-1")}</p>
                 <br />
                 <p className={`${commonStyles.darkText} ${styles.captionText}`}>
-                    Ze wszystkich rezultatów projektu PlanetGoals można
-                    korzystać bezpłatnie i na zasadzie licencji otwartej.
+                    {t("footer.text-2")}
                     <span className={styles.ccIcon}>
                         <img src={CcIcon} alt="CC Icon" />
                     </span>
@@ -79,18 +73,17 @@ const Footer: React.FC = () => {
                     <span
                         className={`${commonStyles.blueText} ${styles.privacyRef}`}
                     >
-                        Polityka prywatności
+                        {t("footer.privacy-policy")}
                     </span>
                     <span
                         className={`${commonStyles.blueText} ${styles.privacyRef}`}
                     >
-                        Warunki użytkowania
+                        {t("footer.conditions-terms")}
                     </span>
                 </PrimaryContainer>
                 <br />
                 <p className={`${commonStyles.darkText} ${styles.captionText}`}>
-                    © 2025 | Wszelkie prawa zastrzeżone | Wdrożone przez Planet
-                    Goals Project
+                    {t("footer.copyright")}
                 </p>
             </PrimaryContainer>
         </footer>

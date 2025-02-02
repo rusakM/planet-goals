@@ -1,6 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
+import { useTranslate } from "@tolgee/react";
+
 import { userTypes } from "../../types";
+import { constantsTranslations } from "../../helpers/constants";
+import { selectLanguage } from "../../translations";
 //import { useDeviceType } from "../../helpers/responsiveContainers";
 import styles from "./header.module.scss";
 
@@ -40,19 +44,23 @@ const Header: React.FC<MainPropsT> = ({
     toggleLanguagesMenu,
 }) => {
     //const { isMobile } = useDeviceType();
-    const languages: [key: string, value: string][] = [
-        ["en", "Angielski"],
-        ["cs", "Czeski"],
-        ["fr", "Francuski"],
-        ["de", "Niemiecki"],
-        ["pl", "Polski"],
+    const { t } = useTranslate();
+    const languages: [key: constantsTranslations.TLocale, value: string][] = [
+        ["el", t("header.languages.greek")],
+        ["en", t("header.languages.english")],
+        ["es", t("header.languages.spanish")],
+        ["it", t("header.languages.italian")],
+        ["nb", t("header.languages.norwegian")],
+        ["pl", t("header.languages.polish")],
+        ["sl", t("header.languages.slovenian")],
+        ["sv", t("header.languages.swedish")],
     ];
 
     const menuItems: [key: string, value: string][] = [
-        ["start_lessons", "Rozpocznij lekcje"],
-        ["materials", "Materialy"],
-        ["stats", "Mój postęp"],
-        ["me", "Profil"],
+        ["start_lessons", t("header.menu.start-lessons")],
+        ["materials", t("header.menu.materials")],
+        ["my_progress", t("header.menu.my-progress")],
+        ["me", t("header.menu.me")],
     ];
 
     const onClickHeaderMenu = () => {
@@ -63,10 +71,6 @@ const Header: React.FC<MainPropsT> = ({
     const onClickLanguagesMenu = () => {
         if (!isHeaderMenuHidden) toggleHeaderMenu();
         toggleLanguagesMenu();
-    };
-
-    const selectLanguage = (language) => {
-        console.log(language);
     };
 
     const selectMenuAction = (action) => {
