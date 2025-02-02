@@ -1,0 +1,16 @@
+@use "@styles/colors.scss";
+
+.cookiesNotification {
+    border-top: 5px solid colors.$light-grey;
+    background-color: colors.$header-background;
+    position: fixed;
+    z-index: 999;
+    bottom: 0px;
+    width: 100%;
+    padding: 1.5em;
+}
+
+.paragraph {
+    margin-top: 0;
+    font-size: 12px;
+}

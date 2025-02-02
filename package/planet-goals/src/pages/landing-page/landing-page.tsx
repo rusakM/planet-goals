@@ -10,6 +10,7 @@ import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
 import PrimaryButton from "../../components/primary-button.tsx/primary-button";
 import Footer from "../../components/footer/footer";
+import CookiesNotification from "../../components/cookies-notification/cookies-notification";
 
 //helpers
 import { handleClick } from "../../helpers/onClick.functions";
@@ -213,6 +214,7 @@ const landingPage: React.FC = () => {
                 />
             </PrimaryContainer>
             <Footer />
+            <CookiesNotification />
         </PageContainer>
     );
 };

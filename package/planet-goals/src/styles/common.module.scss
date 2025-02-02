@@ -16,6 +16,14 @@
     color: colors.$red;
 }
 
+.justifiedText {
+    text-align: justify;
+}
+
+.centeredText {
+    text-align: center;
+}
+
 .noPadding {
     padding: 0 !important;
 }
@@ -36,6 +44,10 @@
 
 .lightGreyBackground {
     background-color: colors.$light-grey !important;
+}
+
+.headerGreyBackground {
+    background-color: colors.$lightest-grey !important;
 }
 
 .row {
