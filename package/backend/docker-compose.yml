@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: node:22
+        container_name: planet-goals-backend
+        restart: always
+        ports:
+            - '${PORT}:${PORT}'
+        env_file:
+            - .env
+        volumes:
+            - .:/usr/src/app
