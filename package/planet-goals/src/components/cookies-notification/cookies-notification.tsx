@@ -4,7 +4,7 @@ import { useTranslate } from "@tolgee/react";
 import styles from "./cookies-notification.module.scss";
 import footerStyles from "../footer/footer.module.scss";
 import commonStyles from "../../styles/common.module.scss";
-import landingPageStyles from "../../pages/landing-page/landing-page.module.scss";
+import containerStyles from "../../styles/containers.module.scss";
 
 import PrimaryButton from "../primary-button.tsx/primary-button";
 import PrimaryContainer from "../primary-container/primary-container";
@@ -48,7 +48,7 @@ const CookiesNotification: React.FC = () => {
                     </p>
                     <PrimaryContainer
                         direction="column"
-                        additionalClassess={`${landingPageStyles.buttonsContainer} ${commonStyles.headerGreyBackground}`}
+                        additionalClassess={`${containerStyles.buttonsContainer} ${commonStyles.headerGreyBackground}`}
                     >
                         <PrimaryButton
                             color="white"

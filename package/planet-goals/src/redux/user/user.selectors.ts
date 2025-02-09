@@ -1,6 +1,7 @@
 import { createSelector } from "reselect";
+import { IUserState } from "./user.types";
 
-const selectUser = (state) => state.user;
+const selectUser = (state): IUserState => state.user;
 
 export const selectCurrentUser = createSelector(
     [selectUser],
@@ -12,7 +13,12 @@ export const selectIsLoadingData = createSelector(
     (user) => user.isFetching
 );
 
-export const selectLoginError = createSelector(
+export const selectUserError = createSelector(
     [selectUser],
-    (user) => user.error
+    (user) => user.userError
+);
+
+export const selectLoginEmail = createSelector(
+    [selectUser],
+    (user) => user.signInEmail
 );

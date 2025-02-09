@@ -6,7 +6,7 @@ import commonStyles from "../../styles/common.module.scss";
 import PrimaryContainer from "../primary-container/primary-container";
 import Separator from "../separator/separator";
 
-import { handleClick } from "../../helpers/onClick.functions";
+import { handleClick } from "../../helpers/events.functions";
 import { constantsUrls } from "../../helpers/constants";
 
 import LinkedInImg from "../../assets/footer/in.svg";

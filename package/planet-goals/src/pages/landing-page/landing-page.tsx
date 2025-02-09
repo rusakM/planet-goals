@@ -4,6 +4,7 @@ import { useTranslate } from "@tolgee/react";
 import styles from "./landing-page.module.scss";
 import partnersStyles from "./landing-page.partners.module.scss";
 import commonStyles from "../../styles/common.module.scss";
+import containersStyles from "../../styles/containers.module.scss";
 
 // components
 import PageContainer from "../../page-components/page-container/page-container";
@@ -13,7 +14,7 @@ import Footer from "../../components/footer/footer";
 import CookiesNotification from "../../components/cookies-notification/cookies-notification";
 
 //helpers
-import { handleClick } from "../../helpers/onClick.functions";
+import { handleClick } from "../../helpers/events.functions";
 import { constantsUrls } from "../../helpers/constants";
 import { formatNewLines } from "../../translations/utils";
 
@@ -48,25 +49,31 @@ const landingPage: React.FC = () => {
                 <img
                     src={EnterGameImg}
                     alt="Enter game img"
-                    className={styles.img}
+                    className={commonStyles.sectionImg}
                 />
                 <PrimaryContainer
                     direction="column"
                     additionalClassess={commonStyles.lightestGreyBackground}
                 >
                     <p
-                        className={`${commonStyles.orangeText} ${styles.header}`}
+                        className={`${commonStyles.orangeText} ${commonStyles.basicHeader}`}
                     >
                         {formatNewLines(t("landing-page.headers.enter-game"))}
                     </p>
                     <PrimaryContainer
                         direction="column"
-                        additionalClassess={`${styles.container} ${styles.buttonsContainer} ${commonStyles.lightestGreyBackground}`}
+                        additionalClassess={`${styles.container} ${containersStyles.buttonsContainer} ${commonStyles.lightestGreyBackground}`}
                     >
-                        <PrimaryButton color="orange">
+                        <PrimaryButton
+                            color="orange"
+                            onClick={handleClick("/signin")}
+                        >
                             {t("main.signin")}
                         </PrimaryButton>
-                        <PrimaryButton color="white">
+                        <PrimaryButton
+                            color="white"
+                            onClick={handleClick("/signup")}
+                        >
                             {t("main.signup")}
                         </PrimaryButton>
                     </PrimaryContainer>
@@ -80,14 +87,14 @@ const landingPage: React.FC = () => {
                 <img
                     src={WelcomePlanetGoalsImg}
                     alt="Welcome to the planet goals"
-                    className={styles.img}
+                    className={commonStyles.sectionImg}
                 />
                 <PrimaryContainer
                     direction="column"
                     additionalClassess={commonStyles.lightestGreyBackground}
                 >
                     <p
-                        className={`${commonStyles.orangeText} ${styles.header}`}
+                        className={`${commonStyles.orangeText} ${commonStyles.basicHeader}`}
                     >
                         {formatNewLines(t("landing-page.headers.welcome"))}
                     </p>
@@ -104,14 +111,14 @@ const landingPage: React.FC = () => {
                 <img
                     src={ForTeachersImg}
                     alt="For teachers"
-                    className={styles.img}
+                    className={commonStyles.sectionImg}
                 />
                 <PrimaryContainer
                     direction="column"
                     additionalClassess={commonStyles.lightestGreyBackground}
                 >
                     <p
-                        className={`${commonStyles.orangeText} ${styles.header}`}
+                        className={`${commonStyles.orangeText} ${commonStyles.basicHeader}`}
                     >
                         {t("landing-page.headers.for-teachers")}
                     </p>
@@ -128,14 +135,14 @@ const landingPage: React.FC = () => {
                 <img
                     src={ForStudentsImg}
                     alt="For students"
-                    className={styles.img}
+                    className={commonStyles.sectionImg}
                 />
                 <PrimaryContainer
                     direction="column"
                     additionalClassess={commonStyles.lightestGreyBackground}
                 >
                     <p
-                        className={`${commonStyles.orangeText} ${styles.header}`}
+                        className={`${commonStyles.orangeText} ${commonStyles.basicHeader}`}
                     >
                         {t("landing-page.headers.for-students")}
                     </p>
@@ -152,13 +159,15 @@ const landingPage: React.FC = () => {
                 <img
                     src={LearnInGroupImg}
                     alt="Learn in group"
-                    className={styles.img}
+                    className={commonStyles.sectionImg}
                 />
                 <PrimaryContainer
                     direction="column"
                     additionalClassess={commonStyles.lightGreyBackground}
                 >
-                    <p className={`${commonStyles.darkText} ${styles.header}`}>
+                    <p
+                        className={`${commonStyles.darkText} ${commonStyles.basicHeader}`}
+                    >
                         {formatNewLines(
                             t("landing-page.headers.learn-in-group")
                         )}
@@ -193,7 +202,7 @@ const landingPage: React.FC = () => {
                     additionalClassess={commonStyles.lightGreyBackground}
                 >
                     <p
-                        className={`${commonStyles.orangeText} ${styles.header}`}
+                        className={`${commonStyles.orangeText} ${commonStyles.basicHeader}`}
                     >
                         {formatNewLines(t("landing-page.headers.visit-blog"))}
                     </p>
@@ -210,7 +219,7 @@ const landingPage: React.FC = () => {
                 <img
                     src={LearnAnyywhereMobileImg}
                     alt="Learn anywhere"
-                    className={`${styles.img} ${commonStyles.noPadding}`}
+                    className={`${commonStyles.sectionImg} ${commonStyles.noPadding}`}
                 />
             </PrimaryContainer>
             <Footer />

@@ -8,19 +8,19 @@ $red-light: #fa8080;
 $grey: #d0d0d0;
 $light-grey: #ecedec;
 $lightest-grey: #f9f9f9;
-$dark-grey: #d0d0d0;
+$dark-grey: #aaaaaa;
 $almost-white: #f5f5f5;
 
 $light-background: $almost-white;
 $grey-background: $light-grey;
-$dark-grey-background: $dark-grey;
+$dark-grey-background: $grey;
 
 $dark-text: #133742;
 
 $border-blue: #68d0f1;
 $border-orange: #eabc50;
 $border-white: $light-grey;
-$border-grey: #aaaaaa;
+$border-grey: $dark-grey;
 $hover-white: $almost-white;
 
 $header-background: $lightest-grey;

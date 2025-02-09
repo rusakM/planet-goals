@@ -13,6 +13,7 @@ export namespace Main {
     export const HOST: string = process.env.HOST;
     export const APP_MODE: string = process.env.APP_MODE;
     export const JWT_SECRET: string = process.env.JWT_SECRET;
+    export const ALLOWED_ORIGINS: string = process.env.ALLOWED_ORIGINS;
 }
 
 export namespace Mongodb {
@@ -21,8 +22,7 @@ export namespace Mongodb {
     export const DB_PASSWORD: string = process.env.DB_PASSWORD;
     export const DB_TABLE_PREFIX: string = process.env.DB_TABLE_PREFIX || '';
     export const DB_USERNAME: string = process.env.DB_USERNAME;
-    export const DB_URL: string =
-        'mongodb+srv://<username>:<password>@<host>/<database>?retryWrites=true&w=majority';
+    export const DB_URL: string = 'mongodb+srv://<username>:<password>@<host>/<database>?retryWrites=true&w=majority';
 }
 
 export namespace Sentry {

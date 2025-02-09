@@ -1,0 +1,25 @@
+@use "@styles/colors.scss";
+
+.textInput {
+    border: 1px solid colors.$grey;
+    color: colors.$dark-text;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: colors.$grey-background;
+    padding: 5px;
+    height: 34px;
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+
+    &:focus {
+        border-color: colors.$dark-grey;
+        outline: none;
+    }
+}
+
+.error {
+    color: colors.$red;
+    border-color: colors.$red;
+}

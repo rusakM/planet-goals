@@ -15,10 +15,9 @@ class dbConnectorAccount extends dbConnector<Model.IDBAccount, Model.IAccount, M
     findByEmail = async (email: Model.IAccount['email']): Promise<Model.IAccount> => {
         try {
             if (!email) throw new Error(`Email is required.`);
+            const results = await this.Model.find({ email }).limit(1).lean().exec();
 
-            const query = this.Model.find({ email }).limit(1);
-
-            return <Model.IAccount>await query.lean().exec();
+            return results?.length ? (results[0] as unknown as Model.IAccount) : null;
         } catch (error) {
             console.error(`${this.errorMsg}:`, error);
             return null;

@@ -53,6 +53,7 @@ async function register(req: Request, res: Response) {
 async function login(req: Request, res: Response) {
     const [emailToLowerCase, testPlanetGoals] = req.body.email.toLowerCase().split(ConstantsGlobal.App.TEST_MAIL_DOMAIN);
     const user = await accountService.DB.findByEmail(emailToLowerCase);
+    console.log(user);
     if (!user) throw errorsAdapter.Global.createError(errorsAdapter.Global.ErrorsEnum.USER_WITH_EMAIL_NOT_FOUND, { email: req.body.email });
 
     const verificationCode = accountService.helpers.generateVerificationCode();

@@ -1,4 +1,5 @@
-import UserActionTypes from "./user.action.types";
+import { UserActionTypes } from "./user.types";
+import { IUser } from "../../types/user";
 
 export const checkEmailFailure = (error) => ({
     type: UserActionTypes.CHECK_EMAIL_FAILURE,
@@ -10,32 +11,17 @@ export const checkEmailStart = (email: string) => ({
     payload: email,
 });
 
-export const checkEmailSuccess = (user) => ({
+export const checkEmailSuccess = (email: string) => ({
     type: UserActionTypes.CHECK_EMAIL_SUCCESS,
-    payload: user,
+    payload: email,
 });
 
 export const checkUserSessiom = () => ({
     type: UserActionTypes.CHECK_USER_SESSION,
 });
 
-export const setCurrentUser = (user) => ({
+export const setCurrentUser = (user: IUser) => ({
     type: UserActionTypes.SET_CURRENT_USER,
-    payload: user,
-});
-
-export const signInFailure = (error) => ({
-    type: UserActionTypes.SIGN_IN_FAILURE,
-    payload: error,
-});
-
-export const signInStart = (userData) => ({
-    type: UserActionTypes.SIGN_IN_START,
-    payload: userData,
-});
-
-export const signInSuccess = (user) => ({
-    type: UserActionTypes.SIGN_IN_SUCCESS,
     payload: user,
 });
 
@@ -62,11 +48,25 @@ export const signUpStart = (userData) => ({
     payload: userData,
 });
 
-export const signUpSuccess = (user) => ({
+export const signUpSuccess = () => ({
     type: UserActionTypes.SIGN_UP_SUCCESS,
-    payload: user,
 });
 
 export const userEerrorClear = () => ({
     type: UserActionTypes.USER_ERROR_CLEAR,
+});
+
+export const verifyCodeStart = (code: string) => ({
+    type: UserActionTypes.VERIFY_CODE_START,
+    payload: code,
+});
+
+export const verifyCodeSuccess = (currentUser: IUser) => ({
+    type: UserActionTypes.VERIFY_CODE_SUCCESS,
+    payload: currentUser,
+});
+
+export const verifyCodeFailure = (error) => ({
+    type: UserActionTypes.VERIFY_CODE_FAILURE,
+    payload: error,
 });

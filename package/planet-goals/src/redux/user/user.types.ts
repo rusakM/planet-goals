@@ -1,12 +1,11 @@
-const UserActionTypes = {
+import { IUser } from "../../types/user";
+
+export const UserActionTypes = {
     CHECK_EMAIL_FAILURE: "CHECK_EMAIL_FAILURE",
     CHECK_EMAIL_START: "CHECK_EMAIL_START",
     CHECK_EMAIL_SUCCESS: "CHECK_EMAIL_SUCCESS",
     CHECK_USER_SESSION: "CHECK_USER_SESSION",
     SET_CURRENT_USER: "SET_CURRENT_USER",
-    SIGN_IN_FAILURE: "SIGN_IN_FAILURE",
-    SIGN_IN_START: "SIGN_IN_START",
-    SIGN_IN_SUCCESS: "SIGN_IN_SUCCESS",
     SIGN_OUT_FAILURE: "SIGN_OUT_FAILURE",
     SIGN_OUT_START: "SIGN_OUT_START",
     SIGN_OUT_SUCCESS: "SIGN_OUT_SUCCESS",
@@ -14,6 +13,14 @@ const UserActionTypes = {
     SIGN_UP_START: "SIGN_UP_START",
     SIGN_UP_SUCCESS: "SIGN_UP_SUCCESS",
     USER_ERROR_CLEAR: "USER_ERROR_CLEAR",
+    VERIFY_CODE_START: "VERIFY_CODE_START",
+    VERIFY_CODE_SUCCESS: "VERIFY_CODE_SUCCESS",
+    VERIFY_CODE_FAILURE: "VERIFY_CODE_FAILURE",
 };
 
-export default UserActionTypes;
+export interface IUserState {
+    currentUser: IUser;
+    isFetching: boolean;
+    signInEmail: string;
+    userError: string;
+}

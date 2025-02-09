@@ -75,6 +75,7 @@ export namespace Options {
 export namespace Schemas {
     export interface IDocumentBasic {
         _id?: string;
+        __v?: number;
     }
 
     export interface ITimestamps {
