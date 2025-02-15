@@ -1,0 +1,27 @@
+name: Deploy Application
+
+on:
+  push:
+    branches:
+      - test
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy application
+        uses: actions/checkout@v4
+
+      - name: planet-goals-deployment
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/test" ]; then
+            echo "Wdrażam na serwer testowy"
+            ssh ${{ secrets.DEPLOYMENT_USR }}@${{ secrets.DEPLOYMENT_SRV }} -p ${{ secrets.DEPLOYMENT_PORT }} 'cd /planet-goals/test/planet-goals && git pull && ./deploy.sh'
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "Wdrażam na serwer produkcyjny"
+            ssh ${{ secrets.DEPLOYMENT_USR }}@${{ secrets.DEPLOYMENT_SRV }} -p ${{ secrets.DEPLOYMENT_PORT }} 'cd /planet-goals/prod/planet-goals && git pull && ./deploy.sh'
+          fi
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}

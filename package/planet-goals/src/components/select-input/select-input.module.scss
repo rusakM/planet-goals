@@ -1,6 +1,6 @@
 @use "@styles/colors.scss";
 
-.textInput {
+.selectInput {
     border: 1px solid colors.$grey;
     color: colors.$dark-text;
     border-radius: 5px;
@@ -9,7 +9,9 @@
     padding: 5px;
     height: 34px;
     width: 100%;
-    
+    appearance: none; // Usuwa domyślny styl przeglądarki
+    cursor: pointer;
+
     &:disabled {
         cursor: not-allowed;
     }
@@ -17,6 +19,17 @@
     &:focus {
         border-color: colors.$dark-grey;
         outline: none;
+    }
+
+    &::after {
+        content: "▼";
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
+        pointer-events: none; // Kliknięcie na ikonę nie blokuje selecta
+        color: colors.$dark-text;
+        font-size: 12px;
     }
 }
 

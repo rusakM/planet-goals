@@ -61,3 +61,27 @@
         color: colors.$light-grey;
     }
 }
+
+.selectedorange {
+    background-color: colors.$border-orange;
+    border-color: colors.$orange;
+    color: colors.$light-grey;
+    &:hover {
+        color: colors.$white;
+    }
+}
+
+.selectedwhite {
+    background-color: colors.$lightest-grey;
+    color: colors.$border-blue;
+    border-color: colors.$grey;
+}
+
+.selectedblue {
+    background-color: colors.$border-blue;
+    border-color: colors.$blue;
+    color: colors.$light-grey;
+    &:hover {
+        color: colors.$white;
+    }
+}

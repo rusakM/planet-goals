@@ -1,5 +1,10 @@
 export type TUserRole = "STUDENT" | "TEACHER";
 
+export enum UserRoleEnum {
+    STUDENT = 'STUDENT',
+    TEACHER = 'TEACHER'
+}
+
 export interface IUser {
     cookiesAgreement?: boolean;
     countryCode?: string;

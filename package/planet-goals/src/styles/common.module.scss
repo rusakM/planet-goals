@@ -76,6 +76,10 @@
     align-items: center !important;
 }
 
+.paddng1em {
+    padding: 1em;
+}
+
 .sectionImg {
     padding: 3em 25%;
     width: 100%;
@@ -88,4 +92,8 @@
     font-family: fonts.$rubik-one, sans-serif;
     text-transform: none;
     font-size: 24px;
+}
+
+.captionText {
+    font-family: fonts.$rubik-one, sans-serif;
 }

@@ -14,7 +14,9 @@
         "@tolgee/format-icu": "^6.0.1",
         "@tolgee/react": "^6.0.1",
         "axios": "^1.7.9",
+        "country-list": "^2.3.0",
         "joi": "^17.13.3",
+        "path": "^0.12.7",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "react-redux": "^9.2.0",
@@ -29,6 +31,8 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.17.0",
+        "@types/country-list": "^2.1.4",
+        "@types/node": "^22.13.4",
         "@types/react": "^18.3.18",
         "@types/react-dom": "^18.3.5",
         "@types/redux-logger": "^3.0.13",
