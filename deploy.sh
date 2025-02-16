@@ -7,4 +7,5 @@ npm run build
 cd ../backend
 docker compose down
 npm install
+docker compose --env-file .env build
 docker compose --env-file .env up -d
