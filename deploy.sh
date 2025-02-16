@@ -1,5 +1,44 @@
 #!/bin/bash
 
+set -e
+
+show_usage() {
+    echo "Użycie: $0 --env <PROD|TEST>"
+    echo "Przykład: $0 --env PROD"
+    exit 1
+}
+
+# Parsowanie parametrów
+ENVIRONMENT=""
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --env)
+            ENVIRONMENT="$2"
+            shift 2
+            ;;
+        *)
+            echo "Nieznany parametr: $1"
+            show_usage
+            ;;
+    esac
+done
+
+if [[ -z "$ENVIRONMENT" ]]; then
+    echo "Błąd: Nie podano środowiska"
+    show_usage
+fi
+
+if [[ "$ENVIRONMENT" != "PROD" && "$ENVIRONMENT" != "TEST" ]]; then
+    echo "Błąd: Nieprawidłowe środowisko. Dozwolone wartości: PROD lub TEST"
+    show_usage
+fi
+
+if [[ "$ENVIRONMENT" == "PROD" ]]; then
+    DEPLOY_PATH="/var/app/planet-goals/prod"
+else
+    DEPLOY_PATH="/var/app/planet-goals/test"
+fi
+
 # Debugowanie
 echo "Sprawdzanie środowiska przed konfiguracją:"
 echo "Użytkownik: $(whoami)"
@@ -28,6 +67,9 @@ echo "$NPM_PATH -v"
 cd package/planet-goals || exit 1
 npm install
 npm run build
+rm -rf "$DEPLOY_PATH"
+cp -r dist "$DEPLOY_PATH"
+chown -R www-data "$DEPLOY_PATH"
 
 cd ../backend || exit 1
 docker compose down
