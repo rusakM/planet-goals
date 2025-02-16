@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "Użytkownik: $(whoami)"
+echo "PATH: $PATH"
+echo "Shell: $SHELL"
+
 # Załaduj zmienne środowiskowe użytkownika
 source ~/.bashrc
 
