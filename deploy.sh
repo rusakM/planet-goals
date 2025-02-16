@@ -1,24 +1,36 @@
 #!/bin/bash
 
-# Załaduj zmienne środowiskowe użytkownika
-source ~/.bashrc
-source ~/.profile
 
-# Użyj nvm jeśli jest zainstalowany
-if [ -f ~/.nvm/nvm.sh ]; then
-    source ~/.nvm/nvm.sh
-    nvm use node || nvm use default
+# Debugowanie
+echo "Sprawdzanie środowiska przed konfiguracją:"
+echo "Użytkownik: $(whoami)"
+echo "Katalog domowy: $HOME"
+echo "Początkowy PATH: $PATH"
+
+# Załaduj nvm bezpośrednio (spróbuj różne możliwe lokalizacje)
+[ -s "$HOME/.nvm/nvm.sh" ] && \. "$HOME/.nvm/nvm.sh"  # This loads nvm
+[ -s "/root/.nvm/nvm.sh" ] && \. "/root/.nvm/nvm.sh"  # If running as root
+
+# Debugowanie po załadowaniu nvm
+echo "Sprawdzanie czy nvm jest dostępny:"
+command -v nvm
+
+# Jeśli nvm jest dostępny, użyj odpowiedniej wersji node
+if command -v nvm &> /dev/null; then
+    echo "NVM znaleziony, aktywuję node"
+    nvm use default || nvm use --lts || nvm use node
+else
+    echo "BŁĄD: NVM nie jest dostępny!"
+    echo "Sprawdź czy nvm jest zainstalowany w: $HOME/.nvm lub /root/.nvm"
+    exit 1
 fi
 
 # Sprawdź czy npm jest dostępny
 if ! command -v npm &> /dev/null; then
-    echo "npm nie jest dostępny. Sprawdź instalację Node.js"
+    echo "BŁĄD: npm nie jest dostępny mimo załadowania nvm!"
+    echo "Aktualna ścieżka PATH: $PATH"
     exit 1
 fi
-
-# Wyświetl wersje dla celów diagnostycznych
-echo "Node version: $(node -v)"
-echo "NPM version: $(npm -v)"
 
 cd package/planet-goals || exit 1
 npm install
