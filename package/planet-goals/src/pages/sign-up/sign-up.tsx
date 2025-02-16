@@ -34,14 +34,14 @@ interface ISignIn {
     signUp?: (userData: IUserRegistration) => void;
     isLoadingData: boolean;
     loginEmail: string;
-    signupError: string;
+    signUpError: string;
 }
 
 const SignUp: React.FC<ISignIn> = ({
     signUp,
     isLoadingData,
     loginEmail,
-    signupError,
+    signUpError,
 }) => {
     const { t } = useTranslate();
     const countriesList: ISelectInputOption[] = getCodes().map(code => ({
@@ -63,10 +63,10 @@ const SignUp: React.FC<ISignIn> = ({
     const [signUpStarted, setSignUpStarted] = useState(false);
 
     useEffect(() => {
-        if (!signupError && signUpStarted) {
+        if (!signUpError && signUpStarted) {
             window.open(constantsUrls.LandingPage.confirm, "_self");
         }
-    }, [signupError, signUpStarted, loginEmail]);
+    }, [signUpError, signUpStarted, loginEmail]);
 
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
@@ -158,7 +158,7 @@ const SignUp: React.FC<ISignIn> = ({
                             </PrimaryButton>
                         </div>
                         {isLoadingData && <p>...Loading</p>}
-                        {signupError && <p>{signupError}</p>}
+                        {signUpError && <p>{signUpError}</p>}
                     </PrimaryContainer>
                     <PrimaryContainer
                         direction="column"
