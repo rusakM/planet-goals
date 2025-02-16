@@ -1,11 +1,8 @@
 #!/bin/bash
 
-echo "Użytkownik: $(whoami)"
-echo "PATH: $PATH"
-echo "Shell: $SHELL"
-
 # Załaduj zmienne środowiskowe użytkownika
 source ~/.bashrc
+source ~/.profile
 
 # Użyj nvm jeśli jest zainstalowany
 if [ -f ~/.nvm/nvm.sh ]; then
