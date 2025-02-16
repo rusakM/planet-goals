@@ -1,36 +1,29 @@
 #!/bin/bash
 
-
 # Debugowanie
 echo "Sprawdzanie środowiska przed konfiguracją:"
 echo "Użytkownik: $(whoami)"
 echo "Katalog domowy: $HOME"
 echo "Początkowy PATH: $PATH"
 
-# Załaduj nvm bezpośrednio (spróbuj różne możliwe lokalizacje)
-[ -s "$HOME/.nvm/nvm.sh" ] && \. "$HOME/.nvm/nvm.sh"  # This loads nvm
-[ -s "/root/.nvm/nvm.sh" ] && \. "/root/.nvm/nvm.sh"  # If running as root
+# Załaduj nvm
+[ -s "$HOME/.nvm/nvm.sh" ] && \. "$HOME/.nvm/nvm.sh"
 
-# Debugowanie po załadowaniu nvm
-echo "Sprawdzanie czy nvm jest dostępny:"
-command -v nvm
+# Aktywuj node
+nvm use default || nvm use --lts || nvm use node
 
-# Jeśli nvm jest dostępny, użyj odpowiedniej wersji node
-if command -v nvm &> /dev/null; then
-    echo "NVM znaleziony, aktywuję node"
-    nvm use default || nvm use --lts || nvm use node
-else
-    echo "BŁĄD: NVM nie jest dostępny!"
-    echo "Sprawdź czy nvm jest zainstalowany w: $HOME/.nvm lub /root/.nvm"
+# Ustaw ścieżkę do npm
+NPM_PATH="$HOME/.nvm/versions/node/$(node -v)/bin/npm"
+
+# Sprawdź czy npm istnieje
+if [ ! -f "$NPM_PATH" ]; then
+    echo "BŁĄD: Nie znaleziono npm w: $NPM_PATH"
     exit 1
 fi
 
-# Sprawdź czy npm jest dostępny
-if ! command -v npm &> /dev/null; then
-    echo "BŁĄD: npm nie jest dostępny mimo załadowania nvm!"
-    echo "Aktualna ścieżka PATH: $PATH"
-    exit 1
-fi
+echo "Używam npm z: $NPM_PATH"
+echo "Node version: $(node -v)"
+echo "$NPM_PATH -v"
 
 cd package/planet-goals || exit 1
 npm install
