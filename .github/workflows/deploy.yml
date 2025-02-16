@@ -25,8 +25,8 @@ jobs:
         run: |
           if [ "${{ github.ref }}" == "refs/heads/test" ]; then
             echo "Wdrażam na serwer testowy"
-            ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOYMENT_USR }}@${{ secrets.DEPLOYMENT_SRV }} -p ${{ secrets.DEPLOYMENT_PORT }} 'cd ~/planet-goals/test/planet-goals && git pull && sh deploy.sh'
+            ssh -i ~/.ssh/deploy_key -t ${{ secrets.DEPLOYMENT_USR }}@${{ secrets.DEPLOYMENT_SRV }} -p ${{ secrets.DEPLOYMENT_PORT }} 'bash -l -c "cd ~/planet-goals/test/planet-goals && git pull && sh deploy.sh"'
           elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
             echo "Wdrażam na serwer produkcyjny"
-            ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOYMENT_USR }}@${{ secrets.DEPLOYMENT_SRV }} -p ${{ secrets.DEPLOYMENT_PORT }} 'cd ~/planet-goals/prod/planet-goals && git pull && sh deploy.sh'
+            ssh -i ~/.ssh/deploy_key -t ${{ secrets.DEPLOYMENT_USR }}@${{ secrets.DEPLOYMENT_SRV }} -p ${{ secrets.DEPLOYMENT_PORT }} 'bash -l -c "cd ~/planet-goals/prod/planet-goals && git pull && sh deploy.sh"'
           fi
