@@ -1,9 +1,10 @@
-import { Tolgee, DevTools, FormatSimple } from "@tolgee/react";
+import { Tolgee, DevTools, FormatSimple, BackendFetch } from "@tolgee/react";
 import { FormatIcu } from "@tolgee/format-icu";
 import { constantsTranslations } from "../helpers/constants";
 
 const tolgeeConfig = Tolgee()
     .use(DevTools())
+    .use(BackendFetch({ prefix: `${import.meta.env.CDN_URL}/translations` }))
     .use(FormatSimple())
     .use(FormatIcu())
     .init({

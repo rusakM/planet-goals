@@ -10,17 +10,14 @@ show_usage() {
 
 # Parsowanie parametrów
 ENVIRONMENT=""
+KEY=""
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --env)
-            ENVIRONMENT="$2"
-            shift 2
-            ;;
-        *)
-            echo "Nieznany parametr: $1"
-            show_usage
-            ;;
+        --env) ENVIRONMENT="$2"; shift ;;
+        --key) KEY="$2"; shift ;;
+        *) echo "Nieznany parametr: $1"; show_usage ;;
     esac
+    shift
 done
 
 if [[ -z "$ENVIRONMENT" ]]; then
@@ -76,3 +73,12 @@ docker compose down
 npm install
 docker compose --env-file .env build
 docker compose --env-file .env up -d
+
+#pobranie tłumaczeń
+cd ../..
+echo "Pobieranie tłumaczeń..."
+curl --location 'https://pgtranslate.toadres.pl/v2/projects/34/export?format=JSON' --header "Accept: application/json" --header "x-api-key: $KEY" -o "translations.zip"
+rm * /var/app/planet-goals/translations/translations
+echo "Rozpakowywanie pliku..."
+unzip -o translations.zip -d /var/app/planet-goals/translations/translations
+rm translations.zip
