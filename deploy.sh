@@ -83,7 +83,7 @@ fi
 cd ../..
 echo "Pobieranie tłumaczeń..."
 curl --location 'https://pgtranslate.toadres.pl/v2/projects/34/export?format=JSON' --header "Accept: application/json" --header "x-api-key: $AUTHKEY" -o "translations.zip"
-rm * /var/app/planet-goals/translations/translations
+rm /var/app/planet-goals/translations/translations/*
 echo "Rozpakowywanie pliku..."
 unzip -o translations.zip -d /var/app/planet-goals/translations/translations
 rm translations.zip
