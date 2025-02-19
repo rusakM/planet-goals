@@ -4,7 +4,7 @@ import { constantsTranslations } from "../helpers/constants";
 
 const tolgeeConfig = Tolgee()
     .use(DevTools())
-    .use(BackendFetch({ prefix: `${import.meta.env.CDN_URL}/translations` }))
+    .use(BackendFetch({ prefix: `cdn/translations` }))
     .use(FormatSimple())
     .use(FormatIcu())
     .init({
