@@ -3,18 +3,18 @@
 set -e
 
 show_usage() {
-    echo "Użycie: $0 --env <PROD|TEST>"
-    echo "Przykład: $0 --env PROD"
+    echo "Użycie: $0 --env <PROD|TEST> --authkey abcd"
+    echo "Przykład: $0 --env PROD --authkey abcd"
     exit 1
 }
 
 # Parsowanie parametrów
 ENVIRONMENT=""
-KEY=""
+AUTHKEY=""
 while [[ $# -gt 0 ]]; do
     case $1 in
         --env) ENVIRONMENT="$2"; shift ;;
-        --key) KEY="$2"; shift ;;
+        --authkey) AUTHKEY="$2"; shift ;;
         *) echo "Nieznany parametr: $1"; show_usage ;;
     esac
     shift
@@ -75,9 +75,14 @@ docker compose --env-file .env build
 docker compose --env-file .env up -d
 
 #pobranie tłumaczeń
+if [[ -z "$AUTHKEY" ]]; then
+    echo "Błąd: Nie podano środowiska"
+    show_usage
+fi
+
 cd ../..
 echo "Pobieranie tłumaczeń..."
-curl --location 'https://pgtranslate.toadres.pl/v2/projects/34/export?format=JSON' --header "Accept: application/json" --header "x-api-key: $KEY" -o "translations.zip"
+curl --location 'https://pgtranslate.toadres.pl/v2/projects/34/export?format=JSON' --header "Accept: application/json" --header "x-api-key: $AUTHKEY" -o "translations.zip"
 rm * /var/app/planet-goals/translations/translations
 echo "Rozpakowywanie pliku..."
 unzip -o translations.zip -d /var/app/planet-goals/translations/translations
