@@ -16,6 +16,16 @@ export namespace Main {
     export const ALLOWED_ORIGINS: string = process.env.ALLOWED_ORIGINS;
 }
 
+export namespace Email {
+    export const EMAIL_FROM: string = process.env.EMAIL_FROM;
+    export const EMAIL_HOST: string = process.env.EMAIL_HOST;
+    export const EMAIL_PASSWORD: string = process.env.EMAIL_PASSWORD;
+    export const EMAIL_PORT: string = process.env.EMAIL_PORT;
+    export const EMAIL_USERNAME: string = process.env.EMAIL_USERNAME;
+    export const SENDGRID_PASSWORD: string = process.env.SENDGRID_PASSWORD;
+    export const SENDGRID_USERNAME: string = process.env.SENDGRID_USERNAME;
+}
+
 export namespace Mongodb {
     export const DB_HOST: string = process.env.DB_HOST;
     export const DB_NAME: string = process.env.DB_NAME;

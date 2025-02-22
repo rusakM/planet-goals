@@ -1,9 +1,10 @@
 import React, { ChangeEvent } from "react";
 import styles from "./text-input.module.scss";
+import errorStyles from "../../styles/errors.module.scss";
 
 interface ITextInputProps {
     disabled?: boolean;
-    errorMessage?: string;
+    error?: boolean;
     name?: string;
     onChange?: (event?: ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
@@ -13,7 +14,7 @@ interface ITextInputProps {
 
 const TextInput: React.FC<ITextInputProps> = ({
     disabled = false,
-    errorMessage,
+    error,
     name,
     onChange,
     placeholder,
@@ -27,7 +28,7 @@ const TextInput: React.FC<ITextInputProps> = ({
         name={name}
         disabled={disabled}
         value={value}
-        className={`${styles.textInput} ${errorMessage ? styles.error : ""}`}
+        className={`${styles.textInput} ${error ? errorStyles.errorInput : ""}`}
     />
 );
 

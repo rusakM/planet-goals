@@ -9,6 +9,7 @@ import * as accountValidation from '../middlewares/validators/userAuth';
 import {
     //mailService,
     accountService,
+    mailService,
 } from '../services';
 
 import { ConstantsGlobal, ConstantsEnv } from '../core/constants';
@@ -36,6 +37,8 @@ async function register(req: Request, res: Response) {
     } else {
         await accountService.DB.update(user._id, { verificationCodes: [{ createdAt: new Date().toISOString(), value: verificationCode }, ...(user?.verificationCodes || [])].slice(0, ConstantsGlobal.App.VERIFICATION_CODES_ARRAY_LENGTH) });
     }
+
+    new mailService.Email(user).sendVerificationCode(verificationCode);
 
     // mailService.SendTo.Client.Account.register({
     //     account: user,
@@ -66,6 +69,7 @@ async function login(req: Request, res: Response) {
     // });
 
     // await sendEmail(req.body.email, 'Account verification', verificationCode);
+    new mailService.Email(user).sendVerificationCode(verificationCode);
     const userAccountUpdate: IAccount = {
         verificationCodes: [{ createdAt: new Date().toISOString(), value: verificationCode }, ...(user?.verificationCodes || [])].slice(0, ConstantsGlobal.App.VERIFICATION_CODES_ARRAY_LENGTH),
     };

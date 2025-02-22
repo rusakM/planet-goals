@@ -1,8 +1,7 @@
-import React, { useState, useEffect, FormEvent, MouseEvent, ChangeEvent } from "react";
+import React, { useState, useEffect, FormEvent, MouseEvent } from "react";
 import { useTranslate } from "@tolgee/react";
 import { connect } from "react-redux";
 
-import Checkbox from "../../components/checkbox/checkbox";
 import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
 import PrimaryButton from "../../components/primary-button.tsx/primary-button";
@@ -10,8 +9,7 @@ import TextInput from "../../components/text-input/text-input";
 
 import { handleClick, handleInputText } from "../../helpers/events.functions";
 
-import { signUpStart } from "../../redux/user/user.actions";
-import { IUserRegistration } from "../../types/user";
+import { verifyCodeStart } from "../../redux/user/user.actions";
 import {
     selectIsLoadingData,
     selectLoginEmail,
@@ -19,6 +17,7 @@ import {
 } from "../../redux/user/user.selectors";
 
 import { ERRORS_ENUM } from "../../api/user.api";
+import { IUserLogin } from "../../types/user";
 
 import commonStyles from "../../styles/common.module.scss";
 import containerStyles from "../../styles/containers.module.scss";
@@ -28,29 +27,22 @@ import styles from "../sign-in/sign-in.module.scss";
 import SmilingEarthImg from "../../assets/login-page/smiling_earth.svg";
 import { createStructuredSelector } from "reselect";
 import { constantsUrls } from "../../helpers/constants";
-import { UserValidators } from "../../helpers/validators.ts/user";
 
-
-interface ISignUp {
-    signUp?: (payload: IUserRegistration) => void;
+interface IConfirm {
     isLoadingData: boolean;
     loginEmail: string;
     loginError: string;
+    verifyCode?: (payload: IUserLogin) => void;
 }
 
-const SignUp: React.FC<ISignUp> = ({
-    signUp,
+const Confirm: React.FC<IConfirm> = ({
     isLoadingData,
     loginEmail,
     loginError,
+    verifyCode,
 }) => {
     const { t } = useTranslate();
-    const [email, setEmail] = useState("");
-    const [confirm, setConfirm] = useState(false);
-    const [formError, setFormError] = useState({
-        confirm: false,
-        email: false,
-    });
+    const [verificationCode, setVerificationCode] = useState("");
     const [loginStarted, setLoginStarted] = useState(false);
 
     useEffect(() => {
@@ -67,16 +59,8 @@ const SignUp: React.FC<ISignUp> = ({
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
         try {
-            const validateError = !!(UserValidators.email.validate(email)?.error) || null;
-            if (!email || !confirm || validateError) {
-                setFormError({
-                    confirm: !confirm,
-                    email: validateError ? true : !email
-                });
-                return;
-            }
             setLoginStarted(true);
-            await signUp({ email });
+            await verifyCode({email: loginEmail, verificationCode});
             console.log("here1", loginError);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
@@ -85,53 +69,38 @@ const SignUp: React.FC<ISignUp> = ({
         }
     };
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setConfirm(event.target.checked);
-        setFormError({
-            ...formError,
-            confirm: false
-        });
-    }
-
     return (
         <PageContainer>
             <PrimaryContainer direction="column">
                 <img
                     src={SmilingEarthImg}
-                    alt="Sign up"
+                    alt="Login confirm"
                     className={styles.img}
                 />
                 <p
                     className={`${commonStyles.basicHeader} ${commonStyles.darkText}`}
                 >
-                    {t("main.signup")}
+                    {t("signin.confirm.header.enter-code")}
                 </p>
                 <PrimaryContainer
                     direction="column"
                     additionalClassess={containerStyles.buttonsContainer}
                 >
                     <TextInput
-                        name="email"
-                        onChange={handleInputText(setEmail, () => setFormError({ ...formError, email: false }))}
-                        placeholder="E-mail"
-                        type="email"
-                        value={email}
-                        error={formError.email}
+                        name="verificationCode"
+                        onChange={handleInputText(setVerificationCode)}
+                        placeholder={t("signin.confirm.input-placeholder")}
+                        type="text"
+                        value={verificationCode}
                     />
                     <p
                         className={`${commonStyles.blueText} ${footerStyles.privacyRef} ${commonStyles.noPadding} ${commonStyles.noMargin} ${commonStyles.centeredText}`}
-                        onClick={handleClick("/signin")}
+                        onClick={handleClick("/signup")}
                     >
-                        {t("main.login-question")}
+                        {t("signin.confirm.send-code-again")}
                     </p>
-                    <Checkbox 
-                        checked={confirm}
-                        error={formError.confirm}
-                        label={<>{t("signup.confirm-regulations")} <span className={commonStyles.blueText} onClick={handleClick('/')}>{t("main.regulations")}</span></>}
-                        onChange={handleChange}
-                    />
                     {isLoadingData && <p>...Loading</p>}
-                    
+                    {loginError && <p>{loginError}</p>}
                 </PrimaryContainer>
             </PrimaryContainer>
             <PrimaryContainer
@@ -139,7 +108,7 @@ const SignUp: React.FC<ISignUp> = ({
                 additionalClassess={`${containerStyles.buttonsContainer} ${commonStyles.bottom} ${styles.bottomButtons}`}
             >
                 <PrimaryButton color="orange" onClick={handleSubmit}>
-                    {t("main.signup")}
+                    {t("main.confirm")}
                 </PrimaryButton>
                 <PrimaryButton color="white" onClick={handleClick("/")}>
                     {t("main.back")}
@@ -150,7 +119,7 @@ const SignUp: React.FC<ISignUp> = ({
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    signUp: (payload: IUserRegistration) => dispatch(signUpStart(payload)),
+    verifyCode: (payload: IUserLogin) => dispatch(verifyCodeStart(payload)),
 });
 
 const mapStateToProps = createStructuredSelector({
@@ -159,4 +128,4 @@ const mapStateToProps = createStructuredSelector({
     isLoadingData: selectIsLoadingData,
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
+export default connect(mapStateToProps, mapDispatchToProps)(Confirm);

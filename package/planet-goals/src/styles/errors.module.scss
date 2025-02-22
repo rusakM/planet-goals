@@ -1,0 +1,10 @@
+@use "./colors.scss";
+
+.errorInput {
+    border-color: colors.$red !important;
+    color: colors.$red !important;
+}
+
+.errorText {
+    color: colors.$red !important;
+}

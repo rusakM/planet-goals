@@ -12,7 +12,7 @@ import styles from "./header.module.scss";
 import DropdownMenu from "../dropdown-menu/dropdown-menu";
 
 //icons
-import Logo from "../../assets/logo/Planet_Goals_-_Logo_(500_x_500_px).svg";
+import Logo from "../../assets/logo/logo-20.svg";
 import TranslationIcon from "../../assets/icons/translate_icon.svg";
 import HamburgerMenuIcon from "../../assets/icons/hamburger_menu_button.svg";
 import HamburgerMenuIconClicked from "../../assets/icons/hamburger_menu_button_click.svg";

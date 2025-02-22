@@ -36,7 +36,7 @@ function* checkEmail({ payload }) {
 function* signUp({ payload }) {
     try {
         yield Api.sendData(constantsUrls.User.signUp, payload, "POST");
-        yield put(signUpSuccess());
+        yield put(signUpSuccess(payload.email));
     } catch (error) {
         yield put(signUpFailure(error.name));
     }

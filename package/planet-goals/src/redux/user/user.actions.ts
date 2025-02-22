@@ -1,5 +1,5 @@
 import { UserActionTypes } from "./user.types";
-import { IUser, IUserRegistration } from "../../types/user";
+import { IUser, IUserLogin, IUserRegistration } from "../../types/user";
 
 export const checkEmailFailure = (error) => ({
     type: UserActionTypes.CHECK_EMAIL_FAILURE,
@@ -48,17 +48,18 @@ export const signUpStart = (userData: IUserRegistration) => ({
     payload: userData,
 });
 
-export const signUpSuccess = () => ({
+export const signUpSuccess = (email: string) => ({
     type: UserActionTypes.SIGN_UP_SUCCESS,
+    payload: email
 });
 
 export const userEerrorClear = () => ({
     type: UserActionTypes.USER_ERROR_CLEAR,
 });
 
-export const verifyCodeStart = (code: string) => ({
+export const verifyCodeStart = (payload: IUserLogin) => ({
     type: UserActionTypes.VERIFY_CODE_START,
-    payload: code,
+    payload: payload.verificationCode,
 });
 
 export const verifyCodeSuccess = (currentUser: IUser) => ({

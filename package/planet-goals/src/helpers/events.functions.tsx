@@ -9,9 +9,10 @@ export function handleClick(url: string, target: Ttarget = "_self") {
     };
 }
 
-export function handleInputText(dispatch: Dispatch<SetStateAction<string>>) {
+export function handleInputText(dispatch: Dispatch<SetStateAction<string>>, cb: () => void = void 0) {
     return (event: ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         dispatch(event.target.value);
+        cb();
     };
 }

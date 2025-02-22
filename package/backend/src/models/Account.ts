@@ -48,7 +48,7 @@ export const accountValidators = {
     countryCode: Joi.string()
         .equal(...Object.values(ConstantsCountries._Enum))
         .default(ConstantsCountries._Enum.PL)
-        .required(),
+        .optional(),
     email: Joi.string().email().required(),
     firstName: Joi.string().optional(),
     lastName: Joi.string().optional(),
@@ -57,7 +57,7 @@ export const accountValidators = {
     role: Joi.string()
         .equal(...Object.values(ConstantsGlobal.Account.ROLES_ENUM))
         .default(ConstantsGlobal.Account.ROLES_ENUM.STUDENT)
-        .required(),
+        .optional(),
     userInterfaceLanguage: Joi.string().optional(),
 };
 
@@ -75,7 +75,6 @@ const AccountSchema = new Schema<IDBAccount>(
         countryCode: {
             type: String,
             validate: (val) => SchemasGlobal.Validators.schemaValidator(accountValidators.countryCode, val),
-            required: true,
             default: ConstantsCountries._Enum.PL,
         },
         email: {
@@ -116,7 +115,6 @@ const AccountSchema = new Schema<IDBAccount>(
         role: {
             type: String,
             enum: Object.values(ConstantsGlobal.Account.ROLES_ENUM),
-            required: true,
             validate: (val) => SchemasGlobal.Validators.schemaValidator(accountValidators.role, val),
         },
         userInterfaceLanguage: {

@@ -19,18 +19,22 @@ export interface IUser {
     userInterfaceLanguage?: string;
 }
 
-export interface IUserRegistration {
+export interface IUserEdit {
     cookiesAgreement?: IUser["cookiesAgreement"];
-    countryCode: IUser["countryCode"];
-    email: IUser["email"];
-    firstName: IUser["firstName"];
-    lastName: IUser["lastName"];
+    countryCode?: IUser["countryCode"];
+    firstName?: IUser["firstName"];
+    lastName?: IUser["lastName"];
     rodoAgreement?: IUser["rodoAgreement"];
-    role: IUser["role"];
+    role?: IUser["role"];
     userInterfaceLanguage?: IUser["userInterfaceLanguage"];
 }
 
 export interface IUserLogin {
     email: IUser["email"];
     verificationCode: string;
+}
+
+export interface IUserRegistration {
+    email: IUser['email'];
+    userInterfaceLanguage?: IUser['userInterfaceLanguage'];
 }
