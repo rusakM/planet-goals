@@ -26,17 +26,25 @@ import ForStudentsImg from "../../assets/landing-page/for_students.svg";
 import LearnInGroupImg from "../../assets/landing-page/learn_in_group.svg";
 import LearnAnyywhereMobileImg from "../../assets/landing-page/learn_anywhere_moible.svg";
 
+//partners
+import FonixImg from "../../assets/landing-page/partners/Fonix.png";
+import InnoHubImg from "../../assets/landing-page/partners/InnoHub.png";
+import InnovEdImg from "../../assets/landing-page/partners/InnovED.png";
+import MduImg from "../../assets/landing-page/partners/MDU.svg";
+import NovaReckonImg from "../../assets/landing-page/partners/NovaReckon.png";
+import StowarzyszenieImg from "../../assets/landing-page/partners/Stowarzyszenie.svg";
+
 const landingPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { t } = useTranslate();
     const containersDirection = "column";
-    const partnersImgNames = [
-        "Fonix.png",
-        "InnoHub.png",
-        "InnovED.png",
-        "MDU.svg",
-        "NovaReckon.png",
-        "Stowarzyszenie.svg",
+    const partnersImgs = [
+        FonixImg,
+        InnoHubImg,
+        InnovEdImg,
+        MduImg,
+        NovaReckonImg,
+        StowarzyszenieImg
     ];
 
     return (
@@ -180,11 +188,11 @@ const landingPage: React.FC = () => {
             <PrimaryContainer direction="column">
                 <div className={partnersStyles.partnersSpinner}>
                     <div className={partnersStyles.scrollingTrack}>
-                        {[...partnersImgNames, ...partnersImgNames].map(
+                        {[...partnersImgs, ...partnersImgs].map(
                             (logo, index) => (
                                 <img
                                     key={index}
-                                    src={`src/assets/landing-page/partners/${logo}`}
+                                    src={logo}
                                     alt={`Partner ${index + 1}`}
                                     className={partnersStyles.partnerLogo}
                                 />
