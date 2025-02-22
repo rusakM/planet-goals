@@ -11,13 +11,13 @@ import TextInput from "../../components/text-input/text-input";
 
 import { handleClick } from "../../helpers/events.functions";
 import { getFlagEmoji } from "../../helpers/locales.functions";
-import { signUpStart } from "../../redux/user/user.actions";
+import { userEditStart } from "../../redux/user/user.actions";
 import {
     selectIsLoadingData,
     selectLoginEmail,
     selectUserError,
 } from "../../redux/user/user.selectors";
-import { IUserRegistration, TUserRole, UserRoleEnum } from "../../types/user";
+import { IUserEdit, TUserRole, UserRoleEnum } from "../../types/user";
 
 //import { ERRORS_ENUM } from "../../api/user.api";
 
@@ -31,14 +31,14 @@ import { createStructuredSelector } from "reselect";
 import { constantsUrls } from "../../helpers/constants";
 
 interface IFillRegisterData {
-    signUp?: (userData: IUserRegistration) => void;
+    saveUserData?: (userData: IUserEdit) => void;
     isLoadingData: boolean;
     loginEmail: string;
     signUpError: string;
 }
 
 const FillRegisterData: React.FC<IFillRegisterData> = ({
-    signUp,
+    saveUserData,
     isLoadingData,
     loginEmail,
     signUpError,
@@ -49,10 +49,9 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
         value: code
     })).sort((a, b) => getName(a.value).localeCompare(getName(b.value)))
 
-    const [ registerForm, setRegisterForm ] = useState<IUserRegistration>({
+    const [ registerForm, setRegisterForm ] = useState<IUserEdit>({
         cookiesAgreement: true,
         countryCode: "en",
-        email: loginEmail || "",
         firstName: "",
         lastName: "",
         rodoAgreement: true,
@@ -71,7 +70,7 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
         setSignUpStarted(true);
-        await signUp(registerForm);
+        await saveUserData(registerForm);
     };
 
     const handleInputText = (key: keyof typeof registerForm) => {
@@ -130,13 +129,6 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                                 />
                             </div>
                         </PrimaryContainer>
-                        <TextInput
-                            name="email"
-                            onChange={handleInputText('email')}
-                            placeholder="E-mail"
-                            type="email"
-                            value={registerForm.email}
-                        />
                         <SelectInput 
                             name="countryCode"
                             value={registerForm.countryCode}
@@ -178,7 +170,7 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    signUp: (userData: IUserRegistration) => dispatch(signUpStart(userData)),
+    saveUserData: (userData: IUserEdit) => dispatch(userEditStart(userData)),
 });
 
 const mapStateToProps = createStructuredSelector({

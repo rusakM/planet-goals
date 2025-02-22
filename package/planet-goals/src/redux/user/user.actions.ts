@@ -1,5 +1,5 @@
 import { UserActionTypes } from "./user.types";
-import { IUser, IUserLogin, IUserRegistration } from "../../types/user";
+import { IUser, IUserEdit, IUserLogin, IUserRegistration } from "../../types/user";
 
 export const checkEmailFailure = (error) => ({
     type: UserActionTypes.CHECK_EMAIL_FAILURE,
@@ -51,6 +51,21 @@ export const signUpStart = (userData: IUserRegistration) => ({
 export const signUpSuccess = (email: string) => ({
     type: UserActionTypes.SIGN_UP_SUCCESS,
     payload: email
+});
+
+export const userEditStart = (payload: IUserEdit) => ({
+    type: UserActionTypes.USER_EDIT_START,
+    payload
+});
+
+export const userEditSuccess = (userData: IUser) => ({
+    type: UserActionTypes.USER_EDIT_SUCCESS,
+    payload: userData
+});
+
+export const userEditFailure = (error) => ({
+    type: UserActionTypes.USER_EDIT_FAILURE,
+    payload: error
 });
 
 export const userEerrorClear = () => ({
