@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslate } from "@tolgee/react";
+import { useNavigate } from "react-router-dom";
 // styles
 import styles from "./landing-page.module.scss";
 import partnersStyles from "./landing-page.partners.module.scss";
@@ -14,7 +15,6 @@ import Footer from "../../components/footer/footer";
 import CookiesNotification from "../../components/cookies-notification/cookies-notification";
 
 //helpers
-import { handleClick } from "../../helpers/events.functions";
 import { constantsUrls } from "../../helpers/constants";
 import { formatNewLines } from "../../translations/utils";
 
@@ -33,9 +33,10 @@ import InnovEdImg from "../../assets/landing-page/partners/InnovED.png";
 import MduImg from "../../assets/landing-page/partners/MDU.svg";
 import NovaReckonImg from "../../assets/landing-page/partners/NovaReckon.png";
 import StowarzyszenieImg from "../../assets/landing-page/partners/Stowarzyszenie.svg";
+import { redirect } from "../../helpers/events.functions";
 
-const landingPage: React.FC = () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+const LandingPage: React.FC = () => {
+    const navigate = useNavigate()
     const { t } = useTranslate();
     const containersDirection = "column";
     const partnersImgs = [
@@ -74,13 +75,13 @@ const landingPage: React.FC = () => {
                     >
                         <PrimaryButton
                             color="orange"
-                            onClick={handleClick("/signin")}
+                            onClick={() => navigate(constantsUrls.LandingPage.signIn)}
                         >
                             {t("main.signin")}
                         </PrimaryButton>
                         <PrimaryButton
                             color="white"
-                            onClick={handleClick("/signup")}
+                            onClick={() => navigate(constantsUrls.LandingPage.signUp)}
                         >
                             {t("main.signup")}
                         </PrimaryButton>
@@ -216,7 +217,7 @@ const landingPage: React.FC = () => {
                     </p>
                     <PrimaryButton
                         color="orange"
-                        onClick={handleClick(
+                        onClick={redirect(
                             constantsUrls.LandingPage.blog,
                             "_blank"
                         )}
@@ -236,4 +237,4 @@ const landingPage: React.FC = () => {
     );
 };
 
-export default landingPage;
+export default LandingPage;

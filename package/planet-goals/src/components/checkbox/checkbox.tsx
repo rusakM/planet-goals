@@ -4,6 +4,7 @@ import styles from './checkbox.module.scss';
 import errorStyles from '../../styles/errors.module.scss';
 
 interface ICheckbox {
+    additionalClasses?: string,
     checked: boolean,
     disabled?: boolean,
     error?: boolean,
@@ -11,8 +12,8 @@ interface ICheckbox {
     onChange?: (event: ChangeEvent) => void,
 }
 
-const Checkbox: React.FC<ICheckbox> = ({ checked, disabled = false, error, label, onChange }) => (
-    <label className={styles.checkbox}>
+const Checkbox: React.FC<ICheckbox> = ({ additionalClasses, checked, disabled = false, error, label, onChange }) => (
+    <label className={`${styles.checkbox}${additionalClasses ? ` ${additionalClasses}` : ''}`}>
         <input type="checkbox" checked={checked} disabled={disabled} onChange={onChange} />
         <span className={`${error ? `${errorStyles.errorInput} ` : ''}${styles.customCheckbox}`}>{checked && "✔"}</span>
         <span className={`${error ? `${errorStyles.errorText} ` : ''}${styles.label}`}>{label}</span>

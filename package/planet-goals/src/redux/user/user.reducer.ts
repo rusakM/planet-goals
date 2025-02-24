@@ -11,6 +11,7 @@ const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
     switch (action.type) {
         case UserActionTypes.CHECK_EMAIL_START:
         case UserActionTypes.SIGN_UP_START:
+        case UserActionTypes.USER_EDIT_START:
         case UserActionTypes.VERIFY_CODE_START:
             return {
                 ...state,
@@ -24,8 +25,18 @@ const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
                 signInEmail: action.payload,
                 userError: "",
             };
+        case UserActionTypes.USER_EDIT_SUCCESS:
+        case UserActionTypes.VERIFY_CODE_SUCCESS:
+            return {
+                ...state,
+                currentUser: action.payload,
+                isFetching: false,
+                signInEmail: "",
+                userError: "",
+            }
         case UserActionTypes.CHECK_EMAIL_FAILURE:
         case UserActionTypes.SIGN_UP_FAILURE:
+        case UserActionTypes.USER_EDIT_FAILURE:
         case UserActionTypes.VERIFY_CODE_FAILURE:
             return {
                 ...state,
@@ -36,14 +47,7 @@ const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
             return {
                 ...state,
                 userError: "",
-            };
-        case UserActionTypes.VERIFY_CODE_SUCCESS:
-            return {
-                ...state,
-                userError: "",
-                isFetching: false,
-                currentUser: action.payload,
-                signInEmail: "",
+                isFetching: false
             };
         default:
             return state;

@@ -74,7 +74,7 @@ export const userEerrorClear = () => ({
 
 export const verifyCodeStart = (payload: IUserLogin) => ({
     type: UserActionTypes.VERIFY_CODE_START,
-    payload: payload.verificationCode,
+    payload,
 });
 
 export const verifyCodeSuccess = (currentUser: IUser) => ({

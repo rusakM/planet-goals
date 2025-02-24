@@ -1,5 +1,6 @@
 import React, { ChangeEvent } from "react";
 import styles from "./select-input.module.scss";
+import errorStyles from "../../styles/errors.module.scss";
 
 export interface ISelectInputOption {
     label: string,
@@ -8,7 +9,7 @@ export interface ISelectInputOption {
 
 interface ISelectInputProps {
     disabled?: boolean;
-    errorMessage?: string;
+    error?: boolean;
     name?: string;
     onChange?: (event?: ChangeEvent<HTMLSelectElement>) => void;
     placeholder?: string;
@@ -18,7 +19,7 @@ interface ISelectInputProps {
 
 const SelectInput: React.FC<ISelectInputProps> = ({
     disabled = false,
-    errorMessage,
+    error,
     name,
     onChange,
     placeholder,
@@ -30,7 +31,7 @@ const SelectInput: React.FC<ISelectInputProps> = ({
         name={name}
         disabled={disabled}
         value={value}
-        className={`${styles.selectInput} ${errorMessage ? styles.error : ""}`}
+        className={`${styles.selectInput} ${error ? errorStyles.errorInput : ""}`}
     >
         {placeholder && <option value="">{placeholder}</option>}
         {options.map((option) => (

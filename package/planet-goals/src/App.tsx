@@ -1,22 +1,32 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import "./App.css";
 import { constantsUrls } from "./helpers/constants";
+import { selectCurrentUser } from "./redux/user/user.selectors";
 import Confirm from "./pages/confirm/confirm";
+import FillRegisterData from "./pages/fill-register-data/fill-register-data";
 import LandingPage from "./pages/landing-page/landing-page";
 import SignIn from "./pages/sign-in/sign-in";
 import SignUp from "./pages/sign-up/sign-up";
 import RootContainer from "./components/root-container/root-container";
+import RedirectAfterLogin from "./components/redirect-after-login/redirect-after-login";
 
 function App() {
+    const currentUser = useSelector(selectCurrentUser);
     return (
         <>
             <RootContainer>
                 <Routes>
                     <Route element={<LandingPage />} path={constantsUrls.LandingPage.main} />
-                    <Route element={<SignIn />} path={constantsUrls.LandingPage.signIn} />
-                    <Route element={<SignUp />} path={constantsUrls.LandingPage.signUp} />
-                    <Route element={<Confirm />} path={constantsUrls.LandingPage.confirm} />
+                    <Route element={<RedirectAfterLogin currentUser={currentUser} Component={SignIn}/>} path={constantsUrls.LandingPage.signIn} />
+                    <Route element={<RedirectAfterLogin currentUser={currentUser} Component={SignUp} />} path={constantsUrls.LandingPage.signUp} />
+                    <Route element={<RedirectAfterLogin currentUser={currentUser} Component={Confirm} />} path={constantsUrls.LandingPage.confirm} />
+                    <Route element={((currentUser && currentUser?.firstName) || !currentUser)
+                        ? <Navigate to={constantsUrls.LandingPage.main } replace={true} />
+                        : <FillRegisterData /> } 
+                        path={constantsUrls.LandingPage.fillRegisterData}
+                    />
                 </Routes>
             </RootContainer>
         </>

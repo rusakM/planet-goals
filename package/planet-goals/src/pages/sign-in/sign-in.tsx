@@ -1,4 +1,5 @@
 import React, { useState, useEffect, FormEvent, MouseEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslate } from "@tolgee/react";
 import { connect } from "react-redux";
 
@@ -7,7 +8,7 @@ import PrimaryContainer from "../../components/primary-container/primary-contain
 import PrimaryButton from "../../components/primary-button.tsx/primary-button";
 import TextInput from "../../components/text-input/text-input";
 
-import { handleClick, handleInputText } from "../../helpers/events.functions";
+import { handleInputText } from "../../helpers/events.functions";
 
 import { checkEmailStart } from "../../redux/user/user.actions";
 import {
@@ -40,6 +41,7 @@ const SignIn: React.FC<ISignIn> = ({
     loginEmail,
     loginError,
 }) => {
+    const navigate = useNavigate();
     const { t } = useTranslate();
     const [email, setEmail] = useState("");
     const [loginStarted, setLoginStarted] = useState(false);
@@ -49,11 +51,11 @@ const SignIn: React.FC<ISignIn> = ({
             loginError === ERRORS_ENUM.USER_WITH_EMAIL_NOT_FOUND &&
             loginStarted
         ) {
-            window.open(constantsUrls.LandingPage.signUp, "_self");
+            navigate(constantsUrls.LandingPage.signUp);
         } else if (!loginError && loginStarted && loginEmail) {
-            window.open(constantsUrls.LandingPage.confirm, "_self");
+            navigate(constantsUrls.LandingPage.confirm);
         }
-    }, [loginError, loginStarted, loginEmail]);
+    }, [navigate, loginError, loginStarted, loginEmail]);
 
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
@@ -94,7 +96,7 @@ const SignIn: React.FC<ISignIn> = ({
                     />
                     <p
                         className={`${commonStyles.blueText} ${footerStyles.privacyRef} ${commonStyles.noPadding} ${commonStyles.noMargin} ${commonStyles.centeredText}`}
-                        onClick={handleClick("/signup")}
+                        onClick={() => navigate(constantsUrls.LandingPage.signUp)}
                     >
                         {t("main.register-question")}
                     </p>
@@ -109,7 +111,7 @@ const SignIn: React.FC<ISignIn> = ({
                 <PrimaryButton color="orange" onClick={handleSubmit}>
                     {t("main.signin")}
                 </PrimaryButton>
-                <PrimaryButton color="white" onClick={handleClick("/")}>
+                <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)}>
                     {t("main.back")}
                 </PrimaryButton>
             </PrimaryContainer>

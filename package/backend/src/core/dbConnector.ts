@@ -196,11 +196,11 @@ export class DbConnector<IDBModel extends Document, IModel, TIndexes extends str
     }
 
     Find: IFindMethods<IModel, TIndexes> = {
-        byId: async (Id: string): Promise<IModel> => {
+        byId: async (id: string): Promise<IModel> => {
             try {
-                return await (<IModel>this.Model.findOne({ Id }).lean().exec());
+                return await (<IModel>this.Model.findById(id).lean().exec());
             } catch (error) {
-                console.error(`${this.errorMsg} finding by id (id: ${Id}):`, error);
+                console.error(`${this.errorMsg} finding by id (id: ${id}):`, error);
                 return null;
             }
         },

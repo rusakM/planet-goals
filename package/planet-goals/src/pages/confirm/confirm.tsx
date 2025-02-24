@@ -1,13 +1,12 @@
-import React, { useState, useEffect, FormEvent, MouseEvent } from "react";
+import React, { useState, useEffect, FormEvent, MouseEvent, ChangeEvent } from "react";
 import { useTranslate } from "@tolgee/react";
+import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 
 import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
 import PrimaryButton from "../../components/primary-button.tsx/primary-button";
 import TextInput from "../../components/text-input/text-input";
-
-import { handleClick, handleInputText } from "../../helpers/events.functions";
 
 import { verifyCodeStart } from "../../redux/user/user.actions";
 import {
@@ -42,6 +41,7 @@ const Confirm: React.FC<IConfirm> = ({
     verifyCode,
 }) => {
     const { t } = useTranslate();
+    const navigate = useNavigate();
     const [verificationCode, setVerificationCode] = useState("");
     const [loginStarted, setLoginStarted] = useState(false);
 
@@ -50,24 +50,32 @@ const Confirm: React.FC<IConfirm> = ({
             loginError === ERRORS_ENUM.USER_WITH_EMAIL_NOT_FOUND &&
             loginStarted
         ) {
-            window.open(constantsUrls.LandingPage.signUp, "_self");
+            navigate(constantsUrls.LandingPage.signUp);
         } else if (!loginError && loginStarted && loginEmail) {
-            window.open(constantsUrls.LandingPage.confirm, "_self");
+            navigate(constantsUrls.LandingPage.confirm);
         }
-    }, [loginError, loginStarted, loginEmail]);
+    }, [navigate, loginError, loginStarted, loginEmail]);
 
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
         try {
             setLoginStarted(true);
+            console.log(loginEmail);
             await verifyCode({email: loginEmail, verificationCode});
-            console.log("here1", loginError);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             console.log("here err");
             //console.error(error);
         }
     };
+
+    const handleInputCode = (event: ChangeEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        const value = event.target.value;
+        if (value.length < 7) {
+            setVerificationCode(value);
+        }
+    }
 
     return (
         <PageContainer>
@@ -88,14 +96,14 @@ const Confirm: React.FC<IConfirm> = ({
                 >
                     <TextInput
                         name="verificationCode"
-                        onChange={handleInputText(setVerificationCode)}
+                        onChange={handleInputCode}
                         placeholder={t("signin.confirm.input-placeholder")}
                         type="text"
                         value={verificationCode}
                     />
                     <p
                         className={`${commonStyles.blueText} ${footerStyles.privacyRef} ${commonStyles.noPadding} ${commonStyles.noMargin} ${commonStyles.centeredText}`}
-                        onClick={handleClick("/signup")}
+                        onClick={() => navigate(constantsUrls.LandingPage.main)}
                     >
                         {t("signin.confirm.send-code-again")}
                     </p>
@@ -110,7 +118,7 @@ const Confirm: React.FC<IConfirm> = ({
                 <PrimaryButton color="orange" onClick={handleSubmit}>
                     {t("main.confirm")}
                 </PrimaryButton>
-                <PrimaryButton color="white" onClick={handleClick("/")}>
+                <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)}>
                     {t("main.back")}
                 </PrimaryButton>
             </PrimaryContainer>

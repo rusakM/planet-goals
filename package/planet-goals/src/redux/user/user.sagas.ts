@@ -13,11 +13,15 @@ import {
     signUpFailure,
     verifyCodeSuccess,
     verifyCodeFailure,
+    userEditFailure,
+    userEditSuccess,
 } from "./user.actions";
+import { IUser } from "../../types/user";
 
 //actionsDefinitions
 const checkEmailStart = createAction(UserActionTypes.CHECK_EMAIL_START);
 const signUpStart = createAction(UserActionTypes.SIGN_UP_START);
+const userEditStart = createAction(UserActionTypes.USER_EDIT_START);
 const verifyCodeStart = createAction(UserActionTypes.VERIFY_CODE_START);
 
 function* checkEmail({ payload }) {
@@ -42,16 +46,20 @@ function* signUp({ payload }) {
     }
 }
 
-function* verifyCode({ payload: { code, email } }) {
+function* userEdit({ payload }) {
     try {
-        const user: UserApiTypes.IUserConfirm =
-            yield Api.sendData<UserApiTypes.IUserConfirm>(
-                constantsUrls.User.confirm,
-                { email, code },
-                "POST"
-            );
-        localStorage.setItem("token", user.token);
-        yield put(verifyCodeSuccess(user.user));
+        const user = yield Api.sendData<IUser>(constantsUrls.User.edit, payload, 'PATCH');
+        yield put(userEditSuccess(user));
+    } catch (error) {
+        yield put(userEditFailure(error.name));
+    }
+}
+
+function* verifyCode({ payload }) {
+    try {
+        const {user, token}: UserApiTypes.IUserConfirm = yield call(Api.sendData, constantsUrls.User.confirm, payload, 'POST');
+        localStorage.setItem("token", token);
+        yield put(verifyCodeSuccess(user));
     } catch (error) {
         console.log(error);
         yield put(verifyCodeFailure(error.name));
@@ -66,6 +74,10 @@ function* onSignUpStart(): Generator {
     yield takeLatest(signUpStart, signUp);
 }
 
+function* onUserEditStart(): Generator {
+    yield takeLatest(userEditStart, userEdit);
+}
+
 function* onVerifyCodeStart(): Generator {
     yield takeLatest(verifyCodeStart, verifyCode);
 }
@@ -74,6 +86,7 @@ export function* userSagas() {
     yield all([
         call(onCheckEmailStart),
         call(onSignUpStart),
+        call(onUserEditStart),
         call(onVerifyCodeStart),
     ]);
 }

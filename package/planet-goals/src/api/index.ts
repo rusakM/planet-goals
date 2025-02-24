@@ -43,7 +43,7 @@ export async function sendData<T>(
             withCredentials: true,
         }).catch();
         console.log(response);
-        return response.data.data as T;
+        return response.data as T;
     } catch (error) {
         throw error?.response?.data;
     }

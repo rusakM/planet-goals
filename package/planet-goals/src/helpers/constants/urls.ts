@@ -10,11 +10,13 @@ export const LandingPage = {
     signIn: "/signin",
     signUp: "/signup",
     confirm: "/confirm",
+    fillRegisterData: "/signup-finish"
 };
 
 export const User = {
     checkEmail: "/api/user/auth/login",
     confirm: "/api/user/auth/confirm",
+    edit: "/api/user/auth/edit",
     me: "/api/user/auth/me",
     signUp: "/api/user/auth/register",
 };

@@ -121,7 +121,7 @@ const AccountSchema = new Schema<IDBAccount>(
             type: String,
             enum: Object.values(ConstantsGlobal.App.USER_INTERFACE_LANGUAGES),
             validate: (val) => SchemasGlobal.Validators.schemaValidator(accountValidators.userInterfaceLanguage, val),
-            default: ConstantsCountries._Enum.GB,
+            default: ConstantsGlobal.App.USER_INTERFACE_LANGUAGES.en,
         },
         verificationCodes: {
             type: [

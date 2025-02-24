@@ -1,4 +1,5 @@
 import React, { useState, useEffect, FormEvent, MouseEvent, ChangeEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslate } from "@tolgee/react";
 import { connect } from "react-redux";
 
@@ -8,7 +9,7 @@ import PrimaryContainer from "../../components/primary-container/primary-contain
 import PrimaryButton from "../../components/primary-button.tsx/primary-button";
 import TextInput from "../../components/text-input/text-input";
 
-import { handleClick, handleInputText } from "../../helpers/events.functions";
+import { handleInputText } from "../../helpers/events.functions";
 
 import { signUpStart } from "../../redux/user/user.actions";
 import { IUserRegistration } from "../../types/user";
@@ -24,6 +25,7 @@ import commonStyles from "../../styles/common.module.scss";
 import containerStyles from "../../styles/containers.module.scss";
 import footerStyles from "../../components/footer/footer.module.scss";
 import styles from "../sign-in/sign-in.module.scss";
+import internalStyles from "./sign-up.module.scss";
 
 import SmilingEarthImg from "../../assets/login-page/smiling_earth.svg";
 import { createStructuredSelector } from "reselect";
@@ -45,6 +47,7 @@ const SignUp: React.FC<ISignUp> = ({
     loginError,
 }) => {
     const { t } = useTranslate();
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [confirm, setConfirm] = useState(false);
     const [formError, setFormError] = useState({
@@ -58,11 +61,11 @@ const SignUp: React.FC<ISignUp> = ({
             loginError === ERRORS_ENUM.USER_WITH_EMAIL_NOT_FOUND &&
             loginStarted
         ) {
-            window.open(constantsUrls.LandingPage.signUp, "_self");
+            navigate(constantsUrls.LandingPage.signUp);
         } else if (!loginError && loginStarted && loginEmail) {
-            window.open(constantsUrls.LandingPage.confirm, "_self");
+            navigate(constantsUrls.LandingPage.confirm);
         }
-    }, [loginError, loginStarted, loginEmail]);
+    }, [navigate, loginError, loginStarted, loginEmail]);
 
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
@@ -120,15 +123,16 @@ const SignUp: React.FC<ISignUp> = ({
                     />
                     <p
                         className={`${commonStyles.blueText} ${footerStyles.privacyRef} ${commonStyles.noPadding} ${commonStyles.noMargin} ${commonStyles.centeredText}`}
-                        onClick={handleClick("/signin")}
+                        onClick={() => navigate(constantsUrls.LandingPage.signIn)}
                     >
                         {t("main.login-question")}
                     </p>
                     <Checkbox 
                         checked={confirm}
                         error={formError.confirm}
-                        label={<>{t("signup.confirm-regulations")} <span className={commonStyles.blueText} onClick={handleClick('/')}>{t("main.regulations")}</span></>}
+                        label={<>{t("signup.confirm-regulations")} <span className={commonStyles.blueText} onClick={() => navigate(constantsUrls.LandingPage.main)}>{t("main.regulations")}</span></>}
                         onChange={handleChange}
+                        additionalClasses={internalStyles.checkbox}
                     />
                     {isLoadingData && <p>...Loading</p>}
                     
@@ -141,7 +145,7 @@ const SignUp: React.FC<ISignUp> = ({
                 <PrimaryButton color="orange" onClick={handleSubmit}>
                     {t("main.signup")}
                 </PrimaryButton>
-                <PrimaryButton color="white" onClick={handleClick("/")}>
+                <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)}>
                     {t("main.back")}
                 </PrimaryButton>
             </PrimaryContainer>

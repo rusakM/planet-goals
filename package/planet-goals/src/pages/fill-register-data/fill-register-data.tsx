@@ -1,5 +1,7 @@
-import React, { useState, useEffect, FormEvent, MouseEvent, ChangeEvent } from "react";
+import React, { useState, FormEvent, MouseEvent, ChangeEvent } from "react";
+import { createStructuredSelector } from "reselect";
 import { getName, getCodes } from "country-list";
+import { useNavigate } from "react-router-dom";
 import { useTranslate } from "@tolgee/react";
 import { connect } from "react-redux";
 
@@ -9,16 +11,17 @@ import PrimaryButton from "../../components/primary-button.tsx/primary-button";
 import SelectInput, { ISelectInputOption } from "../../components/select-input/select-input";
 import TextInput from "../../components/text-input/text-input";
 
-import { handleClick } from "../../helpers/events.functions";
 import { getFlagEmoji } from "../../helpers/locales.functions";
+import { validateEditUser } from "../../helpers/validators.ts/user";
 import { userEditStart } from "../../redux/user/user.actions";
 import {
+    selectCurrentUser,
     selectIsLoadingData,
     selectLoginEmail,
     selectUserError,
 } from "../../redux/user/user.selectors";
-import { IUserEdit, TUserRole, UserRoleEnum } from "../../types/user";
-
+import { IUser, IUserEdit, TUserRole, UserRoleEnum } from "../../types/user";
+import { ROLES_TRANSLATIONS } from "../../helpers/constants/translations";
 //import { ERRORS_ENUM } from "../../api/user.api";
 
 import styles from "./fill-register-data.module.scss";
@@ -27,31 +30,30 @@ import containerStyles from "../../styles/containers.module.scss";
 import signInStyles from "../sign-in/sign-in.module.scss";
 
 import SmilingEarthImg from "../../assets/login-page/smiling_earth.svg";
-import { createStructuredSelector } from "reselect";
 import { constantsUrls } from "../../helpers/constants";
 
 interface IFillRegisterData {
+    currentUser: IUser,
     saveUserData?: (userData: IUserEdit) => void;
     isLoadingData: boolean;
-    loginEmail: string;
     signUpError: string;
 }
 
 const FillRegisterData: React.FC<IFillRegisterData> = ({
     saveUserData,
     isLoadingData,
-    loginEmail,
     signUpError,
 }) => {
     const { t } = useTranslate();
+    const navigate = useNavigate();
     const countriesList: ISelectInputOption[] = getCodes().map(code => ({
         label: `${getFlagEmoji(code)} ${getName(code)}`,
         value: code
     })).sort((a, b) => getName(a.value).localeCompare(getName(b.value)))
 
     const [ registerForm, setRegisterForm ] = useState<IUserEdit>({
-        cookiesAgreement: true,
-        countryCode: "en",
+        cookiesAgreement: localStorage.getItem("cookiesAccepted") === "true",
+        countryCode: "",
         firstName: "",
         lastName: "",
         rodoAgreement: true,
@@ -59,16 +61,22 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
         userInterfaceLanguage: localStorage.getItem("locale") || "en"
     })
 
-    const [signUpStarted, setSignUpStarted] = useState(false);
+    const [validateRegisterForm, setValidateRegisterForm] = useState({
+        countryCode: false,
+        firstName: false,
+        lastName: false,
+        role: false,
+    });
 
-    useEffect(() => {
-        if (!signUpError && signUpStarted) {
-            window.open(constantsUrls.LandingPage.confirm, "_self");
-        }
-    }, [signUpError, signUpStarted, loginEmail]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [signUpStarted, setSignUpStarted] = useState(false);
 
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
+        setValidateRegisterForm(validateEditUser(registerForm));
+        for (const validation of Object.values(validateRegisterForm)) {
+            if (validation) return;
+        }
         setSignUpStarted(true);
         await saveUserData(registerForm);
     };
@@ -79,7 +87,11 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
             setRegisterForm({
                 ...registerForm,
                 [key]: event.target.value
-            })
+            });
+            setValidateRegisterForm({
+                ...validateRegisterForm,
+                [key]: false
+            });
         }
     }
 
@@ -118,6 +130,7 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                                     onChange={handleInputText('firstName')}
                                     value={registerForm.firstName}
                                     placeholder={t("sign-up.register-form.first-name")}
+                                    error={validateRegisterForm.firstName}
                                 />
                             </div>
                             <div className={`${containerStyles.halfScreenContainer} ${styles.paddingInputLeft}`}>
@@ -126,6 +139,7 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                                     onChange={handleInputText('lastName')}
                                     placeholder={t("sign-up.register-form.last-name")}
                                     value={registerForm.lastName}
+                                    error={validateRegisterForm.lastName}
                                 />
                             </div>
                         </PrimaryContainer>
@@ -135,6 +149,7 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                             onChange={handleInputText('countryCode')}
                             options={countriesList}
                             placeholder={t("sign-up.register-form.country")}
+                            error={validateRegisterForm.countryCode}
                         />
                         <p
                             className={`${commonStyles.darkText} ${commonStyles.captionText} ${commonStyles.noPadding} ${commonStyles.centeredText}`}
@@ -143,10 +158,10 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                         </p>
                         <div className={commonStyles.row}>
                             <PrimaryButton color="white" size="small" onClick={handleSelectRole(UserRoleEnum.STUDENT)} additionalClasses={`${containerStyles.halfScreenContainer}`} selected={registerForm.role === UserRoleEnum.STUDENT}>
-                                {t("main.roles.student")}
+                                {t(ROLES_TRANSLATIONS.STUDENT)}
                             </PrimaryButton>
                             <PrimaryButton color="white" size="small" onClick={handleSelectRole(UserRoleEnum.TEACHER)} additionalClasses={`${containerStyles.halfScreenContainer}`} selected={registerForm.role === UserRoleEnum.TEACHER}>
-                                {t("main.roles.teacher")}
+                                {t(ROLES_TRANSLATIONS.TEACHER)}
                             </PrimaryButton>
                         </div>
                         {isLoadingData && <p>...Loading</p>}
@@ -154,12 +169,12 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                     </PrimaryContainer>
                     <PrimaryContainer
                         direction="column"
-                        additionalClassess={`${containerStyles.buttonsContainer}`}
+                        additionalClassess={`${containerStyles.buttonsContainer} ${commonStyles.bottom} ${styles.bottomButtons}`}
                     >
                         <PrimaryButton color="orange" onClick={handleSubmit}>
-                            {t("main.signup")}
+                            {t("main.confirm")}
                         </PrimaryButton>
-                        <PrimaryButton color="white" onClick={handleClick("/")}>
+                        <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)}>
                             {t("main.back")}
                         </PrimaryButton>
                     </PrimaryContainer>
@@ -174,6 +189,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = createStructuredSelector({
+    currentUser: selectCurrentUser,
     loginEmail: selectLoginEmail,
     signUpError: selectUserError,
     isLoadingData: selectIsLoadingData,

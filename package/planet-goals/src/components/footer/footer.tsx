@@ -6,7 +6,7 @@ import commonStyles from "../../styles/common.module.scss";
 import PrimaryContainer from "../primary-container/primary-container";
 import Separator from "../separator/separator";
 
-import { handleClick } from "../../helpers/events.functions";
+import { redirect } from "../../helpers/events.functions";
 import { constantsUrls } from "../../helpers/constants";
 
 import LinkedInImg from "../../assets/footer/in.svg";
@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
                         src={LinkedInImg}
                         alt="LinkedIn"
                         className={styles.logo}
-                        onClick={handleClick(
+                        onClick={redirect(
                             constantsUrls.Footer.linkedIn,
                             "_blank"
                         )}
@@ -37,7 +37,7 @@ const Footer: React.FC = () => {
                         src={InstagramImg}
                         alt="Instagram"
                         className={styles.logo}
-                        onClick={handleClick(
+                        onClick={redirect(
                             constantsUrls.Footer.instagram,
                             "_blank"
                         )}
@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
                         src={YoutubeImg}
                         alt="YouTube"
                         className={styles.logo}
-                        onClick={handleClick(
+                        onClick={redirect(
                             constantsUrls.Footer.youtube,
                             "_blank"
                         )}
