@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { useTranslate } from "@tolgee/react";
+import { createStructuredSelector } from "reselect";
 
 import { userTypes } from "../../types";
 import { constantsTranslations } from "../../helpers/constants";
@@ -10,6 +11,7 @@ import styles from "./header.module.scss";
 
 //components
 import DropdownMenu from "../dropdown-menu/dropdown-menu";
+import PrimaryButton from "../primary-button.tsx/primary-button";
 
 //icons
 import Logo from "../../assets/logo/logo-20.svg";
@@ -22,24 +24,38 @@ import {
     selectHeaderMenuHidden,
     selectLanguagesMenuHidden,
 } from "../../redux/dropdown-menu/dropdown-menu.selectors";
+import { selectCurrentUser } from "../../redux/user/user.selectors";
 import {
     toggleHeaderMenuHidden,
     toggleLanguagesMenuHidden,
 } from "../../redux/dropdown-menu/dropdown-menu.actions";
-import { createStructuredSelector } from "reselect";
+import { signOut } from "../../redux/user/user.actions";
+
+//helpers
+
 
 type MainPropsT = {
     currentUser?: userTypes.IUser;
     isHeaderMenuHidden?: boolean;
     isLanguagesMenuHidden?: boolean;
+    signOutStart?: () => void;
     toggleHeaderMenu?: () => void;
     toggleLanguagesMenu?: () => void;
 };
+
+enum MENU_ACTIONS {
+    LOGOUT = "LOGOUT",
+    MATERIALS = "MATERIALS",
+    ME = "ME",
+    MY_PROGRESS = "MY_PROGRESS",
+    START_LESSONS = "START_LESSONS",
+}
 
 const Header: React.FC<MainPropsT> = ({
     currentUser,
     isHeaderMenuHidden,
     isLanguagesMenuHidden,
+    signOutStart,
     toggleHeaderMenu,
     toggleLanguagesMenu,
 }) => {
@@ -56,11 +72,12 @@ const Header: React.FC<MainPropsT> = ({
         ["sv", t("header.languages.swedish")],
     ];
 
-    const menuItems: [key: string, value: string][] = [
-        ["start_lessons", t("header.menu.start-lessons")],
-        ["materials", t("header.menu.materials")],
-        ["my_progress", t("header.menu.my-progress")],
-        ["me", t("header.menu.me")],
+    const menuItems: [key: MENU_ACTIONS, value: string][] = [
+        [MENU_ACTIONS.START_LESSONS, t("header.menu.start-lessons")],
+        [MENU_ACTIONS.MATERIALS, t("header.menu.materials")],
+        [MENU_ACTIONS.MY_PROGRESS, t("header.menu.my-progress")],
+        [MENU_ACTIONS.ME, t("header.menu.me")],
+        [MENU_ACTIONS.LOGOUT, t("header.menu.logout")]
     ];
 
     const onClickHeaderMenu = () => {
@@ -73,8 +90,16 @@ const Header: React.FC<MainPropsT> = ({
         toggleLanguagesMenu();
     };
 
-    const selectMenuAction = (action) => {
-        console.log(action);
+    const selectMenuAction = (action: MENU_ACTIONS) => {
+        switch(action) {
+            case MENU_ACTIONS.LOGOUT:
+                signOutStart();
+                localStorage.removeItem("token");
+                break;
+            default:
+                console.log(action);
+                break;
+        }
     };
 
     return (
@@ -86,8 +111,12 @@ const Header: React.FC<MainPropsT> = ({
                     className={styles.logo}
                 />
                 <div className={styles.content}>
-                    {currentUser && <p>{currentUser.role}</p>}
                     <div className={styles.controls}>
+                        {currentUser?.role && <div className={styles.control}>
+                            <PrimaryButton color="blue" size="small">
+                                {t(constantsTranslations.ROLES_TRANSLATIONS[currentUser.role])}
+                            </PrimaryButton>
+                        </div>}
                         <div
                             className={`${styles.control} ${
                                 !isLanguagesMenuHidden
@@ -131,11 +160,13 @@ const Header: React.FC<MainPropsT> = ({
 };
 
 const mapStateToProps = createStructuredSelector({
+    currentUser: selectCurrentUser,
     isHeaderMenuHidden: selectHeaderMenuHidden,
     isLanguagesMenuHidden: selectLanguagesMenuHidden,
 });
 
 const mapDispatchToProps = (dispatch) => ({
+    signOutStart: () => dispatch(signOut()),
     toggleHeaderMenu: () => dispatch(toggleHeaderMenuHidden()),
     toggleLanguagesMenu: () => dispatch(toggleLanguagesMenuHidden()),
 });

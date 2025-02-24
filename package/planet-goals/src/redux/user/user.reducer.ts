@@ -49,6 +49,8 @@ const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
                 userError: "",
                 isFetching: false
             };
+        case UserActionTypes.SIGN_OUT:
+            return INITIAL_STATE;
         default:
             return state;
     }

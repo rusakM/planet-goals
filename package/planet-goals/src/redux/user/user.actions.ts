@@ -25,18 +25,10 @@ export const setCurrentUser = (user: IUser) => ({
     payload: user,
 });
 
-export const signOutFailure = (error) => ({
-    type: UserActionTypes.SIGN_OUT_FAILURE,
-    payload: error,
+export const signOut = () => ({
+    type: UserActionTypes.SIGN_OUT,
 });
 
-export const signOutStart = () => ({
-    type: UserActionTypes.SIGN_OUT_START,
-});
-
-export const signOutSuccess = () => ({
-    type: UserActionTypes.SIGN_OUT_SUCCESS,
-});
 
 export const signUpFailure = (error) => ({
     type: UserActionTypes.SIGN_UP_FAILURE,
