@@ -69,7 +69,7 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
     });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [signUpStarted, setSignUpStarted] = useState(false);
+    //const [signUpStarted, setSignUpStarted] = useState(false);
 
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
@@ -77,7 +77,7 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
         for (const validation of Object.values(validateRegisterForm)) {
             if (validation) return;
         }
-        setSignUpStarted(true);
+        //setSignUpStarted(true);
         await saveUserData(registerForm);
     };
 
