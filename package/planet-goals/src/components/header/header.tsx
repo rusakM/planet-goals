@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { useTranslate } from "@tolgee/react";
 import { createStructuredSelector } from "reselect";
 
 import { userTypes } from "../../types";
 import { constantsTranslations } from "../../helpers/constants";
-import { selectLanguage } from "../../translations";
+import tolgeeConfig from "../../translations";
 //import { useDeviceType } from "../../helpers/responsiveContainers";
 import styles from "./header.module.scss";
 
@@ -26,6 +26,7 @@ import {
 } from "../../redux/dropdown-menu/dropdown-menu.selectors";
 import { selectCurrentUser } from "../../redux/user/user.selectors";
 import {
+    hideAll,
     toggleHeaderMenuHidden,
     toggleLanguagesMenuHidden,
 } from "../../redux/dropdown-menu/dropdown-menu.actions";
@@ -36,6 +37,7 @@ import { signOut } from "../../redux/user/user.actions";
 
 type MainPropsT = {
     currentUser?: userTypes.IUser;
+    hideAllMenus?: () => void;
     isHeaderMenuHidden?: boolean;
     isLanguagesMenuHidden?: boolean;
     signOutStart?: () => void;
@@ -53,6 +55,7 @@ enum MENU_ACTIONS {
 
 const Header: React.FC<MainPropsT> = ({
     currentUser,
+    hideAllMenus,
     isHeaderMenuHidden,
     isLanguagesMenuHidden,
     signOutStart,
@@ -61,6 +64,22 @@ const Header: React.FC<MainPropsT> = ({
 }) => {
     //const { isMobile } = useDeviceType();
     const { t } = useTranslate();
+    const languagesMenuRef = useRef<HTMLElement>();
+    const headerMenuRef = useRef<HTMLElement>();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const handleClickOutsideMenu = (event: MouseEvent) => {
+        if (!headerMenuRef?.current?.contains(event.target as Node) && !languagesMenuRef?.current?.contains(event.target as Node)) {
+            if (!isHeaderMenuHidden || !isLanguagesMenuHidden) hideAllMenus();
+        }
+        document.removeEventListener('mousedown', handleClickOutsideMenu);
+    }
+
+    useEffect(() => {
+        if (!isHeaderMenuHidden || !isLanguagesMenuHidden) document.addEventListener('mousedown', handleClickOutsideMenu)
+        else document.removeEventListener('mousedown', handleClickOutsideMenu);
+    }, [handleClickOutsideMenu, isHeaderMenuHidden, isLanguagesMenuHidden])
+
     const languages: [key: constantsTranslations.TLocale, value: string][] = [
         ["el", t("header.languages.greek")],
         ["en", t("header.languages.english")],
@@ -87,6 +106,12 @@ const Header: React.FC<MainPropsT> = ({
 
     const onClickLanguagesMenu = () => {
         if (!isHeaderMenuHidden) toggleHeaderMenu();
+        toggleLanguagesMenu();
+    };
+
+    const selectLanguage = (language: constantsTranslations.TLocale) => {
+        tolgeeConfig.changeLanguage(language);
+        localStorage.setItem("locale", language);
         toggleLanguagesMenu();
     };
 
@@ -149,11 +174,13 @@ const Header: React.FC<MainPropsT> = ({
                 isOpen={!isLanguagesMenuHidden}
                 items={languages}
                 onItemSelect={selectLanguage}
+                reference={languagesMenuRef}
             />
             <DropdownMenu
                 isOpen={!isHeaderMenuHidden}
                 items={menuItems}
                 onItemSelect={selectMenuAction}
+                reference={headerMenuRef}
             />
         </div>
     );
@@ -166,6 +193,7 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+    hideAllMenus: () => dispatch(hideAll()),
     signOutStart: () => dispatch(signOut()),
     toggleHeaderMenu: () => dispatch(toggleHeaderMenuHidden()),
     toggleLanguagesMenu: () => dispatch(toggleLanguagesMenuHidden()),

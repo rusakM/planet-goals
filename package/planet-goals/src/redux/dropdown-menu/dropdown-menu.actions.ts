@@ -1,5 +1,9 @@
 import DropdownMenuTypes from "./dropdown-menu.types";
 
+export const hideAll = () => ({
+    type: DropdownMenuTypes.HIDE_ALL
+});
+
 export const toggleHeaderMenuHidden = () => ({
     type: DropdownMenuTypes.TOGGLE_HEADER_MENU_HIDDEN,
 });

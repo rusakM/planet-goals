@@ -1,6 +1,5 @@
 import { Tolgee, DevTools, FormatSimple, BackendFetch } from "@tolgee/react";
 import { FormatIcu } from "@tolgee/format-icu";
-import { constantsTranslations } from "../helpers/constants";
 
 const tolgeeConfig = Tolgee()
     .use(DevTools())
@@ -14,8 +13,3 @@ const tolgeeConfig = Tolgee()
     });
 
 export default tolgeeConfig;
-
-export const selectLanguage = (language: constantsTranslations.TLocale) => {
-    tolgeeConfig.changeLanguage(language);
-    localStorage.setItem("locale", language);
-};

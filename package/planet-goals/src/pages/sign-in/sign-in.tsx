@@ -2,6 +2,7 @@ import React, { useState, useEffect, FormEvent, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslate } from "@tolgee/react";
 import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 
 import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
@@ -25,7 +26,6 @@ import footerStyles from "../../components/footer/footer.module.scss";
 import styles from "./sign-in.module.scss";
 
 import SmilingEarthImg from "../../assets/login-page/smiling_earth.svg";
-import { createStructuredSelector } from "reselect";
 import { constantsUrls } from "../../helpers/constants";
 
 interface ISignIn {

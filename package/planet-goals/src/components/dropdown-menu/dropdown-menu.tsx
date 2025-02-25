@@ -6,12 +6,14 @@ interface DropdownMenuProps {
     isOpen: boolean;
     items: [key: string, value: string][];
     onItemSelect?: (item: string) => void;
+    reference?: React.MutableRefObject<HTMLElement>
 }
 
 const DropdownMenu: React.FC<DropdownMenuProps> = ({
     isOpen,
     items,
     onItemSelect,
+    reference
 }) => {
     const handleSelect = (item: string) => {
         if (onItemSelect) onItemSelect(item);
@@ -19,7 +21,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
 
     return (
         isOpen && (
-            <aside className={styles.dropdownMenu}>
+            <aside className={styles.dropdownMenu} ref={reference || null}>
                 <ul className={styles.dropdownList}>
                     {items.map(([key, value], index) => (
                         <li

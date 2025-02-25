@@ -1,11 +1,14 @@
 import React from "react";
 import { useTranslate } from "@tolgee/react";
 import { useNavigate } from "react-router-dom";
+import { connect } from "react-redux";
+import { createStructuredSelector } from "reselect";
 // styles
 import styles from "./landing-page.module.scss";
 import partnersStyles from "./landing-page.partners.module.scss";
 import commonStyles from "../../styles/common.module.scss";
 import containersStyles from "../../styles/containers.module.scss";
+import footerStyles from "../../components/footer/footer.module.scss";
 
 // components
 import PageContainer from "../../page-components/page-container/page-container";
@@ -17,6 +20,11 @@ import CookiesNotification from "../../components/cookies-notification/cookies-n
 //helpers
 import { constantsUrls } from "../../helpers/constants";
 import { formatNewLines } from "../../translations/utils";
+import { redirect } from "../../helpers/events.functions";
+import { IUser, UserRoleEnum } from "../../types/user";
+
+//redux
+import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 //svg
 import EnterGameImg from "../../assets/landing-page/enter_game.svg";
@@ -33,9 +41,12 @@ import InnovEdImg from "../../assets/landing-page/partners/InnovED.png";
 import MduImg from "../../assets/landing-page/partners/MDU.svg";
 import NovaReckonImg from "../../assets/landing-page/partners/NovaReckon.png";
 import StowarzyszenieImg from "../../assets/landing-page/partners/Stowarzyszenie.svg";
-import { redirect } from "../../helpers/events.functions";
 
-const LandingPage: React.FC = () => {
+interface ILandingPage {
+    currentUser?: IUser
+}
+
+const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
     const navigate = useNavigate()
     const { t } = useTranslate();
     const containersDirection = "column";
@@ -75,15 +86,31 @@ const LandingPage: React.FC = () => {
                     >
                         <PrimaryButton
                             color="orange"
-                            onClick={() => navigate(constantsUrls.LandingPage.signIn)}
+                            onClick={() => navigate(currentUser 
+                                ? constantsUrls.Main.startLessons 
+                                : constantsUrls.LandingPage.signIn
+                            )}
                         >
-                            {t("main.signin")}
+                            {t(currentUser 
+                                ? "landing-page.buttons.start-lessons" 
+                                : "main.signin"
+                            )}
                         </PrimaryButton>
                         <PrimaryButton
                             color="white"
-                            onClick={() => navigate(constantsUrls.LandingPage.signUp)}
+                            onClick={() => navigate(currentUser 
+                                ? currentUser?.role === UserRoleEnum.TEACHER 
+                                    ? constantsUrls.Main.myProgress
+                                    : constantsUrls.Main.materials
+                                : constantsUrls.LandingPage.signUp
+                            )}
                         >
-                            {t("main.signup")}
+                            {t(currentUser
+                                ? currentUser?.role === UserRoleEnum.TEACHER
+                                    ? "landing-page.buttons.educational-materials"
+                                    : "landing-page.buttons.my-progress"
+                                : "main.signup"
+                            )}
                         </PrimaryButton>
                     </PrimaryContainer>
                 </PrimaryContainer>
@@ -134,6 +161,12 @@ const LandingPage: React.FC = () => {
                     <p className={styles.primaryText}>
                         {t("landing-page.descriptions.for-teachers")}
                     </p>
+                    {
+                        currentUser?.role === UserRoleEnum.TEACHER && 
+                        <p className={`${commonStyles.blueText} ${footerStyles.privacyRef}`} onClick={() => navigate(constantsUrls.Main.materials)}>
+                            {t("landing-page.buttons.check-materials")}
+                        </p>
+                    }
                 </PrimaryContainer>
             </PrimaryContainer>
             {/* 4 */}
@@ -158,6 +191,12 @@ const LandingPage: React.FC = () => {
                     <p className={styles.primaryText}>
                         {t("landing-page.descriptions.for-students")}
                     </p>
+                    {
+                        currentUser?.role === UserRoleEnum.STUDENT &&
+                        <p className={`${commonStyles.blueText} ${footerStyles.privacyRef}`} onClick={() => navigate(constantsUrls.Main.startLessons)}>
+                            {t("landing-page.buttons.start-lessons")}
+                        </p>
+                    }
                 </PrimaryContainer>
             </PrimaryContainer>
             {/* 5 */}
@@ -237,4 +276,8 @@ const LandingPage: React.FC = () => {
     );
 };
 
-export default LandingPage;
+const mapStateToProps = createStructuredSelector({
+    currentUser: selectCurrentUser
+})
+
+export default connect(mapStateToProps, null)(LandingPage);

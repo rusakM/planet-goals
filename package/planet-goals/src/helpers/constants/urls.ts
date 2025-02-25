@@ -6,12 +6,19 @@ export const Footer = {
 
 export const LandingPage = {
     blog: "https://planet-goals.eu",
+    confirm: "/confirm",
+    fillRegisterData: "/signup-finish",
     main: "/",
     signIn: "/signin",
     signUp: "/signup",
-    confirm: "/confirm",
-    fillRegisterData: "/signup-finish"
 };
+
+export const Main = {
+    startLessons: "/lessons",
+    myProgress: "/my-progress",
+    materials: "/materials",
+    myProfile: "/my-profile",
+}
 
 export const User = {
     checkEmail: "/api/user/auth/login",

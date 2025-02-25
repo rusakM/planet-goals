@@ -30,6 +30,8 @@ const menuReducer = (
                     hidden: !state.languagesMenu.hidden,
                 },
             };
+        case DropdownMenuTypes.HIDE_ALL:
+            return INITIAL_STATE;
         default:
             return state;
     }
