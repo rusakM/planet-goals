@@ -14,3 +14,4 @@ services:
             - .env
         volumes:
             - .:/usr/src/app
+            - ${TOLGEE_CATALOG}:${TOLGEE_CATALOG}

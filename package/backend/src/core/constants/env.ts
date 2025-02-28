@@ -38,3 +38,8 @@ export namespace Mongodb {
 export namespace Sentry {
     export const SENTRY_DSN: string = process.env.SENTRY_DSN;
 }
+
+export namespace Tolgee {
+    export const TOLGEE_API_KEY: string = process.env.TOLGEE_API_KEY;
+    export const TOLGEE_CATALOG: string = process.env.TOLGEE_CATALOG;
+}

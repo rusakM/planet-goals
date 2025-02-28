@@ -7,6 +7,7 @@ import { nodeProfilingIntegration } from '@sentry/profiling-node';
 
 import routes from './controllers/index';
 import { appRoute } from './shared/route';
+import setupSchedulers from './schedulers/translations.schedulers';
 import { ConstantsEnv } from './core/constants';
 
 import { errorHandler } from './middlewares/error.handler';
@@ -81,6 +82,7 @@ app.use(errorHandler);
 
 async function init(): Promise<http.Server> {
     try {
+        setupSchedulers();
         const server = http.createServer(app);
         return server;
     } catch (error) {
