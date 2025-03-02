@@ -1,3 +1,4 @@
+@use "@styles/breakpoints.scss";
 @use "@styles/colors.scss";
 
 .footer {
@@ -9,11 +10,22 @@
 .logo {
     margin: 5px;
     height: 1.5em;
+
+    @media (min-width: breakpoints.$desktop) {
+        height: 56px;
+        margin: 10px;
+    }
 }
 
 .coFundedImg {
     height: 2.5em;
     margin: 2em;
+
+    @media (min-width: breakpoints.$desktop) {
+        height: 68px;
+        margin-bottom: 3.5em;
+        margin-top: 3.5em;
+    }
 }
 
 .captionText {
@@ -22,6 +34,17 @@
     line-height: 1.5;
     margin-top: 1.5em;
     margin-bottom: 1.5em;
+}
+
+.copyright {
+    font-size: 14px;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    text-align: center;
+
+    @media (min-width: breakpoints.$desktop) {
+        font-size: 16px;
+    }
 }
 
 .ccIcon {
@@ -38,4 +61,9 @@
 .privacyRef {
     padding: 0.5em;
     cursor: pointer;
+    font-size: 14px;
+
+    @media (min-width: breakpoints.$desktop) {
+        font-size: 16px;
+    }
 }

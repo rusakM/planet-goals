@@ -9,8 +9,8 @@ enum BREAKPOINT {
     MOBILE_SMALL = 550,
     MOBILE = 767,
     TABLET_START = 768,
-    TABLET_END = 991,
-    DESKTOP_START = 992,
+    TABLET_END = 1023,
+    DESKTOP_START = 1024,
 }
 
 export const isIOS = () => {

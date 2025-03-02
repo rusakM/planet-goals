@@ -5,9 +5,10 @@ import { connect } from "react-redux";
 
 import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
-import PrimaryButton from "../../components/primary-button.tsx/primary-button";
+import PrimaryButton, { TButtonType } from "../../components/primary-button.tsx/primary-button";
 import TextInput from "../../components/text-input/text-input";
 
+import { useDeviceType } from "../../helpers/responsiveContainers";
 import { verifyCodeStart } from "../../redux/user/user.actions";
 import {
     selectIsLoadingData,
@@ -42,6 +43,8 @@ const Confirm: React.FC<IConfirm> = ({
 }) => {
     const { t } = useTranslate();
     const navigate = useNavigate();
+    const { isMobile } = useDeviceType();
+    const buttonstype: TButtonType = isMobile ? "default" : "action";
     const [verificationCode, setVerificationCode] = useState("");
     const [loginStarted, setLoginStarted] = useState(false);
 
@@ -86,7 +89,7 @@ const Confirm: React.FC<IConfirm> = ({
                     className={styles.img}
                 />
                 <p
-                    className={`${commonStyles.basicHeader} ${commonStyles.darkText}`}
+                    className={`${commonStyles.basicHeader2} ${commonStyles.darkText}`}
                 >
                     {t("signin.confirm.header.enter-code")}
                 </p>
@@ -112,13 +115,16 @@ const Confirm: React.FC<IConfirm> = ({
                 </PrimaryContainer>
             </PrimaryContainer>
             <PrimaryContainer
-                direction="column"
-                additionalClassess={`${containerStyles.buttonsContainer} ${commonStyles.bottom} ${styles.bottomButtons}`}
+                direction={isMobile ? "column" : "row"}
+                additionalClassess={isMobile 
+                    ? `${containerStyles.buttonsContainer} ${commonStyles.bottom} ${styles.bottomButtons}`
+                    : styles.bottomButtons
+                }
             >
-                <PrimaryButton color="orange" onClick={handleSubmit}>
+                <PrimaryButton color="orange" onClick={handleSubmit} type={buttonstype}>
                     {t("main.confirm")}
                 </PrimaryButton>
-                <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)}>
+                <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)} type={buttonstype}>
                     {t("main.back")}
                 </PrimaryButton>
             </PrimaryContainer>

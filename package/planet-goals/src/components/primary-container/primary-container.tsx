@@ -4,12 +4,14 @@ import styles from "./primary-container.module.scss";
 interface PrimaryContainerProps {
     children: ReactNode;
     height?: "allScreenHeight" | "auto";
-    direction?: "row" | "column";
+    contentAlignment?: "center" | "left" | "right";
+    direction?: "row" | "rowReverse" | "column" | "columnReverse";
     additionalClassess?: string;
 }
 
 const PrimaryContainer: React.FC<PrimaryContainerProps> = ({
     children,
+    contentAlignment = "center",
     height = "auto",
     direction = "row",
     additionalClassess,
@@ -18,7 +20,7 @@ const PrimaryContainer: React.FC<PrimaryContainerProps> = ({
         <div
             className={`${styles.container} ${
                 (height === "allScreenHeight" && styles.allScreenHeight) || ""
-            } ${styles[direction]} ${additionalClassess || ""}`}
+            } ${styles[direction]} ${styles[contentAlignment]} ${additionalClassess || ""}`}
         >
             {children}
         </div>

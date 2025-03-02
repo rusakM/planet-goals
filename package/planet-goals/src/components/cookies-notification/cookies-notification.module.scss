@@ -1,3 +1,4 @@
+@use "@styles/breakpoints.scss";
 @use "@styles/colors.scss";
 
 .cookiesNotification {
@@ -13,4 +14,9 @@
 .paragraph {
     margin-top: 0;
     font-size: 12px;
+
+    @media (min-width: breakpoints.$desktop) {
+        font-size: 16px;
+        padding-right: 3em;
+    }
 }

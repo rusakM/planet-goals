@@ -6,11 +6,11 @@ import { createStructuredSelector } from "reselect";
 
 import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
-import PrimaryButton from "../../components/primary-button.tsx/primary-button";
+import PrimaryButton, { TButtonType } from "../../components/primary-button.tsx/primary-button";
 import TextInput from "../../components/text-input/text-input";
 
 import { handleInputText } from "../../helpers/events.functions";
-
+import { useDeviceType } from "../../helpers/responsiveContainers";
 import { checkEmailStart } from "../../redux/user/user.actions";
 import {
     selectIsLoadingData,
@@ -43,6 +43,8 @@ const SignIn: React.FC<ISignIn> = ({
 }) => {
     const navigate = useNavigate();
     const { t } = useTranslate();
+    const { isMobile } = useDeviceType();
+    const buttonstype: TButtonType = isMobile ? "default" : "action";
     const [email, setEmail] = useState("");
     const [loginStarted, setLoginStarted] = useState(false);
 
@@ -79,7 +81,7 @@ const SignIn: React.FC<ISignIn> = ({
                     className={styles.img}
                 />
                 <p
-                    className={`${commonStyles.basicHeader} ${commonStyles.darkText}`}
+                    className={`${commonStyles.basicHeader2} ${commonStyles.darkText}`}
                 >
                     {t("main.signin")}
                 </p>
@@ -105,13 +107,16 @@ const SignIn: React.FC<ISignIn> = ({
                 </PrimaryContainer>
             </PrimaryContainer>
             <PrimaryContainer
-                direction="column"
-                additionalClassess={`${containerStyles.buttonsContainer} ${commonStyles.bottom} ${styles.bottomButtons}`}
+                direction={isMobile ? "column" : "row"}
+                additionalClassess={isMobile 
+                    ? `${containerStyles.buttonsContainer} ${commonStyles.bottom} ${styles.bottomButtons}`
+                    : styles.bottomButtons
+                }
             >
-                <PrimaryButton color="orange" onClick={handleSubmit}>
+                <PrimaryButton color="orange" onClick={handleSubmit} type={buttonstype}>
                     {t("main.signin")}
                 </PrimaryButton>
-                <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)}>
+                <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)} type={buttonstype}>
                     {t("main.back")}
                 </PrimaryButton>
             </PrimaryContainer>

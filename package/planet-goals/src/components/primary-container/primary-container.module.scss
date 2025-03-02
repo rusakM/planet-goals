@@ -14,11 +14,31 @@
     flex-direction: column;
 }
 
+.columnReverse {
+    flex-direction: column-reverse;
+}
+
 .row {
     flex-direction: row;
 }
 
+.rowReverse {
+    flex-direction: row-reverse;
+}
+
 .allScreenHeight {
-    height: 100vh;
-    padding: -100px 0;
+    height: 90vh;
+}
+
+// content aligment
+.center {
+    justify-content: center;
+}
+
+.left {
+    justify-content: flex-start;
+}
+
+.right {
+    justify-content: flex-end;
 }

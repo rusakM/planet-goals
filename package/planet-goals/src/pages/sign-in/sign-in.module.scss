@@ -1,8 +1,29 @@
+@use "@styles/breakpoints.scss";
+
 .img {
     padding: 3.5em 2em 1em 2em;
     width: 45%;
+
+    @media (min-width: breakpoints.$desktop) {
+        width: 12%;
+        min-width: 150px;
+        max-width: 250px;
+
+        padding-top: 8em;
+        padding-bottom: 0;
+    }
+
 }
 
 .bottomButtons {
-    margin-bottom: 1.5em;
+    @media (max-width: breakpoints.$mobile) {
+        margin-bottom: 1.5em;
+    }
+
+    @media (min-width: breakpoints.$desktop) {
+        padding-top: 3em;
+        & > * {
+            margin: 1em;
+        }
+    }
 }

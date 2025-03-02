@@ -1,7 +1,9 @@
 import React from "react";
 import { useTranslate } from "@tolgee/react";
+import { useDeviceType } from "../../helpers/responsiveContainers";
 import styles from "./footer.module.scss";
 import commonStyles from "../../styles/common.module.scss";
+import containerStyles from "../../styles/containers.module.scss";
 
 import PrimaryContainer from "../primary-container/primary-container";
 import Separator from "../separator/separator";
@@ -17,6 +19,7 @@ import CcIcon from "../../assets/icons/cc.svg";
 
 const Footer: React.FC = () => {
     const { t } = useTranslate();
+    const { isMobile } = useDeviceType();
     return (
         <footer className={styles.footer}>
             <PrimaryContainer direction="column">
@@ -57,9 +60,9 @@ const Footer: React.FC = () => {
                     alt="Co-funded by the European Union"
                     className={styles.coFundedImg}
                 />
-                <p className={commonStyles.darkText}>{t("footer.text-1")}</p>
+                <p className={`${commonStyles.darkText} ${commonStyles.basicLineHeight}${!isMobile ? ` ${containerStyles.restrictedFlexibleContainer}` : ''}`}>{t("footer.text-1")}</p>
                 <br />
-                <p className={`${commonStyles.darkText} ${styles.captionText}`}>
+                <p className={`${commonStyles.darkText} ${styles.captionText}${!isMobile ? ` ${containerStyles.restrictedFlexibleContainer}` : ''}`}>
                     {t("footer.text-2")}
                     <span className={styles.ccIcon}>
                         <img src={CcIcon} alt="CC Icon" />
@@ -82,7 +85,7 @@ const Footer: React.FC = () => {
                     </span>
                 </PrimaryContainer>
                 <br />
-                <p className={`${commonStyles.darkText} ${styles.captionText}`}>
+                <p className={`${commonStyles.darkText} ${styles.copyright}`}>
                     {t("footer.copyright")}
                 </p>
             </PrimaryContainer>

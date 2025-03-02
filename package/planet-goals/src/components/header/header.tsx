@@ -6,12 +6,12 @@ import { createStructuredSelector } from "reselect";
 import { userTypes } from "../../types";
 import { constantsTranslations } from "../../helpers/constants";
 import tolgeeConfig from "../../translations";
-//import { useDeviceType } from "../../helpers/responsiveContainers";
+import { useDeviceType } from "../../helpers/responsiveContainers";
 import styles from "./header.module.scss";
 
 //components
 import DropdownMenu from "../dropdown-menu/dropdown-menu";
-import PrimaryButton from "../primary-button.tsx/primary-button";
+import PrimaryButton, { TButtonColor } from "../primary-button.tsx/primary-button";
 
 //icons
 import Logo from "../../assets/logo/logo-20.svg";
@@ -62,7 +62,7 @@ const Header: React.FC<MainPropsT> = ({
     toggleHeaderMenu,
     toggleLanguagesMenu,
 }) => {
-    //const { isMobile } = useDeviceType();
+    const { isMobile, isDesktop } = useDeviceType();
     const { t } = useTranslate();
     const languagesMenuRef = useRef<HTMLElement>();
     const headerMenuRef = useRef<HTMLElement>();
@@ -91,12 +91,12 @@ const Header: React.FC<MainPropsT> = ({
         ["sv", t("header.languages.swedish")],
     ];
 
-    const menuItems: [key: MENU_ACTIONS, value: string][] = [
-        [MENU_ACTIONS.START_LESSONS, t("header.menu.start-lessons")],
-        [MENU_ACTIONS.MATERIALS, t("header.menu.materials")],
-        [MENU_ACTIONS.MY_PROGRESS, t("header.menu.my-progress")],
-        [MENU_ACTIONS.ME, t("header.menu.me")],
-        [MENU_ACTIONS.LOGOUT, t("header.menu.logout")]
+    const menuItems: [key: MENU_ACTIONS, value: string, color: TButtonColor][] = [
+        [MENU_ACTIONS.START_LESSONS, t("header.menu.start-lessons"), 'orange'],
+        [MENU_ACTIONS.MATERIALS, t("header.menu.materials"), 'white'],
+        [MENU_ACTIONS.MY_PROGRESS, t("header.menu.my-progress"), 'white'],
+        [MENU_ACTIONS.ME, t("header.menu.me"), 'white'],
+        [MENU_ACTIONS.LOGOUT, t("header.menu.logout"), 'white']
     ];
 
     const onClickHeaderMenu = () => {
@@ -137,8 +137,19 @@ const Header: React.FC<MainPropsT> = ({
                 />
                 <div className={styles.content}>
                     <div className={styles.controls}>
+                        {
+                            currentUser && !isMobile && menuItems.map(([key, value, color]) => (
+                                <div className={styles.control}>
+                                    <PrimaryButton key={key} color={color} size={isDesktop ? "desktopSmall" : "small"} onClick={
+                                        () => selectMenuAction(key)
+                                    }>
+                                        {value}
+                                    </PrimaryButton>
+                                </div>
+                            ))
+                        }
                         {currentUser?.role && <div className={styles.control}>
-                            <PrimaryButton color="blue" size="small">
+                            <PrimaryButton color="blue" size={isDesktop ? "desktopSmall" : "small" }>
                                 {t(constantsTranslations.ROLES_TRANSLATIONS[currentUser.role])}
                             </PrimaryButton>
                         </div>}
@@ -152,21 +163,16 @@ const Header: React.FC<MainPropsT> = ({
                         >
                             <img src={TranslationIcon} alt="Select language" />
                         </div>
-                        <div
-                            className={`${styles.control} ${
+                        {
+                            currentUser && isMobile &&
+                            <div className={`${styles.control} ${
                                 !isHeaderMenuHidden ? styles.controlActive : ""
-                            }`}
-                            onClick={onClickHeaderMenu}
-                        >
-                            <img
-                                src={
-                                    isHeaderMenuHidden
-                                        ? HamburgerMenuIconClicked
-                                        : HamburgerMenuIcon
-                                }
-                                alt="Menu"
-                            />
-                        </div>
+                                }`}
+                                onClick={onClickHeaderMenu}
+                                >
+                                <img src={isHeaderMenuHidden ? HamburgerMenuIconClicked : HamburgerMenuIcon} alt="Menu" />
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -176,12 +182,15 @@ const Header: React.FC<MainPropsT> = ({
                 onItemSelect={selectLanguage}
                 reference={languagesMenuRef}
             />
-            <DropdownMenu
-                isOpen={!isHeaderMenuHidden}
-                items={menuItems}
-                onItemSelect={selectMenuAction}
-                reference={headerMenuRef}
-            />
+            {
+                currentUser &&
+                <DropdownMenu
+                    isOpen={!isHeaderMenuHidden}
+                    items={menuItems.map(([key, value]) => [key, value])}
+                    onItemSelect={selectMenuAction}
+                    reference={headerMenuRef}
+                />
+            }
         </div>
     );
 };

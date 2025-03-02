@@ -13,7 +13,7 @@ import footerStyles from "../../components/footer/footer.module.scss";
 // components
 import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
-import PrimaryButton from "../../components/primary-button.tsx/primary-button";
+import PrimaryButton, { TButtonType } from "../../components/primary-button.tsx/primary-button";
 import Footer from "../../components/footer/footer";
 import CookiesNotification from "../../components/cookies-notification/cookies-notification";
 
@@ -22,6 +22,7 @@ import { constantsUrls } from "../../helpers/constants";
 import { formatNewLines } from "../../translations/utils";
 import { redirect } from "../../helpers/events.functions";
 import { IUser, UserRoleEnum } from "../../types/user";
+import { useDeviceType } from "../../helpers/responsiveContainers";
 
 //redux
 import { selectCurrentUser } from "../../redux/user/user.selectors";
@@ -32,7 +33,8 @@ import WelcomePlanetGoalsImg from "../../assets/landing-page/welcome_planet_goal
 import ForTeachersImg from "../../assets/landing-page/for_teachers.svg";
 import ForStudentsImg from "../../assets/landing-page/for_students.svg";
 import LearnInGroupImg from "../../assets/landing-page/learn_in_group.svg";
-import LearnAnyywhereMobileImg from "../../assets/landing-page/learn_anywhere_moible.svg";
+import LearnAnywhereMobileImg from "../../assets/landing-page/learn_anywhere_moible.svg";
+import LearnAnywhereDesktopImg from "../../assets/landing-page/learn_anywhere_desktop.svg";
 
 //partners
 import FonixImg from "../../assets/landing-page/partners/Fonix.png";
@@ -47,9 +49,11 @@ interface ILandingPage {
 }
 
 const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const { isMobile } = useDeviceType();
+    const buttonsType: TButtonType = isMobile ? "default" : "action";
     const { t } = useTranslate();
-    const containersDirection = "column";
+    const containersDirection = isMobile ? "column" : "row";
     const partnersImgs = [
         FonixImg,
         InnoHubImg,
@@ -65,6 +69,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
             <PrimaryContainer
                 direction={containersDirection}
                 additionalClassess={`${commonStyles.lightestGreyBackground}`}
+                height={isMobile ? "auto" : "allScreenHeight" }
             >
                 <img
                     src={EnterGameImg}
@@ -73,7 +78,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
                 />
                 <PrimaryContainer
                     direction="column"
-                    additionalClassess={commonStyles.lightestGreyBackground}
+                    additionalClassess={`${commonStyles.lightestGreyBackground}${!isMobile ? ` ${containersStyles.halfScreenContainer}` : ''}`}
                 >
                     <p
                         className={`${commonStyles.orangeText} ${commonStyles.basicHeader}`}
@@ -90,6 +95,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
                                 ? constantsUrls.Main.startLessons 
                                 : constantsUrls.LandingPage.signIn
                             )}
+                            type={buttonsType}
                         >
                             {t(currentUser 
                                 ? "landing-page.buttons.start-lessons" 
@@ -104,6 +110,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
                                     : constantsUrls.Main.materials
                                 : constantsUrls.LandingPage.signUp
                             )}
+                            type={buttonsType}
                         >
                             {t(currentUser
                                 ? currentUser?.role === UserRoleEnum.TEACHER
@@ -117,7 +124,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
             </PrimaryContainer>
             {/* 2 */}
             <PrimaryContainer
-                direction={containersDirection}
+                direction="column"
                 additionalClassess={`${commonStyles.lightestGreyBackground} ${commonStyles.largeHorizontalPadding}`}
             >
                 <img
@@ -127,7 +134,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
                 />
                 <PrimaryContainer
                     direction="column"
-                    additionalClassess={commonStyles.lightestGreyBackground}
+                    additionalClassess={`${commonStyles.lightestGreyBackground}${!isMobile ? ` ${containersStyles.restrictedFlexibleContainer}` : ''}`}
                 >
                     <p
                         className={`${commonStyles.orangeText} ${commonStyles.basicHeader}`}
@@ -143,6 +150,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
             <PrimaryContainer
                 direction={containersDirection}
                 additionalClassess={`${commonStyles.lightestGreyBackground} ${commonStyles.largeHorizontalPadding}`}
+                height={isMobile ? "auto" : "allScreenHeight" }
             >
                 <img
                     src={ForTeachersImg}
@@ -151,10 +159,10 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
                 />
                 <PrimaryContainer
                     direction="column"
-                    additionalClassess={commonStyles.lightestGreyBackground}
+                    additionalClassess={`${styles.sectionDescription} ${commonStyles.lightestGreyBackground}${!isMobile ? ` ${containersStyles.halfScreenContainer}` : ''}`}
                 >
                     <p
-                        className={`${commonStyles.orangeText} ${commonStyles.basicHeader}`}
+                        className={`${commonStyles.orangeText} ${commonStyles.basicHeader} ${isMobile ? commonStyles.centeredText : commonStyles.leftSideText}`}
                     >
                         {t("landing-page.headers.for-teachers")}
                     </p>
@@ -171,8 +179,9 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
             </PrimaryContainer>
             {/* 4 */}
             <PrimaryContainer
-                direction={containersDirection}
+                direction={isMobile ? containersDirection : "rowReverse"}
                 additionalClassess={`${commonStyles.lightestGreyBackground} ${commonStyles.largeHorizontalPadding}`}
+                height={isMobile ? "auto" : "allScreenHeight"}
             >
                 <img
                     src={ForStudentsImg}
@@ -181,7 +190,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
                 />
                 <PrimaryContainer
                     direction="column"
-                    additionalClassess={commonStyles.lightestGreyBackground}
+                    additionalClassess={`${styles.sectionDescription} ${commonStyles.lightestGreyBackground}${!isMobile ? ` ${containersStyles.halfScreenContainer}` : ''}`}
                 >
                     <p
                         className={`${commonStyles.orangeText} ${commonStyles.basicHeader}`}
@@ -203,15 +212,16 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
             <PrimaryContainer
                 direction={containersDirection}
                 additionalClassess={`${commonStyles.lightGreyBackground} ${commonStyles.largeHorizontalPadding}`}
-            >
+                height={isMobile ? "auto" : "allScreenHeight"}
+           >
                 <img
                     src={LearnInGroupImg}
                     alt="Learn in group"
                     className={commonStyles.sectionImg}
                 />
                 <PrimaryContainer
-                    direction="column"
-                    additionalClassess={commonStyles.lightGreyBackground}
+                    direction={containersDirection}
+                    additionalClassess={`${styles.sectionDescription} ${commonStyles.lightGreyBackground}${!isMobile ? ` ${containersStyles.halfScreenContainer}` : ''}`}
                 >
                     <p
                         className={`${commonStyles.darkText} ${commonStyles.basicHeader}`}
@@ -265,7 +275,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
                     </PrimaryButton>
                 </PrimaryContainer>
                 <img
-                    src={LearnAnyywhereMobileImg}
+                    src={isMobile ? LearnAnywhereMobileImg : LearnAnywhereDesktopImg}
                     alt="Learn anywhere"
                     className={`${commonStyles.sectionImg} ${commonStyles.noPadding}`}
                 />

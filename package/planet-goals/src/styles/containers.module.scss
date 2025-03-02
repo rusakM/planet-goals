@@ -1,3 +1,5 @@
+@use "./breakpoints.scss";
+
 .buttonsContainer {
     align-items: stretch !important;
     width: 100%;
@@ -6,8 +8,35 @@
     & > * {
         margin: 0.5em 0;
     }
+
+    @media (min-width: breakpoints.$desktop) {
+        min-width: 250px;
+        max-width: 400px;
+        width: 30%;
+    }
 }
 
 .halfScreenContainer {
     width: 50%;
+    background-color: inherit;
+}
+
+.restrictedFlexibleContainer {
+    background-color: inherit;
+    @media (min-width: breakpoints.$desktop) {
+        width: 75%;
+    }
+
+    @media (min-width: breakpoints.$large-desktop) {
+        width: 50%;
+    }
+}
+
+.centerFlexibleContainer {
+    @media (min-width: breakpoints.$desktop) {
+        margin-left: 12.5%;
+    }
+    @media (min-width: breakpoints.$large-desktop) {
+        margin-left: 25%;
+    }
 }

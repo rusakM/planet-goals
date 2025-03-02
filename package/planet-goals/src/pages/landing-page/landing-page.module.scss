@@ -1,3 +1,4 @@
+@use "@styles/breakpoints.scss";
 @use "@styles/fonts.scss";
 @use "@styles/colors.scss";
 
@@ -12,4 +13,21 @@
     font-family: fonts.$poppins-regular, sans-serif;
     margin-left: 1.5em;
     margin-right: 1.5em;
+
+    @media (min-width: breakpoints.$desktop) {
+        font-size: 18px;
+    }
+}
+
+.sectionDescription {
+    @media (min-width: breakpoints.$desktop) {
+        justify-content: flex-start;
+        align-items: flex-start;
+        max-width: 500px;
+        & > p {
+            margin-left: 0;
+            padding-left: 0;
+            text-align: left;
+        }
+    }
 }

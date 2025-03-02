@@ -2,7 +2,7 @@
 @use "@styles/fonts.scss";
 
 .button {
-    border-radius: 16px;
+    border-radius: 8px;
     font-size: 20px;
     font-weight: bold;
     font-family: fonts.$rubik-one, sans-serif;
@@ -13,6 +13,7 @@
     border-width: 3px;
     border-style: solid;
     border-bottom-width: 5px;
+    text-wrap: nowrap;
 
     &:hover {
         transform: scale(1.05);
@@ -24,12 +25,18 @@
     }
 }
 
-.smallSize {
-    border-radius: 6px;
+.small {
+    border-radius: 5px;
     border-width: 2px;
     border-bottom-width: 3px;
-    font-size: 12px;
+    font-size: 10px;
     padding: 5px 12px;
+}
+
+.desktopSmall {
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 6px;
 }
 
 .orange {
@@ -85,3 +92,9 @@
         color: colors.$white;
     }
 }
+
+// types
+.action {
+    min-width: 300px;
+}
+

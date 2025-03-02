@@ -6,10 +6,11 @@ import { connect } from "react-redux";
 import Checkbox from "../../components/checkbox/checkbox";
 import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
-import PrimaryButton from "../../components/primary-button.tsx/primary-button";
+import PrimaryButton, { TButtonType } from "../../components/primary-button.tsx/primary-button";
 import TextInput from "../../components/text-input/text-input";
 
 import { handleInputText } from "../../helpers/events.functions";
+import { useDeviceType } from "../../helpers/responsiveContainers";
 
 import { signUpStart } from "../../redux/user/user.actions";
 import { IUserRegistration } from "../../types/user";
@@ -47,6 +48,8 @@ const SignUp: React.FC<ISignUp> = ({
     loginError,
 }) => {
     const { t } = useTranslate();
+    const { isMobile } = useDeviceType();
+    const buttonsType: TButtonType = isMobile ? "default" : "action";
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [confirm, setConfirm] = useState(false);
@@ -105,7 +108,7 @@ const SignUp: React.FC<ISignUp> = ({
                     className={styles.img}
                 />
                 <p
-                    className={`${commonStyles.basicHeader} ${commonStyles.darkText}`}
+                    className={`${commonStyles.basicHeader2} ${commonStyles.darkText}`}
                 >
                     {t("main.signup")}
                 </p>
@@ -139,13 +142,16 @@ const SignUp: React.FC<ISignUp> = ({
                 </PrimaryContainer>
             </PrimaryContainer>
             <PrimaryContainer
-                direction="column"
-                additionalClassess={`${containerStyles.buttonsContainer} ${commonStyles.bottom} ${styles.bottomButtons}`}
+                direction={isMobile ? "column" : "row"}
+                additionalClassess={isMobile 
+                    ? `${containerStyles.buttonsContainer} ${commonStyles.bottom} ${styles.bottomButtons}`
+                    : styles.bottomButtons
+                }
             >
-                <PrimaryButton color="orange" onClick={handleSubmit}>
+                <PrimaryButton color="orange" onClick={handleSubmit} type={buttonsType}>
                     {t("main.signup")}
                 </PrimaryButton>
-                <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)}>
+                <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)} type={buttonsType}>
                     {t("main.back")}
                 </PrimaryButton>
             </PrimaryContainer>

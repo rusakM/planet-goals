@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTranslate } from "@tolgee/react";
+import { useDeviceType } from "../../helpers/responsiveContainers";
 
 import styles from "./cookies-notification.module.scss";
 import footerStyles from "../footer/footer.module.scss";
@@ -11,6 +12,7 @@ import PrimaryContainer from "../primary-container/primary-container";
 
 const CookiesNotification: React.FC = () => {
     const { t } = useTranslate();
+    const { isMobile } = useDeviceType();
     const [cookiesAccepted, setCookiesAccepted] = useState(
         localStorage.getItem("cookiesAccepted") === "true"
     );
@@ -33,19 +35,17 @@ const CookiesNotification: React.FC = () => {
         cookiesNotificationVisible && (
             <aside className={styles.cookiesNotification}>
                 <PrimaryContainer
-                    direction="column"
+                    direction={isMobile ? "column" : "row"}
                     additionalClassess={commonStyles.headerGreyBackground}
                 >
-                    <p
-                        className={`${styles.paragraph} ${commonStyles.justifiedText} ${commonStyles.darkText} ${footerStyles.captionText}`}
-                    >
-                        {t("cookies.notification.text")}
-                        <span
-                            className={`${commonStyles.blueText} ${footerStyles.privacyRef}`}
-                        >
-                            {t("cookies.notification.text.privacy-policy")}
-                        </span>
-                    </p>
+                    <PrimaryContainer direction="column" additionalClassess={!isMobile ? containerStyles.halfScreenContainer : ""}>
+                        <p className={`${styles.paragraph} ${commonStyles.justifiedText} ${commonStyles.darkText} ${footerStyles.captionText}`}>
+                            {t("cookies.notification.text")}
+                            <span className={`${commonStyles.blueText} ${footerStyles.privacyRef}`}>
+                                {t("cookies.notification.text.privacy-policy")}
+                            </span>
+                        </p>
+                    </PrimaryContainer>
                     <PrimaryContainer
                         direction="column"
                         additionalClassess={`${containerStyles.buttonsContainer} ${commonStyles.headerGreyBackground}`}
