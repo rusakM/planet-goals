@@ -16,6 +16,9 @@ import PrimaryContainer from "../../components/primary-container/primary-contain
 import PrimaryButton, { TButtonType } from "../../components/primary-button.tsx/primary-button";
 import Footer from "../../components/footer/footer";
 import CookiesNotification from "../../components/cookies-notification/cookies-notification";
+//import ScrollSection from "../../page-components/scroll-section/scroll-section";
+import StickyScrollSection from "../../page-components/sticky-scroll/sticky-scroll";
+import * as InstructionSteps from "./landing-page-instruction-steps";
 
 //helpers
 import { constantsUrls } from "../../helpers/constants";
@@ -32,7 +35,6 @@ import EnterGameImg from "../../assets/landing-page/enter_game.svg";
 import WelcomePlanetGoalsImg from "../../assets/landing-page/welcome_planet_goals.svg";
 import ForTeachersImg from "../../assets/landing-page/for_teachers.svg";
 import ForStudentsImg from "../../assets/landing-page/for_students.svg";
-import LearnInGroupImg from "../../assets/landing-page/learn_in_group.svg";
 import LearnAnywhereMobileImg from "../../assets/landing-page/learn_anywhere_moible.svg";
 import LearnAnywhereDesktopImg from "../../assets/landing-page/learn_anywhere_desktop.svg";
 
@@ -210,31 +212,21 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
             </PrimaryContainer>
             {/* 5 */}
             <PrimaryContainer
-                direction={containersDirection}
+                direction="column"
                 additionalClassess={`${commonStyles.lightGreyBackground} ${commonStyles.largeHorizontalPadding}`}
-                height={isMobile ? "auto" : "allScreenHeight"}
-           >
-                <img
-                    src={LearnInGroupImg}
-                    alt="Learn in group"
-                    className={commonStyles.sectionImg}
-                />
-                <PrimaryContainer
-                    direction={containersDirection}
-                    additionalClassess={`${styles.sectionDescription} ${commonStyles.lightGreyBackground}${!isMobile ? ` ${containersStyles.halfScreenContainer}` : ''}`}
-                >
-                    <p
-                        className={`${commonStyles.darkText} ${commonStyles.basicHeader}`}
-                    >
-                        {formatNewLines(
-                            t("landing-page.headers.learn-in-group")
-                        )}
-                    </p>
-                    <p className={styles.primaryText}>
-                        {t("landing-page.descriptions.learn-in-group")}
-                    </p>
-                </PrimaryContainer>
+            >
+                <StickyScrollSection items={[
+                    // <InstructionSteps.Screen1 />,
+                    <InstructionSteps.Screen1 />,
+                    <InstructionSteps.Screen2 />,
+                    <InstructionSteps.Screen3 />,
+                    <InstructionSteps.Screen4 />,
+                    <InstructionSteps.Screen5 />,
+                    <InstructionSteps.Screen6 />
+                ]}/>
+                
             </PrimaryContainer>
+            {/* 6 */}
             <PrimaryContainer direction="column">
                 <div className={partnersStyles.partnersSpinner}>
                     <div className={partnersStyles.scrollingTrack}>

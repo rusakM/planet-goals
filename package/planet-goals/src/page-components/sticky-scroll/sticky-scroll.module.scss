@@ -1,0 +1,31 @@
+@use "@styles/colors.scss";
+@use "@styles/breakpoints.scss";
+
+.sectionWrapper {
+    position: relative;
+    height: 600vh;
+    width: 100%;
+
+    @media (min-width: breakpoints.$desktop) {
+        height: 500vh;
+    }
+  }
+  
+  .stickyContainer {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    background-color: colors.$grey-background;
+  }
+  
+  .unpinned {
+    opacity: 0;
+    transform: translateY(-50%);
+  }
+  

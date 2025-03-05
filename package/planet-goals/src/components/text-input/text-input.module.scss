@@ -1,10 +1,12 @@
 @use "@styles/colors.scss";
+@use "@styles/fonts.scss";
 
 .textInput {
     border: 1px solid colors.$grey;
     color: colors.$dark-text;
     border-radius: 5px;
     font-size: 14px;
+    font-family: fonts.$poppins-regular, sans-serif;
     background-color: colors.$grey-background;
     padding: 5px 14px;
     height: 34px;

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { useTranslate } from "@tolgee/react";
 import { createStructuredSelector } from "reselect";
@@ -66,19 +66,26 @@ const Header: React.FC<MainPropsT> = ({
     const { t } = useTranslate();
     const languagesMenuRef = useRef<HTMLElement>();
     const headerMenuRef = useRef<HTMLElement>();
+    const headerButtonRef = useRef<HTMLDivElement>();
+    const languagesButtonRef = useRef<HTMLDivElement>();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const handleClickOutsideMenu = (event: MouseEvent) => {
-        if (!headerMenuRef?.current?.contains(event.target as Node) && !languagesMenuRef?.current?.contains(event.target as Node)) {
+    const handleClickOutsideMenu = useCallback((event: MouseEvent) => {
+        const target = event.target as HTMLElement;
+        const isHeaderButton = headerButtonRef?.current?.contains(target as Node) || languagesButtonRef?.current?.contains(target as Node);
+        console.log('isHeaderbutton', isHeaderButton);
+        if (!headerMenuRef?.current?.contains(target as Node) 
+            && !languagesMenuRef?.current?.contains(target as Node) 
+            && !isHeaderButton
+        ) {
             if (!isHeaderMenuHidden || !isLanguagesMenuHidden) hideAllMenus();
         }
         document.removeEventListener('mousedown', handleClickOutsideMenu);
-    }
+    }, [isHeaderMenuHidden, isLanguagesMenuHidden, hideAllMenus ]);
 
     useEffect(() => {
         if (!isHeaderMenuHidden || !isLanguagesMenuHidden) document.addEventListener('mousedown', handleClickOutsideMenu)
         else document.removeEventListener('mousedown', handleClickOutsideMenu);
-    }, [handleClickOutsideMenu, isHeaderMenuHidden, isLanguagesMenuHidden])
+    }, [handleClickOutsideMenu, isHeaderMenuHidden, isLanguagesMenuHidden]);
 
     const languages: [key: constantsTranslations.TLocale, value: string][] = [
         ["el", t("header.languages.greek")],
@@ -101,12 +108,14 @@ const Header: React.FC<MainPropsT> = ({
 
     const onClickHeaderMenu = () => {
         if (!isLanguagesMenuHidden) toggleLanguagesMenu();
-        toggleHeaderMenu();
+        if (isHeaderMenuHidden) toggleHeaderMenu();
+        else hideAllMenus()
     };
 
     const onClickLanguagesMenu = () => {
         if (!isHeaderMenuHidden) toggleHeaderMenu();
-        toggleLanguagesMenu();
+        if (isLanguagesMenuHidden) toggleLanguagesMenu();
+        else hideAllMenus();
     };
 
     const selectLanguage = (language: constantsTranslations.TLocale) => {
@@ -138,9 +147,9 @@ const Header: React.FC<MainPropsT> = ({
                 <div className={styles.content}>
                     <div className={styles.controls}>
                         {
-                            currentUser && !isMobile && menuItems.map(([key, value, color]) => (
-                                <div className={styles.control}>
-                                    <PrimaryButton key={key} color={color} size={isDesktop ? "desktopSmall" : "small"} onClick={
+                            currentUser && !isMobile && menuItems.map(([key, value, color], index) => (
+                                <div className={styles.control} key={`${key}_${index}`}>
+                                    <PrimaryButton color={color} size={isDesktop ? "desktopSmall" : "small"} onClick={
                                         () => selectMenuAction(key)
                                     }>
                                         {value}
@@ -160,6 +169,7 @@ const Header: React.FC<MainPropsT> = ({
                                     : ""
                             }`}
                             onClick={onClickLanguagesMenu}
+                            ref={languagesButtonRef}
                         >
                             <img src={TranslationIcon} alt="Select language" />
                         </div>
@@ -169,6 +179,7 @@ const Header: React.FC<MainPropsT> = ({
                                 !isHeaderMenuHidden ? styles.controlActive : ""
                                 }`}
                                 onClick={onClickHeaderMenu}
+                                ref={headerButtonRef}
                                 >
                                 <img src={isHeaderMenuHidden ? HamburgerMenuIconClicked : HamburgerMenuIcon} alt="Menu" />
                             </div>
