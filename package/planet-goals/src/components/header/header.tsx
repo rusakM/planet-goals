@@ -148,7 +148,7 @@ const Header: React.FC<MainPropsT> = ({
                     <div className={styles.controls}>
                         {
                             currentUser && !isMobile && menuItems.map(([key, value, color], index) => (
-                                <div className={styles.control} key={`${key}_${index}`}>
+                                <div className={`${styles.noHover} ${styles.control}`} key={`${key}_${index}`}>
                                     <PrimaryButton color={color} size={isDesktop ? "desktopSmall" : "small"} onClick={
                                         () => selectMenuAction(key)
                                     }>
@@ -157,7 +157,7 @@ const Header: React.FC<MainPropsT> = ({
                                 </div>
                             ))
                         }
-                        {currentUser?.role && <div className={styles.control}>
+                        {currentUser?.role && <div className={`${styles.noHover} ${styles.control}`}>
                             <PrimaryButton color="blue" size={isDesktop ? "desktopSmall" : "small" }>
                                 {t(constantsTranslations.ROLES_TRANSLATIONS[currentUser.role])}
                             </PrimaryButton>

@@ -8,8 +8,8 @@
 }
 .scrollingTrack {
     display: flex;
-    gap: 60px;
-    animation: scroll 30s linear infinite;
+    gap: 70px;
+    animation: scroll 45s linear infinite;
     width: fit-content;
 }
 
@@ -23,6 +23,6 @@
         transform: translateX(0);
     }
     to {
-        transform: translateX(-100%);
+        transform: translateX(-50%);
     }
 }

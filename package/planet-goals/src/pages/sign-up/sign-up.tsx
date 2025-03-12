@@ -135,7 +135,7 @@ const SignUp: React.FC<ISignUp> = ({
                         error={formError.confirm}
                         label={<>{t("signup.confirm-regulations")} <span className={commonStyles.blueText} onClick={() => navigate(constantsUrls.LandingPage.main)}>{t("main.regulations")}</span></>}
                         onChange={handleChange}
-                        additionalClasses={internalStyles.checkbox}
+                        additionalClasses={`${internalStyles.checkbox} ${commonStyles.centerFlex}`}
                     />
                     {isLoadingData && <p>...Loading</p>}
                     

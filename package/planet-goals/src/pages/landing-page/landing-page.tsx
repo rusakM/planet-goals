@@ -227,8 +227,8 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
                 
             </PrimaryContainer>
             {/* 6 */}
-            <PrimaryContainer direction="column">
-                <div className={partnersStyles.partnersSpinner}>
+            <PrimaryContainer direction="column" additionalClassess={`${commonStyles.lightestGreyBackground}`}>
+                <div className={`${partnersStyles.partnersSpinner}`}>
                     <div className={partnersStyles.scrollingTrack}>
                         {[...partnersImgs, ...partnersImgs].map(
                             (logo, index) => (

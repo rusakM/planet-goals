@@ -15,13 +15,9 @@
     border-bottom-width: 5px;
     text-wrap: nowrap;
 
-    &:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    &:active {
-        transform: scale(0.98);
+    &:hover, &:active {
+        transform: translateY(4px);
+        box-shadow: none;
     }
 }
 
@@ -43,9 +39,10 @@
     background-color: colors.$orange;
     color: colors.$white;
     border-color: colors.$border-orange;
+    box-shadow: 0 4px 0 colors.$border-orange;
 
     &:hover {
-        color: colors.$light-grey;
+        background-color: colors.$light-orange;
     }
 }
 
@@ -53,6 +50,7 @@
     background-color: colors.$white;
     color: colors.$blue;
     border-color: colors.$border-white;
+    box-shadow: 0 4px 0 colors.$border-white;
 
     &:hover {
         color: colors.$border-blue;
@@ -63,9 +61,22 @@
     background-color: colors.$blue;
     color: colors.$white;
     border-color: colors.$border-blue;
+    box-shadow: 0 4px 0 colors.$border-blue;
 
     &:hover {
         color: colors.$light-grey;
+        background-color: colors.$light-blue;
+    }
+}
+
+.red {
+    background-color: colors.$light-red;
+    color: colors.$white;
+    border-color: colors.$border-red;
+    box-shadow: 0 4px 0 colors.$border-red;
+
+    &:hover {
+        background-color: colors.$dark-red;
     }
 }
 

@@ -67,6 +67,13 @@
     @media (min-width: breakpoints.$desktop) {
         height: 60%;
     }
+
+}
+
+.noHover {
+    &:hover {
+        background-color: colors.$header-background;
+    }
 }
 
 .controlActive {

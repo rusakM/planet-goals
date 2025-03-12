@@ -9,7 +9,7 @@ import PrimaryButton, { TButtonType } from "../../components/primary-button.tsx/
 import TextInput from "../../components/text-input/text-input";
 
 import { useDeviceType } from "../../helpers/responsiveContainers";
-import { verifyCodeStart } from "../../redux/user/user.actions";
+import { checkEmailStart, verifyCodeStart } from "../../redux/user/user.actions";
 import {
     selectIsLoadingData,
     selectLoginEmail,
@@ -32,6 +32,7 @@ interface IConfirm {
     isLoadingData: boolean;
     loginEmail: string;
     loginError: string;
+    resendEmail?: (payload: string) => void;
     verifyCode?: (payload: IUserLogin) => void;
 }
 
@@ -39,6 +40,7 @@ const Confirm: React.FC<IConfirm> = ({
     isLoadingData,
     loginEmail,
     loginError,
+    resendEmail,
     verifyCode,
 }) => {
     const { t } = useTranslate();
@@ -106,7 +108,7 @@ const Confirm: React.FC<IConfirm> = ({
                     />
                     <p
                         className={`${commonStyles.blueText} ${footerStyles.privacyRef} ${commonStyles.noPadding} ${commonStyles.noMargin} ${commonStyles.centeredText}`}
-                        onClick={() => navigate(constantsUrls.LandingPage.main)}
+                        onClick={() => resendEmail(loginEmail)}
                     >
                         {t("signin.confirm.send-code-again")}
                     </p>
@@ -133,6 +135,7 @@ const Confirm: React.FC<IConfirm> = ({
 };
 
 const mapDispatchToProps = (dispatch) => ({
+    resendEmail: (payload: string) => dispatch(checkEmailStart(payload)),
     verifyCode: (payload: IUserLogin) => dispatch(verifyCodeStart(payload)),
 });
 
