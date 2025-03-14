@@ -15,11 +15,14 @@ import {
     verifyCodeFailure,
     userEditFailure,
     userEditSuccess,
+    disableUserSuccess,
+    disableUserFailure,
 } from "./user.actions";
 import { IUser } from "../../types/user";
 
 //actionsDefinitions
 const checkEmailStart = createAction(UserActionTypes.CHECK_EMAIL_START);
+const disableUserStart = createAction(UserActionTypes.DISABLE_USER_START);
 const signUpStart = createAction(UserActionTypes.SIGN_UP_START);
 const userEditStart = createAction(UserActionTypes.USER_EDIT_START);
 const verifyCodeStart = createAction(UserActionTypes.VERIFY_CODE_START);
@@ -34,6 +37,15 @@ function* checkEmail({ payload }) {
         yield put(checkEmailSuccess(payload));
     } catch (error) {
         yield put(checkEmailFailure(error.name));
+    }
+}
+
+function* disableUser() {
+    try {
+        yield Api.sendData(constantsUrls.User.edit, { isEnabled: true }, 'PATCH');
+        yield put(disableUserSuccess());
+    } catch (error) {
+        yield put(disableUserFailure(error.name));
     }
 }
 
@@ -70,6 +82,10 @@ function* onCheckEmailStart(): Generator {
     yield takeLatest(checkEmailStart, checkEmail);
 }
 
+function* onDisableUserStart(): Generator {
+    yield takeLatest(disableUserStart, disableUser);
+}
+
 function* onSignUpStart(): Generator {
     yield takeLatest(signUpStart, signUp);
 }
@@ -85,6 +101,7 @@ function* onVerifyCodeStart(): Generator {
 export function* userSagas() {
     yield all([
         call(onCheckEmailStart),
+        call(onDisableUserStart),
         call(onSignUpStart),
         call(onUserEditStart),
         call(onVerifyCodeStart),

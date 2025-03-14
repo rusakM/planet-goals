@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { useTranslate } from "@tolgee/react";
 import { createStructuredSelector } from "reselect";
 
 import { userTypes } from "../../types";
-import { constantsTranslations } from "../../helpers/constants";
+import { constantsTranslations, constantsUrls } from "../../helpers/constants";
 import tolgeeConfig from "../../translations";
 import { useDeviceType } from "../../helpers/responsiveContainers";
 import styles from "./header.module.scss";
@@ -64,6 +65,7 @@ const Header: React.FC<MainPropsT> = ({
 }) => {
     const { isMobile, isDesktop } = useDeviceType();
     const { t } = useTranslate();
+    const navigate = useNavigate();
     const languagesMenuRef = useRef<HTMLElement>();
     const headerMenuRef = useRef<HTMLElement>();
     const headerButtonRef = useRef<HTMLDivElement>();
@@ -129,6 +131,9 @@ const Header: React.FC<MainPropsT> = ({
             case MENU_ACTIONS.LOGOUT:
                 signOutStart();
                 localStorage.removeItem("token");
+                break;
+            case MENU_ACTIONS.ME:
+                navigate(constantsUrls.Main.myProfile)
                 break;
             default:
                 console.log(action);

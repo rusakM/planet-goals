@@ -1,0 +1,49 @@
+@use "@styles/colors.scss";
+@use "@styles/fonts.scss";
+
+.toggleContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  
+    .toggleLabel {
+      font-size: 20px;
+      color: colors.$dark-text;
+      font-weight: 500;
+      font-family: fonts.$poppins-regular, sans-serif;
+    }
+  }
+  
+  .toggleSwitch {
+    width: 90px;
+    height: 40px;
+    border-radius: 48px;
+    border: 1px solid colors.$lightest-grey;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease-in-out;
+  
+    &.on {
+      background-color: colors.$light-orange;
+    }
+  
+    &.off {
+      background-color: colors.$grey;
+    }
+  
+    .toggleCircle {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 28px;
+      height: 28px;
+      background-color: white;
+      border-radius: 50%;
+      border: 1px solid colors.$light-background;
+      transition: transform 0.3s ease-in-out;
+    }
+  
+    &.on .toggleCircle {
+      transform: translateX(48px);
+    }
+  }

@@ -1,0 +1,36 @@
+@use "@styles/breakpoints.scss";
+@use "@styles/colors.scss";
+
+.container {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    background-color: rgba($color: #000000, $alpha: 0.05);
+    width: 100vw;
+    height: 100vh;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.popup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: colors.$lightest-grey;
+    border: 1px solid colors.$lightest-grey;
+    border-radius: 16px;
+    width: 75%;
+    box-shadow: 4px 4px 24px rgba(0, 0, 0, 0.16);
+    padding: 1.5em;
+    max-width: 450px;
+
+    @media (min-width: breakpoints.$desktop) {
+        border-radius: 25px;
+    }
+}

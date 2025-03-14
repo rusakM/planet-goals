@@ -20,6 +20,19 @@ export const checkUserSessiom = () => ({
     type: UserActionTypes.CHECK_USER_SESSION,
 });
 
+export const disableUserStart = () => ({
+    type: UserActionTypes.DISABLE_USER_START
+});
+
+export const disableUserSuccess = () => ({
+    type: UserActionTypes.DISABLE_USER_SUCCESS
+});
+
+export const disableUserFailure = (error) => ({
+    type: UserActionTypes.DISABLE_USER_FAILURE,
+    payload: error
+});
+
 export const setCurrentUser = (user: IUser) => ({
     type: UserActionTypes.SET_CURRENT_USER,
     payload: user,

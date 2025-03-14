@@ -1,5 +1,6 @@
 import { Dispatch, ChangeEvent, MouseEvent, SetStateAction } from "react";
 import { v4 as uuid } from "uuid";
+import { IUser } from "../types/user";
 
 export type Ttarget = "_self" | "_blank" | "_parent" | "_top";
 
@@ -22,4 +23,8 @@ export function handleInputText(dispatch: Dispatch<SetStateAction<string>>, cb: 
         dispatch(event.target.value);
         cb();
     };
+}
+
+export function checkCurrentUser(currentUser: IUser) {
+    return (currentUser && currentUser?.email);
 }

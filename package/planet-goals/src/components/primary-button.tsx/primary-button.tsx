@@ -1,7 +1,7 @@
 import React, { MouseEvent } from "react";
 import styles from "./primary-button.module.scss";
 
-export type TButtonColor = "orange" | "white" | "blue";
+export type TButtonColor = "orange" | "white" | "blue" | "red";
 export type TButtonSize = "regular" | "small" | "desktopSmall";
 export type TButtonType = "default" | "action";
 

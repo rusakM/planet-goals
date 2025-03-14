@@ -40,3 +40,19 @@
         margin-left: 25%;
     }
 }
+
+.alignFlexStart {
+    align-items: flex-start !important;
+}
+
+.justifySpaceBetween {
+    justify-content: space-between !important;
+}
+
+.pagePadding {
+    padding-top: 1em !important;
+
+    @media (min-width: breakpoints.$desktop) {
+        padding-top: 5em !important;
+    }
+}

@@ -13,6 +13,7 @@ const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
         case UserActionTypes.SIGN_UP_START:
         case UserActionTypes.USER_EDIT_START:
         case UserActionTypes.VERIFY_CODE_START:
+        case UserActionTypes.DISABLE_USER_START:
             return {
                 ...state,
                 isFetching: true,
@@ -38,6 +39,7 @@ const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
         case UserActionTypes.SIGN_UP_FAILURE:
         case UserActionTypes.USER_EDIT_FAILURE:
         case UserActionTypes.VERIFY_CODE_FAILURE:
+        case UserActionTypes.DISABLE_USER_FAILURE:
             return {
                 ...state,
                 isFetching: false,
@@ -50,6 +52,7 @@ const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
                 isFetching: false
             };
         case UserActionTypes.SIGN_OUT:
+        case UserActionTypes.DISABLE_USER_SUCCESS:
             return INITIAL_STATE;
         default:
             return state;
