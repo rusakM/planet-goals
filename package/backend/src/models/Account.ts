@@ -51,6 +51,7 @@ export const accountValidators = {
         .optional(),
     email: Joi.string().email().required(),
     firstName: Joi.string().optional(),
+    isEnabled: Joi.boolean().optional(),
     lastName: Joi.string().optional(),
     lastSeenAt: Joi.string().optional(),
     rodoAgreement: Joi.boolean().default(false).optional(),
