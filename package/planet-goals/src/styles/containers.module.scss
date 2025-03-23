@@ -32,6 +32,16 @@
     }
 }
 
+.restrictedFlexibleContainer2 {
+    background-color: inherit;
+    @media (min-width: breakpoints.$desktop) {
+        width: 90%;
+    }
+    @media (min-width: breakpoints.$large-desktop) {
+        width: 70%;
+    }
+}
+
 .centerFlexibleContainer {
     @media (min-width: breakpoints.$desktop) {
         margin-left: 12.5%;
@@ -41,8 +51,21 @@
     }
 }
 
+.centerFlexibleContainer2 {
+    @media (min-width: breakpoints.$desktop) {
+        margin-left: 5%;
+    }
+    @media (min-width: breakpoints.$large-desktop) {
+        margin-left: 15%;
+    }
+}
+
 .alignFlexStart {
     align-items: flex-start !important;
+}
+
+.justifyFlexStart {
+    justify-content: flex-start !important;
 }
 
 .justifySpaceBetween {

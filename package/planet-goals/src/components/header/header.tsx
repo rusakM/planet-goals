@@ -132,6 +132,9 @@ const Header: React.FC<MainPropsT> = ({
                 signOutStart();
                 localStorage.removeItem("token");
                 break;
+            case MENU_ACTIONS.MATERIALS:
+                navigate(constantsUrls.Main.materials);
+                break;
             case MENU_ACTIONS.ME:
                 navigate(constantsUrls.Main.myProfile)
                 break;

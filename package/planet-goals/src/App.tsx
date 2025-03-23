@@ -8,6 +8,7 @@ import Confirm from "./pages/confirm/confirm";
 import EditProfile from "./pages/edit-profile/edit-profile";
 import FillRegisterData from "./pages/fill-register-data/fill-register-data";
 import LandingPage from "./pages/landing-page/landing-page";
+import Materials from "./pages/materials/materials";
 import SignIn from "./pages/sign-in/sign-in";
 import SignUp from "./pages/sign-up/sign-up";
 import RootContainer from "./components/root-container/root-container";
@@ -28,6 +29,11 @@ function App() {
                         ? <EditProfile /> 
                         : <Navigate to={constantsUrls.LandingPage.main} replace={true} />}
                         path={constantsUrls.Main.myProfile} 
+                    />
+                    <Route element={checkCurrentUser(currentUser)
+                        ? <Materials/>
+                        : <Navigate to={constantsUrls.LandingPage.main} replace={true} />}
+                        path={constantsUrls.Main.materials}
                     />
                     <Route element={((currentUser && currentUser?.firstName) || !currentUser)
                         ? <Navigate to={constantsUrls.LandingPage.main } replace={true} />
