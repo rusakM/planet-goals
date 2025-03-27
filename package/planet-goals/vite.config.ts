@@ -12,6 +12,11 @@ export default defineConfig({
                 target: "http://localhost:8081",
                 changeOrigin: true,
             },
+            "/cdn": {
+                target: "http://localhost",
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/cdn/, "/cdn/")
+            }
         },
     },
     plugins: [react()],

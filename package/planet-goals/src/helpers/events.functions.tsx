@@ -28,3 +28,13 @@ export function handleInputText(dispatch: Dispatch<SetStateAction<string>>, cb: 
 export function checkCurrentUser(currentUser: IUser) {
     return (currentUser && currentUser?.email);
 }
+
+export function downloadFile(fileUrl: string) {
+    const filePathArr = fileUrl.split('/');
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.setAttribute('download', filePathArr[filePathArr.length - 1]);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}

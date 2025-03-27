@@ -61,5 +61,10 @@
     justify-content: center;
     align-items: center;
     background-color: inherit !important;
-    padding: 0.5em 0;
+    padding: 0.5em;
+}
+
+.resizeIcon {
+    height: 12px;
+    transform: translateY(20%);
 }

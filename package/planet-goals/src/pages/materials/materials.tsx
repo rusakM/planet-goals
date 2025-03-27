@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { useTranslate } from '@tolgee/react';
@@ -11,12 +11,14 @@ import { useDeviceType } from '../../helpers/responsiveContainers';
 import { IUser } from '../../types/user';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 
-// import styles from "./materials.module.scss";
+import styles from "./materials.module.scss";
 import commonStyles from "../../styles/common.module.scss";
 import containersStyles from "../../styles/containers.module.scss";
 
 import TeacherImg from "../../assets/teachers-materials/teacher_standing_against_blackboard.svg";
 import Footer from '../../components/footer/footer';
+import Flipbook from '../../page-components/flipbook/flipbook';
+import { downloadFile } from '../../helpers/events.functions';
 
 interface IMaterials {
     currentUser?: IUser
@@ -25,29 +27,40 @@ interface IMaterials {
 const Materials: React.FC<IMaterials> = () => {
     const { t } = useTranslate();
     const { isMobile } = useDeviceType();
+    const [isFlipbookOpened, setIsFlipbookOpened] = useState<boolean>(false);
+    const [flipbookNumber, setFlipbookNumber] = useState<number>(0);
 
     const documentsList: IMaterialsCard[] = [
         {
             description: t("manuals.manual01.info"),
-            downloadAction: () => downloadMaterial("Material 1 download"),
+            downloadAction: () => downloadMaterial(0),
             header: t("manuals.manual01.header"),
-            resizeAction: () => downloadMaterial("Material 1 resize"),
+            resizeAction: () => openFlipbook(0),
         },
         {
             description: t("manuals.manual02.info"),
-            downloadAction: () => downloadMaterial("Material 2 download"),
+            downloadAction: () => downloadMaterial(1),
             header: t("manuals.manual02.header"),
-            resizeAction: () => downloadMaterial("Material 2 resize"),
+            resizeAction: () => openFlipbook(1),
         },
     ];
 
-    const downloadMaterial = (material: string) => console.log(material);
+    const documentsUrls: string[] = [
+        '/cdn/materials/manual_01.pdf',
+        '/cdn/materials/manual_02.pdf'
+    ]
+
+    const downloadMaterial = (num: number) => downloadFile(documentsUrls[num]);
+    const openFlipbook = (num: number) => {
+        setFlipbookNumber(num);
+        setIsFlipbookOpened(true);
+    }
 
     return (
         <PageContainer>
             <PrimaryContainer direction={isMobile ? "column" : "rowReverse"} additionalClassess={`${containersStyles.pagePadding}`}>
                 <img alt="For teachers" src={TeacherImg} className={commonStyles.sectionImg} />
-                <PrimaryContainer direction="column" additionalClassess={`${!isMobile ? containersStyles.halfScreenContainer : containersStyles.buttonsContainer}`}>
+                <PrimaryContainer direction="column" additionalClassess={`${!isMobile ? `${containersStyles.halfScreenContainer} ${styles.descriptionContainer}` : containersStyles.buttonsContainer}`}>
                     <p className={`${commonStyles.basicHeader} ${commonStyles.orangeText}`}>
                         {t("manuals.header.info")}
                     </p>
@@ -64,6 +77,9 @@ const Materials: React.FC<IMaterials> = () => {
                     }
                 </PrimaryContainer>
             </PrimaryContainer>
+            {
+                isFlipbookOpened && <Flipbook onClose={() => setIsFlipbookOpened(false)} pdfUrl={documentsUrls[flipbookNumber]} />
+            }
             <Footer />
         </PageContainer>
     );

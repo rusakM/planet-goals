@@ -32,11 +32,11 @@ const MaterialsCard: React.FC<IMaterialsCard> = ({ description, downloadAction, 
                     </p>
                 </div>
                 <div className={`${styles.cardButtonsContainer}`}>
-                    <PrimaryButton color="orange" size="small" onClick={downloadAction}>
+                    <PrimaryButton color="orange" size="small" onClick={downloadAction} additionalClasses={commonStyles.width100}>
                         {t("manuals.download.button")}
                     </PrimaryButton>
                     <PrimaryButton color="white" size="small" onClick={resizeAction}>
-                        <img src={ResizeIconImg} />
+                        <img src={ResizeIconImg} className={styles.resizeIcon}/>
                     </PrimaryButton>
                 </div>
             </div>

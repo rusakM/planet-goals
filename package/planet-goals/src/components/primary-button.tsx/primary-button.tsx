@@ -9,6 +9,7 @@ interface PrimaryButtonProps {
     additionalClasses?: string;
     children: React.ReactNode;
     color?: TButtonColor;
+    disabled?: boolean;
     onClick?: (event?: MouseEvent<HTMLButtonElement>) => void;
     selected?: boolean;
     size?: TButtonSize;
@@ -19,6 +20,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
     additionalClasses,
     children,
     color = "white",
+    disabled = false,
     onClick,
     selected,
     size = "regular",
@@ -28,6 +30,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
         <button
             className={`${styles.button} ${styles[color]} ${size !== 'regular' ? styles[size] : ''}${selected ? ` ${styles[`selected${color}`]}` : ''}${additionalClasses ? ` ${additionalClasses}` : ''}${type !== "default" ? ` ${styles[type]}` : ''}`}
             onClick={onClick}
+            disabled={disabled}
         >
             {children}
         </button>
