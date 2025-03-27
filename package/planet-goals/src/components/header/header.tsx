@@ -126,6 +126,10 @@ const Header: React.FC<MainPropsT> = ({
         toggleLanguagesMenu();
     };
 
+    const navigateToMainPage = () => {
+        navigate(constantsUrls.LandingPage.main);
+    };
+
     const selectMenuAction = (action: MENU_ACTIONS) => {
         switch(action) {
             case MENU_ACTIONS.LOGOUT:
@@ -151,6 +155,7 @@ const Header: React.FC<MainPropsT> = ({
                     src={Logo}
                     alt="Plant Goals Logo"
                     className={styles.logo}
+                    onClick={navigateToMainPage}
                 />
                 <div className={styles.content}>
                     <div className={styles.controls}>
