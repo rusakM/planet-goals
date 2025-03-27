@@ -17,7 +17,7 @@ export class Email {
                 service: 'SendGrid',
                 auth: {
                     user: ConstantsEnv.Email.SENDGRID_USERNAME,
-                    pass: ConstantsEnv.Email.EMAIL_PASSWORD,
+                    pass: ConstantsEnv.Email.SENDGRID_PASSWORD,
                 },
             });
         }
