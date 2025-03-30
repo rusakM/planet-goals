@@ -8,6 +8,7 @@ import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
 import PrimaryButton, { TButtonType } from "../../components/primary-button.tsx/primary-button";
 import TextInput from "../../components/text-input/text-input";
+import SmallSpinner from "../../components/small-spinner/small-spinner";
 
 import { handleInputText } from "../../helpers/events.functions";
 import { useDeviceType } from "../../helpers/responsiveContainers";
@@ -137,9 +138,8 @@ const SignUp: React.FC<ISignUp> = ({
                         onChange={handleChange}
                         additionalClasses={`${internalStyles.checkbox} ${commonStyles.centerFlex}`}
                     />
-                    {isLoadingData && <p>...Loading</p>}
-                    
                 </PrimaryContainer>
+                { !isLoadingData && <SmallSpinner /> }
             </PrimaryContainer>
             <PrimaryContainer
                 direction={isMobile ? "column" : "row"}
