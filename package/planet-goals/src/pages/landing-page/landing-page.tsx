@@ -39,12 +39,12 @@ import LearnAnywhereMobileImg from "../../assets/landing-page/learn_anywhere_moi
 import LearnAnywhereDesktopImg from "../../assets/landing-page/learn_anywhere_desktop.svg";
 
 //partners
-import FonixImg from "../../assets/landing-page/partners/Fonix.png";
-import InnoHubImg from "../../assets/landing-page/partners/InnoHub.png";
-import InnovEdImg from "../../assets/landing-page/partners/InnovED.png";
+import FonixImg from "../../assets/landing-page/partners/Fonix.svg";
+import InnoHubImg from "../../assets/landing-page/partners/Innohub.svg";
+import InnovEdImg from "../../assets/landing-page/partners/Innoved.svg";
 import MduImg from "../../assets/landing-page/partners/MDU.svg";
-import NovaReckonImg from "../../assets/landing-page/partners/NovaReckon.png";
-import StowarzyszenieImg from "../../assets/landing-page/partners/Stowarzyszenie.svg";
+import NovaReckonImg from "../../assets/landing-page/partners/Novareckon.svg";
+import StowarzyszenieImg from "../../assets/landing-page/partners/Eurolider.svg";
 
 interface ILandingPage {
     currentUser?: IUser

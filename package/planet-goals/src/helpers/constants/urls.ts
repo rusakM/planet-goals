@@ -1,6 +1,8 @@
 export const Footer = {
+    conditionTerms: "/cdn/materials/manual_01.pdf",
     instagram: "https://www.instagram.com/planet_goals",
     linkedIn: "https://www.linkedin.com/company/104809294",
+    privacyPolicy: "/cdn/materials/manual_02.pdf",
     youtube: "https://www.youtube.com/@PlanetGoals-SDGs",
 };
 

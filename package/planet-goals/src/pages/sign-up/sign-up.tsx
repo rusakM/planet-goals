@@ -8,9 +8,10 @@ import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
 import PrimaryButton, { TButtonType } from "../../components/primary-button.tsx/primary-button";
 import TextInput from "../../components/text-input/text-input";
-import SmallSpinner from "../../components/small-spinner/small-spinner";
+// import SmallSpinner from "../../components/small-spinner/small-spinner";
+import Spinner from "../../components/spinner/spinner.component";
 
-import { handleInputText } from "../../helpers/events.functions";
+import { downloadFile, handleInputText } from "../../helpers/events.functions";
 import { useDeviceType } from "../../helpers/responsiveContainers";
 
 import { signUpStart } from "../../redux/user/user.actions";
@@ -134,12 +135,12 @@ const SignUp: React.FC<ISignUp> = ({
                     <Checkbox 
                         checked={confirm}
                         error={formError.confirm}
-                        label={<>{t("signup.confirm-regulations")} <span className={commonStyles.blueText} onClick={() => navigate(constantsUrls.LandingPage.main)}>{t("main.regulations")}</span></>}
+                        label={<>{t("signup.confirm-regulations")} <span className={commonStyles.blueText} onClick={() => downloadFile(constantsUrls.Footer.conditionTerms)}>{t("main.regulations")}</span></>}
                         onChange={handleChange}
                         additionalClasses={`${internalStyles.checkbox} ${commonStyles.centerFlex}`}
                     />
                 </PrimaryContainer>
-                { !isLoadingData && <SmallSpinner /> }
+                { isLoadingData && <Spinner /> }
             </PrimaryContainer>
             <PrimaryContainer
                 direction={isMobile ? "column" : "row"}

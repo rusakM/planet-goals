@@ -10,6 +10,7 @@ import PrimaryContainer from "../../components/primary-container/primary-contain
 import PrimaryButton from "../../components/primary-button.tsx/primary-button";
 import SelectInput, { ISelectInputOption } from "../../components/select-input/select-input";
 import TextInput from "../../components/text-input/text-input";
+import Spinner from "../../components/spinner/spinner.component";
 
 import { getFlagEmoji } from "../../helpers/locales.functions";
 import { validateEditUser } from "../../helpers/validators.ts/user";
@@ -160,7 +161,7 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                                 {t(ROLES_TRANSLATIONS.TEACHER)}
                             </PrimaryButton>
                         </div>
-                        {isLoadingData && <p>...Loading</p>}
+                        {isLoadingData && <Spinner />}
                         {signUpError && <p>{signUpError}</p>}
                     </PrimaryContainer>
                     <PrimaryContainer

@@ -24,6 +24,7 @@ import commonStyles from "../../styles/common.module.scss";
 import containerStyles from "../../styles/containers.module.scss";
 import footerStyles from "../../components/footer/footer.module.scss";
 import styles from "./sign-in.module.scss";
+import Spinner from "../../components/spinner/spinner.component";
 
 import SmilingEarthImg from "../../assets/login-page/smiling_earth.svg";
 import { constantsUrls } from "../../helpers/constants";
@@ -102,7 +103,7 @@ const SignIn: React.FC<ISignIn> = ({
                     >
                         {t("main.register-question")}
                     </p>
-                    {isLoadingData && <p>...Loading</p>}
+                    {isLoadingData && <Spinner />}
                     {loginError && <p>{loginError}</p>}
                 </PrimaryContainer>
             </PrimaryContainer>

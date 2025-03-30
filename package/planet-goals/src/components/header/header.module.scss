@@ -28,6 +28,7 @@
     height: 100%;
     padding: 8px;
     padding-left: 1em;
+    cursor: pointer;
 
     @media (min-width: breakpoints.$desktop) {
         height: 60%;

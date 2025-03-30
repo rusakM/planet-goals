@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
 import PrimaryButton, { TButtonType } from "../../components/primary-button.tsx/primary-button";
+import Spinner from "../../components/spinner/spinner.component";
 import TextInput from "../../components/text-input/text-input";
 
 import { useDeviceType } from "../../helpers/responsiveContainers";
@@ -112,7 +113,7 @@ const Confirm: React.FC<IConfirm> = ({
                     >
                         {t("signin.confirm.send-code-again")}
                     </p>
-                    {isLoadingData && <p>...Loading</p>}
+                    {isLoadingData && <Spinner />}
                     {loginError && <p>{loginError}</p>}
                 </PrimaryContainer>
             </PrimaryContainer>

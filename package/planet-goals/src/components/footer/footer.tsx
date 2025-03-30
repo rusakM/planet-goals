@@ -8,7 +8,7 @@ import containerStyles from "../../styles/containers.module.scss";
 import PrimaryContainer from "../primary-container/primary-container";
 import Separator from "../separator/separator";
 
-import { redirect } from "../../helpers/events.functions";
+import { downloadFile, redirect } from "../../helpers/events.functions";
 import { constantsUrls } from "../../helpers/constants";
 
 import LinkedInImg from "../../assets/footer/in.svg";
@@ -75,11 +75,13 @@ const Footer: React.FC = () => {
                 >
                     <span
                         className={`${commonStyles.blueText} ${styles.privacyRef}`}
+                        onClick={() => downloadFile(constantsUrls.Footer.privacyPolicy)}
                     >
                         {t("footer.privacy-policy")}
                     </span>
                     <span
                         className={`${commonStyles.blueText} ${styles.privacyRef}`}
+                        onClick={() => downloadFile(constantsUrls.Footer.conditionTerms)}
                     >
                         {t("footer.conditions-terms")}
                     </span>
