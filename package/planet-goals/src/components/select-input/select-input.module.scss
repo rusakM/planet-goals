@@ -1,9 +1,12 @@
+@use "@styles/breakpoints.scss";
 @use "@styles/colors.scss";
+@use "@styles/fonts.scss";
 
 .selectInput {
     border: 1px solid colors.$grey;
     color: colors.$dark-text;
     border-radius: 5px;
+    font-family: fonts.$poppins-regular, sans-serif;
     font-size: 14px;
     background-color: colors.$grey-background;
     padding: 5px;
@@ -31,9 +34,80 @@
         color: colors.$dark-text;
         font-size: 12px;
     }
+
+    @media (min-width: breakpoints.$desktop) {
+        height: 50px;
+        font-size: 20px;
+    }
 }
 
 .error {
     color: colors.$red;
     border-color: colors.$red;
+}
+
+.selectContainer {
+    position: fixed;
+    top: 15%;
+    left: 5%;
+    width: 90%;
+    height: 60%;
+    border: 2px solid colors.$orange;
+    border-radius: 10px;
+    background-color: colors.$lightest-grey;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    z-index: 2;
+
+    .searchBarContainer {
+        width: 100%;
+        padding: 2em;
+        background-color: transparent;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+    }
+
+    .list {
+        width: 95%;
+        overflow-y: auto;
+        height:max-content;
+        background-color: inherit;
+        margin-bottom: 80px;
+        border: 1px solid colors.$grey;
+        border-radius: 5px;
+    }
+
+    .listItem {
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 14px;
+        color: colors.$dark-text;
+
+        &:hover, &Active {
+            background-color: colors.$dark-grey-background;
+        }
+    }
+
+    .buttonsContainer {
+        position: absolute;
+        bottom: 0;
+        padding: 1em;
+        width: 100%;
+        background-color: transparent;
+        gap: 1em;
+    }
+
+    @media (min-width: breakpoints.$desktop) {
+        width: 50%;
+        height: 65%;
+        top: 15%;
+        left: 50%;
+        max-width: 500px;
+        transform: translateX(-50%);
+        border-radius: 15px;
+    }
 }

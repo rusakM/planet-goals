@@ -68,7 +68,14 @@
     @media (min-width: breakpoints.$desktop) {
         height: 60%;
     }
+}
 
+.translationsButton {
+    height: 70% !important;
+
+    @media (min-width: breakpoints.$desktop) {
+        height: 50% !important;
+    }
 }
 
 .noHover {

@@ -3,8 +3,8 @@
     max-height: 250px;
     overflow: hidden;
     position: relative;
-    margin-top: 50px;
-    margin-bottom: 50px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 .scrollingTrack {
     display: flex;
@@ -14,7 +14,7 @@
 }
 
 .partnerLogo {
-    height: 100px;
+    height: 60px;
     object-fit: contain;
 }
 
@@ -23,6 +23,6 @@
         transform: translateX(0);
     }
     to {
-        transform: translateX(-50%);
+        transform: translateX(-51%);
     }
 }

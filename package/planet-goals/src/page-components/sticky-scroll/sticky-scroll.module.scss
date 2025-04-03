@@ -3,11 +3,11 @@
 
 .sectionWrapper {
     position: relative;
-    height: 600vh;
+    height: 650vh;
     width: 100%;
 
     @media (min-width: breakpoints.$desktop) {
-        height: 500vh;
+        height: 750vh;
     }
   }
   

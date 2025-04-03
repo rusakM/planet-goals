@@ -1,3 +1,4 @@
+@use "@styles/breakpoints.scss";
 @use "@styles/colors.scss";
 @use "@styles/fonts.scss";
 
@@ -19,5 +20,10 @@
     &:focus {
         border-color: colors.$dark-grey;
         outline: none;
+    }
+
+    @media (min-width: breakpoints.$desktop) {
+        height: 50px;
+        font-size: 20px;
     }
 }

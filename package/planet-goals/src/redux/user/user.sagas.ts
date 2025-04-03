@@ -42,7 +42,9 @@ function* checkEmail({ payload }) {
 
 function* disableUser() {
     try {
-        yield Api.sendData(constantsUrls.User.edit, { isEnabled: true }, 'PATCH');
+        yield Api.sendData(constantsUrls.User.edit, { 
+            isEnabled: false
+        }, 'PATCH');
         yield put(disableUserSuccess());
     } catch (error) {
         yield put(disableUserFailure(error.name));

@@ -17,6 +17,15 @@
     padding-bottom: 0.25em !important;
 }
 
+.switchContainer {
+    min-height: 40px;
+    padding-top: 0.75em;
+
+    @media (min-width: breakpoints.$desktop) {
+        padding-top: 2em;
+    }
+}
+
 .deleteSection {
     @media (min-width: breakpoints.$desktop) {
         max-width: 600px;

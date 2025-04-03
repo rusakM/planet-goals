@@ -100,12 +100,12 @@ const Header: React.FC<MainPropsT> = ({
         ["sv", t("header.languages.swedish")],
     ];
 
-    const menuItems: [key: MENU_ACTIONS, value: string, color: TButtonColor][] = [
-        [MENU_ACTIONS.START_LESSONS, t("header.menu.start-lessons"), 'orange'],
-        [MENU_ACTIONS.MATERIALS, t("header.menu.materials"), 'white'],
-        [MENU_ACTIONS.MY_PROGRESS, t("header.menu.my-progress"), 'white'],
-        [MENU_ACTIONS.ME, t("header.menu.me"), 'white'],
-        [MENU_ACTIONS.LOGOUT, t("header.menu.logout"), 'white']
+    const menuItems: [key: MENU_ACTIONS, value: string, color: TButtonColor, role: 'STUDENT' | 'TEACHER' | 'ALL'][] = [
+        [MENU_ACTIONS.START_LESSONS, t("header.menu.start-lessons"), 'orange', 'ALL'],
+        [MENU_ACTIONS.MATERIALS, t("header.menu.materials"), 'white', 'TEACHER'],
+        [MENU_ACTIONS.MY_PROGRESS, t("header.menu.my-progress"), 'white', 'ALL'],
+        [MENU_ACTIONS.ME, t("header.menu.me"), 'white', 'ALL'],
+        [MENU_ACTIONS.LOGOUT, t("header.menu.logout"), 'white', 'ALL']
     ];
 
     const onClickHeaderMenu = () => {
@@ -160,8 +160,8 @@ const Header: React.FC<MainPropsT> = ({
                 <div className={styles.content}>
                     <div className={styles.controls}>
                         {
-                            currentUser && !isMobile && menuItems.map(([key, value, color], index) => (
-                                <div className={`${styles.noHover} ${styles.control}`} key={`${key}_${index}`}>
+                            currentUser && !isMobile && menuItems.map(([key, value, color, role], index) => (
+                                (role === 'ALL' || role === currentUser?.role) &&  <div className={`${styles.noHover} ${styles.control}`} key={`${key}_${index}`}>
                                     <PrimaryButton color={color} size={isDesktop ? "desktopSmall" : "small"} onClick={
                                         () => selectMenuAction(key)
                                     }>
@@ -176,7 +176,7 @@ const Header: React.FC<MainPropsT> = ({
                             </PrimaryButton>
                         </div>}
                         <div
-                            className={`${styles.control} ${
+                            className={`${styles.control} ${styles.translationsButton} ${
                                 !isLanguagesMenuHidden
                                     ? styles.controlActive
                                     : ""

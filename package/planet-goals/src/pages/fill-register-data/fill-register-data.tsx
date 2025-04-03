@@ -7,12 +7,12 @@ import { connect } from "react-redux";
 
 import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
-import PrimaryButton from "../../components/primary-button.tsx/primary-button";
+import PrimaryButton, { TButtonType } from "../../components/primary-button.tsx/primary-button";
 import SelectInput, { ISelectInputOption } from "../../components/select-input/select-input";
 import TextInput from "../../components/text-input/text-input";
 import Spinner from "../../components/spinner/spinner.component";
 
-import { getFlagEmoji } from "../../helpers/locales.functions";
+import { useDeviceType } from "../../helpers/responsiveContainers";
 import { validateEditUser } from "../../helpers/validators.ts/user";
 import { userEditStart } from "../../redux/user/user.actions";
 import {
@@ -47,8 +47,11 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
 }) => {
     const { t } = useTranslate();
     const navigate = useNavigate();
+    const { isMobile } = useDeviceType();
+    const buttonstype: TButtonType = isMobile ? "default" : "action";
+
     const countriesList: ISelectInputOption[] = getCodes().map(code => ({
-        label: `${getFlagEmoji(code)} ${getName(code)}`,
+        label: getName(code),
         value: code
     })).sort((a, b) => getName(a.value).localeCompare(getName(b.value)))
 
@@ -111,11 +114,10 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                     className={signInStyles.img}
                 />
                 <p
-                    className={`${commonStyles.basicHeader} ${commonStyles.darkText}`}
+                    className={`${commonStyles.basicHeader2} ${commonStyles.darkText}`}
                 >
                     {t("sign-up.header")}
                 </p>
-                <form onSubmit={handleSubmit} className={commonStyles.centeredText}>
                     <PrimaryContainer
                     direction="column"
                     additionalClassess={`${commonStyles.padding1em} ${containerStyles.buttonsContainer}`}
@@ -143,7 +145,12 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                         <SelectInput 
                             name="countryCode"
                             value={registerForm.countryCode}
-                            onChange={handleInputText('countryCode')}
+                            onChange={(countryCode: string) => {
+                                setRegisterForm({
+                                    ...registerForm,
+                                    countryCode
+                                })
+                            }}
                             options={countriesList}
                             placeholder={t("sign-up.register-form.country")}
                             error={validateRegisterForm.countryCode}
@@ -153,7 +160,7 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                         >
                             {t("sign-up.register-form.choose-role")}
                         </p>
-                        <div className={commonStyles.row}>
+                        <div className={`${commonStyles.row} ${styles.roleButtonsContainer}`}>
                             <PrimaryButton color="white" size="small" onClick={handleSelectRole(UserRoleEnum.STUDENT)} additionalClasses={`${containerStyles.halfScreenContainer}`} selected={registerForm.role === UserRoleEnum.STUDENT}>
                                 {t(ROLES_TRANSLATIONS.STUDENT)}
                             </PrimaryButton>
@@ -165,17 +172,19 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                         {signUpError && <p>{signUpError}</p>}
                     </PrimaryContainer>
                     <PrimaryContainer
-                        direction="column"
-                        additionalClassess={`${containerStyles.buttonsContainer} ${commonStyles.bottom} ${styles.bottomButtons}`}
+                        direction={isMobile ? "column" : "row"}
+                        additionalClassess={isMobile 
+                            ? `${containerStyles.buttonsContainer} ${commonStyles.bottom} ${signInStyles.bottomButtons}`
+                            : signInStyles.bottomButtons
+                        }
                     >
-                        <PrimaryButton color="orange" onClick={handleSubmit}>
+                        <PrimaryButton color="orange" onClick={handleSubmit} type={buttonstype}>
                             {t("main.confirm")}
                         </PrimaryButton>
-                        <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)}>
+                        <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)} type={buttonstype}>
                             {t("main.back")}
                         </PrimaryButton>
                     </PrimaryContainer>
-                </form>
             </PrimaryContainer>
         </PageContainer>
     );

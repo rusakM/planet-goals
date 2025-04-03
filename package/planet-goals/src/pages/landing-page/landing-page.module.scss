@@ -31,3 +31,23 @@
         }
     }
 }
+
+.forTeachers {
+    padding-top: 5em !important;
+    padding-bottom: 0 !important;
+}
+
+.forStudents {
+    padding-top: 0 !important;
+    padding-bottom: 5em !important;
+}
+
+.startLessonsDescription {
+    padding-bottom: 2em;
+}
+
+.blogImg {
+    max-width: breakpoints.$large-desktop;
+    width: 80%;
+    margin-top: -100px;
+}

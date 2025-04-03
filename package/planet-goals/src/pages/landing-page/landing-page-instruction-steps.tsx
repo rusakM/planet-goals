@@ -187,7 +187,7 @@ export const Screen6: React.FC = () => {
                 <p className={`${commonStyles.darkText} ${commonStyles.basicHeader}`}>
                     {formatNewLines(t("landing-page.headers.time-for-first-step"))}
                 </p>
-                <p className={styles.primaryText}>
+                <p className={`${styles.primaryText} ${styles.startLessonsDescription}`}>
                     {t("landing-page.descriptions.time-for-first-step")}
                 </p>
                 <PrimaryButton color="orange">

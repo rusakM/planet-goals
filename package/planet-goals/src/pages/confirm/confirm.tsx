@@ -28,6 +28,7 @@ import styles from "../sign-in/sign-in.module.scss";
 import SmilingEarthImg from "../../assets/login-page/smiling_earth.svg";
 import { createStructuredSelector } from "reselect";
 import { constantsUrls } from "../../helpers/constants";
+import { secondsToMinutes } from "../../helpers/shared.functions";
 
 interface IConfirm {
     isLoadingData: boolean;
@@ -50,6 +51,7 @@ const Confirm: React.FC<IConfirm> = ({
     const buttonstype: TButtonType = isMobile ? "default" : "action";
     const [verificationCode, setVerificationCode] = useState("");
     const [loginStarted, setLoginStarted] = useState(false);
+    const [nextResendCodeInSeconds, setNextResendCodeInSeconds] = useState(0);
 
     useEffect(() => {
         if (
@@ -61,6 +63,12 @@ const Confirm: React.FC<IConfirm> = ({
             navigate(constantsUrls.LandingPage.confirm);
         }
     }, [navigate, loginError, loginStarted, loginEmail]);
+
+    useEffect(() => {
+        if (nextResendCodeInSeconds > 0) {
+            setTimeout(() => setNextResendCodeInSeconds(nextResendCodeInSeconds - 1), 1000);
+        }
+    }, [nextResendCodeInSeconds, setNextResendCodeInSeconds]);
 
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
@@ -80,6 +88,13 @@ const Confirm: React.FC<IConfirm> = ({
         const value = event.target.value;
         if (value.length < 7) {
             setVerificationCode(value);
+        }
+    }
+
+    const sendCodeAgain = () => {
+        if (nextResendCodeInSeconds === 0) {
+            resendEmail(loginEmail);
+            setNextResendCodeInSeconds(120);
         }
     }
 
@@ -108,10 +123,11 @@ const Confirm: React.FC<IConfirm> = ({
                         value={verificationCode}
                     />
                     <p
-                        className={`${commonStyles.blueText} ${footerStyles.privacyRef} ${commonStyles.noPadding} ${commonStyles.noMargin} ${commonStyles.centeredText}`}
-                        onClick={() => resendEmail(loginEmail)}
+                        className={`${commonStyles.blueText} ${footerStyles.privacyRef} ${commonStyles.noPadding} ${commonStyles.noMargin} ${commonStyles.centeredText}${nextResendCodeInSeconds > 0 ? ` ${commonStyles.nonClickableCursor}` : ''}`}
+                        onClick={sendCodeAgain}
                     >
                         {t("signin.confirm.send-code-again")}
+                        {nextResendCodeInSeconds > 0 && ` - ${secondsToMinutes(nextResendCodeInSeconds)}`}
                     </p>
                     {isLoadingData && <Spinner />}
                     {loginError && <p>{loginError}</p>}

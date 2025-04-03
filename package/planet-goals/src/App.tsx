@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import "./App.css";
 import { constantsUrls } from "./helpers/constants";
 import { selectCurrentUser } from "./redux/user/user.selectors";
+import { UserRoleEnum } from "./types/user";
 import Confirm from "./pages/confirm/confirm";
 import EditProfile from "./pages/edit-profile/edit-profile";
 import FillRegisterData from "./pages/fill-register-data/fill-register-data";
@@ -30,7 +31,7 @@ function App() {
                         : <Navigate to={constantsUrls.LandingPage.main} replace={true} />}
                         path={constantsUrls.Main.myProfile} 
                     />
-                    <Route element={checkCurrentUser(currentUser)
+                    <Route element={checkCurrentUser(currentUser) && currentUser?.role === UserRoleEnum.TEACHER
                         ? <Materials/>
                         : <Navigate to={constantsUrls.LandingPage.main} replace={true} />}
                         path={constantsUrls.Main.materials}

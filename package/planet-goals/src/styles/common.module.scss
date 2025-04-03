@@ -2,6 +2,10 @@
 @use "./colors.scss";
 @use "./fonts.scss";
 
+.basicText {
+    font-family: fonts.$poppins-regular, sans-serif;
+}
+
 .orangeText {
     color: colors.$orange;
 }
@@ -177,4 +181,8 @@
 
 .width100 {
     width: 100%;
+}
+
+.nonClickableCursor {
+    cursor: not-allowed !important;
 }

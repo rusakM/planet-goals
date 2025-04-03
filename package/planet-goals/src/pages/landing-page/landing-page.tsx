@@ -151,7 +151,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
             {/* 3 */}
             <PrimaryContainer
                 direction={containersDirection}
-                additionalClassess={`${commonStyles.lightestGreyBackground} ${commonStyles.largeHorizontalPadding}`}
+                additionalClassess={`${styles.forTeachers} ${commonStyles.lightestGreyBackground}`}
                 height={isMobile ? "auto" : "allScreenHeight" }
             >
                 <img
@@ -182,7 +182,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
             {/* 4 */}
             <PrimaryContainer
                 direction={isMobile ? containersDirection : "rowReverse"}
-                additionalClassess={`${commonStyles.lightestGreyBackground} ${commonStyles.largeHorizontalPadding}`}
+                additionalClassess={`${styles.forStudents} ${commonStyles.lightestGreyBackground}`}
                 height={isMobile ? "auto" : "allScreenHeight"}
             >
                 <img
@@ -216,7 +216,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
                 additionalClassess={`${commonStyles.lightGreyBackground} ${commonStyles.largeHorizontalPadding}`}
             >
                 <StickyScrollSection items={[
-                    // <InstructionSteps.Screen1 />,
+                    <InstructionSteps.Screen1 />,
                     <InstructionSteps.Screen1 />,
                     <InstructionSteps.Screen2 />,
                     <InstructionSteps.Screen3 />,
@@ -269,7 +269,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
                 <img
                     src={isMobile ? LearnAnywhereMobileImg : LearnAnywhereDesktopImg}
                     alt="Learn anywhere"
-                    className={`${commonStyles.sectionImg} ${commonStyles.noPadding}`}
+                    className={`${isMobile ? commonStyles.sectionImg : styles.blogImg} ${commonStyles.noPadding}`}
                 />
             </PrimaryContainer>
             <Footer />

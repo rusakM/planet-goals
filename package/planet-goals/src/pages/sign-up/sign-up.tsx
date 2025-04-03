@@ -14,7 +14,7 @@ import Spinner from "../../components/spinner/spinner.component";
 import { downloadFile, handleInputText } from "../../helpers/events.functions";
 import { useDeviceType } from "../../helpers/responsiveContainers";
 
-import { signUpStart } from "../../redux/user/user.actions";
+import { checkEmailStart, signUpStart } from "../../redux/user/user.actions";
 import { IUserRegistration } from "../../types/user";
 import {
     selectIsLoadingData,
@@ -38,6 +38,7 @@ import { UserValidators } from "../../helpers/validators.ts/user";
 
 interface ISignUp {
     signUp?: (payload: IUserRegistration) => void;
+    signIn?: (payload: string) => void,
     isLoadingData: boolean;
     loginEmail: string;
     loginError: string;
@@ -45,6 +46,7 @@ interface ISignUp {
 
 const SignUp: React.FC<ISignUp> = ({
     signUp,
+    signIn,
     isLoadingData,
     loginEmail,
     loginError,
@@ -63,14 +65,14 @@ const SignUp: React.FC<ISignUp> = ({
 
     useEffect(() => {
         if (
-            loginError === ERRORS_ENUM.USER_WITH_EMAIL_NOT_FOUND &&
+            loginError === ERRORS_ENUM.USER_EMAIL_EXIST &&
             loginStarted
         ) {
-            navigate(constantsUrls.LandingPage.signUp);
+            signIn(email);
         } else if (!loginError && loginStarted && loginEmail) {
             navigate(constantsUrls.LandingPage.confirm);
         }
-    }, [navigate, loginError, loginStarted, loginEmail]);
+    }, [navigate, loginError, loginStarted, loginEmail, signIn, email]);
 
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
@@ -162,6 +164,7 @@ const SignUp: React.FC<ISignUp> = ({
 
 const mapDispatchToProps = (dispatch) => ({
     signUp: (payload: IUserRegistration) => dispatch(signUpStart(payload)),
+    signIn: (payload: string) => dispatch(checkEmailStart(payload))
 });
 
 const mapStateToProps = createStructuredSelector({

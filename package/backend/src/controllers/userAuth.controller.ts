@@ -40,12 +40,6 @@ async function register(req: Request, res: Response) {
 
     new mailService.Email(user).sendVerificationCode(verificationCode);
 
-    // mailService.SendTo.Client.Account.register({
-    //     account: user,
-    //     verificationCode,
-    //     appUrlRedirect: `${req.headers.origin}/confirm`,
-    // });
-
     const responseBody = {
         message: 'Verification required',
         ...(Helper.isTestModeEnabled() && { verificationCode }),
@@ -126,7 +120,9 @@ async function updateAccount(req: Request, res: Response) {
     const userUpdate: accountService.Model.IAccount = {
         ...req.body,
     };
+
     user = await accountService.DB.update(user._id, userUpdate);
+    if (req.body.isEnabled === false) process.nextTick(() => accountService.helpers.deactivateUserAccount(user._id));
     return appResponse.prepareJsonResponse(res, accountService.helpers.secureOutput(user));
 }
 

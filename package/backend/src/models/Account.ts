@@ -48,11 +48,12 @@ export const accountValidators = {
     countryCode: Joi.string()
         .equal(...Object.values(ConstantsCountries._Enum))
         .default(ConstantsCountries._Enum.PL)
+        .allow('')
         .optional(),
-    email: Joi.string().email().required(),
-    firstName: Joi.string().optional(),
+    email: Joi.string().email().optional(),
+    firstName: Joi.string().allow('').optional(),
     isEnabled: Joi.boolean().optional(),
-    lastName: Joi.string().optional(),
+    lastName: Joi.string().allow('').optional(),
     lastSeenAt: Joi.string().optional(),
     rodoAgreement: Joi.boolean().default(false).optional(),
     role: Joi.string()
@@ -81,7 +82,6 @@ const AccountSchema = new Schema<IDBAccount>(
         email: {
             type: String,
             validate: (val) => SchemasGlobal.Validators.schemaValidator(accountValidators.email, val),
-            required: true,
         },
         failedLoginAttempts: {
             type: Number,

@@ -84,4 +84,20 @@ export namespace helpers {
 
         throw errorsAdapter.Global.createError(matchingCode ? errorsAdapter.Global.ErrorsEnum.VERIFICATION_CODE_EXPIRED : errorsAdapter.Global.ErrorsEnum.INCORRECT_VERIFICATION_CODE);
     }
+
+    export async function deactivateUserAccount(userId: string): Promise<void> {
+        const userUpdate: Model.IAccount = {
+            cookiesAgreement: false,
+            confirmed: false,
+            email: '',
+            firstName: '',
+            isEnabled: false,
+            lastName: '',
+            latestUserAgentData: '',
+            rodoAgreement: false,
+            verificationCodes: [],
+        };
+
+        await DB.update(userId, userUpdate);
+    }
 }

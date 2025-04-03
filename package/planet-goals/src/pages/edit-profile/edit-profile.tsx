@@ -15,8 +15,9 @@ import Footer from '../../components/footer/footer';
 import SelectInput, {ISelectInputOption} from '../../components/select-input/select-input';
 import ToggleSwitch from '../../components/toggle-switch/toggle-switch';
 import Popup from '../../components/popup/popup';
+import Spinner from '../../components/spinner/spinner.component';
 
-import { userEditStart } from '../../redux/user/user.actions';
+import { userEditStart, disableUserStart } from '../../redux/user/user.actions';
 
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 import TeacherImg from "../../assets/user-profile/teacher_writing_on_blackboard.svg";
@@ -25,15 +26,17 @@ import SadEarthImg from "../../assets/login-page/sad_earth.svg";
 import styles from "./edit-profile.module.scss";
 import commonStyles from "../../styles/common.module.scss";
 import containersStyles from "../../styles/containers.module.scss";
+import { UserValidators } from '../../helpers/validators.ts/user';
 
 
 interface IEditProfile {
     currentUser: IUser;
+    deactivateAccount?: () => void;
     isLoading?: boolean;
     saveChanges: (payload: IUserEdit) => void;
 }
 
-const EditProfile: React.FC<IEditProfile> = ({ currentUser, saveChanges }) => {
+const EditProfile: React.FC<IEditProfile> = ({ currentUser, saveChanges, isLoading, deactivateAccount }) => {
     const { t } = useTranslate();
     const { isMobile } = useDeviceType();
     const buttonsSize: TButtonSize = isMobile ? "small" : "desktopSmall";
@@ -44,6 +47,13 @@ const EditProfile: React.FC<IEditProfile> = ({ currentUser, saveChanges }) => {
         lastName: currentUser?.lastName || "",
     });
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [validateForm, setValidateForm] = useState({
+        countryCode: true,
+        firstName: true,
+        lastName: true,
+    });
+
+
 
     const countriesList: ISelectInputOption[] = getCodes().map(code => ({
             label: `${getName(code)}`,
@@ -58,9 +68,27 @@ const EditProfile: React.FC<IEditProfile> = ({ currentUser, saveChanges }) => {
             ...editProfileState,
             [name]: value
         });
+        setValidateForm({
+            ...validateForm,
+            [name]: value !== "" && !(UserValidators?.[name]?.not(null, "")?.required()?.validate(value)?.error)
+        });
+    }
+
+    const handleSelectCountry = (countryCode: string) => {
+        setEditProfileState({
+            ...editProfileState,
+            countryCode
+        });
+        setValidateForm({
+            ...validateForm,
+            countryCode: !(UserValidators.countryCode.not(null, "").required().validate(countryCode).error)
+        });
     }
 
     const save = () => {
+        for (const validation of Object.values(validateForm)) {
+            if (!validation) return;
+        }
         saveChanges(editProfileState);
         setIsProfileEditing(false);
     }
@@ -88,6 +116,7 @@ const EditProfile: React.FC<IEditProfile> = ({ currentUser, saveChanges }) => {
                         onChange={handleChange}
                         value={editProfileState.firstName}
                         placeholder={t("profil.tab.data.name")}
+                        error={!validateForm.firstName}
                     />
                     <p className={`${commonStyles.basicHeader4} ${styles.label}`}>
                         {t("profil.tab.data.surname")}
@@ -97,6 +126,7 @@ const EditProfile: React.FC<IEditProfile> = ({ currentUser, saveChanges }) => {
                         onChange={handleChange}
                         value={editProfileState.lastName}
                         placeholder={t("profil.tab.data.surname")}
+                        error={!validateForm.lastName}
                     />
                     <p className={`${commonStyles.basicHeader4} ${styles.label}`}>
                         {t("profil.tab.data.email")}
@@ -111,13 +141,15 @@ const EditProfile: React.FC<IEditProfile> = ({ currentUser, saveChanges }) => {
                         {t("profil.tab.data.country")}
                     </p>
                     <SelectInput 
+                        disabled={!isProfileEditing}
                         name="countryCode"
                         value={editProfileState.countryCode}
-                        onChange={handleChange}
+                        onChange={handleSelectCountry}
                         options={countriesList}
                         placeholder={t("profil.tab.data.country")}
+                        error={!validateForm.countryCode}
                     />
-                    <PrimaryContainer direction="row" additionalClassess={`${containersStyles.justifySpaceBetween}`}>
+                    <PrimaryContainer direction="row" additionalClassess={`${containersStyles.justifySpaceBetween} ${styles.switchContainer}`}>
                         <ToggleSwitch value={isProfileEditing} onToggle={() => setIsProfileEditing(!isProfileEditing)} label={t("profil.tab.EditProfile")} />
                         { 
                             isProfileEditing && 
@@ -132,20 +164,21 @@ const EditProfile: React.FC<IEditProfile> = ({ currentUser, saveChanges }) => {
                 <p className={`${commonStyles.basicHeader3} ${commonStyles.redText} ${styles.header}`}>
                     {t("profile.tab.RemoveAccount")}
                 </p>
-                <p className={`${commonStyles.centeredText} ${commonStyles.padding1em}`}>
+                <p className={`${commonStyles.centeredText} ${commonStyles.padding1em} ${commonStyles.basicText}`}>
                     {t("profile.tab.RemoveAccountInfo")}
                 </p>
                 <PrimaryButton size={buttonsSize} color="red" onClick={() => setIsPopupVisible(true)}>
                     {t("profile.tab.RemoveAccount.button")}
                 </PrimaryButton>
             </PrimaryContainer>
+            { isLoading && <Spinner /> }
             <Footer />
             <Popup visible={isPopupVisible}>
                 <PrimaryContainer direction="column" additionalClassess={`${commonStyles.inheritBackground}`}>
                     <img alt='Delete account' src={SadEarthImg} className={styles.popupImg} />
                     <p className={`${commonStyles.basicHeader3}`}>{t("profile.tab.widget.info")}</p>
                     <PrimaryContainer direction="row" additionalClassess={`${commonStyles.inheritBackground} ${commonStyles.basicGap} ${commonStyles.padding1em}`}>
-                        <PrimaryButton color="red" size={buttonsSize}>
+                        <PrimaryButton color="red" size={buttonsSize} onClick={() => deactivateAccount()}>
                             {t("profile.tab.widget.confirm.button")}
                         </PrimaryButton>
                         <PrimaryButton color="white" size={buttonsSize} onClick={() => setIsPopupVisible(false)}>
@@ -159,7 +192,8 @@ const EditProfile: React.FC<IEditProfile> = ({ currentUser, saveChanges }) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    saveChanges: (payload: IUserEdit) => dispatch(userEditStart(payload))
+    deactivateAccount: () => dispatch(disableUserStart()),
+    saveChanges: (payload: IUserEdit) => dispatch(userEditStart(payload)),
 })
 
 const mapStateToProps = createStructuredSelector({
