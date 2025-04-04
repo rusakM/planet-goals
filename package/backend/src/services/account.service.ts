@@ -58,10 +58,10 @@ export namespace helpers {
     }
 
     export async function validateVerificationCode(user: Model.IAccount, code: string, userAgentData?: string): Promise<void> {
-        if (Helper.isTestModeEnabled()) {
-            if (userAgentData) await DB.update(user._id, { latestUserAgentData: userAgentData });
-            return;
-        }
+        // if (Helper.isTestModeEnabled()) {
+        //     if (userAgentData) await DB.update(user._id, { latestUserAgentData: userAgentData });
+        //     return;
+        // }
 
         const now = new Date();
 

@@ -18,3 +18,9 @@ export const ERRORS_ENUM = {
     USER_WITH_EMAIL_NOT_FOUND: "USER_WITH_EMAIL_NOT_FOUND",
     VERIFICATION_CODE_EXPIRED: "VERIFICATION_CODE_EXPIRED"
 };
+
+export const ERRORS_TRANSLATIONS_MAP = Object.fromEntries(
+    Object.entries(ERRORS_ENUM).map(
+        ([key, val]) => ([key, `errors.${val.toLowerCase()}`])
+    )
+);

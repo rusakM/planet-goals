@@ -10,14 +10,14 @@ import Spinner from "../../components/spinner/spinner.component";
 import TextInput from "../../components/text-input/text-input";
 
 import { useDeviceType } from "../../helpers/responsiveContainers";
-import { checkEmailStart, verifyCodeStart } from "../../redux/user/user.actions";
+import { checkEmailStart, verifyCodeStart, userEerrorClear } from "../../redux/user/user.actions";
 import {
     selectIsLoadingData,
     selectLoginEmail,
     selectUserError,
 } from "../../redux/user/user.selectors";
 
-import { ERRORS_ENUM } from "../../api/user.api";
+import { ERRORS_ENUM, ERRORS_TRANSLATIONS_MAP } from "../../api/user.api";
 import { IUserLogin } from "../../types/user";
 
 import commonStyles from "../../styles/common.module.scss";
@@ -31,6 +31,7 @@ import { constantsUrls } from "../../helpers/constants";
 import { secondsToMinutes } from "../../helpers/shared.functions";
 
 interface IConfirm {
+    clearError?: () => void;
     isLoadingData: boolean;
     loginEmail: string;
     loginError: string;
@@ -39,6 +40,7 @@ interface IConfirm {
 }
 
 const Confirm: React.FC<IConfirm> = ({
+    clearError,
     isLoadingData,
     loginEmail,
     loginError,
@@ -88,6 +90,7 @@ const Confirm: React.FC<IConfirm> = ({
         const value = event.target.value;
         if (value.length < 7) {
             setVerificationCode(value);
+            if (loginError) clearError();
         }
     }
 
@@ -121,6 +124,7 @@ const Confirm: React.FC<IConfirm> = ({
                         placeholder={t("signin.confirm.input-placeholder")}
                         type="text"
                         value={verificationCode}
+                        error={loginError === ERRORS_ENUM.INCORRECT_VERIFICATION_CODE}
                     />
                     <p
                         className={`${commonStyles.blueText} ${footerStyles.privacyRef} ${commonStyles.noPadding} ${commonStyles.noMargin} ${commonStyles.centeredText}${nextResendCodeInSeconds > 0 ? ` ${commonStyles.nonClickableCursor}` : ''}`}
@@ -130,8 +134,13 @@ const Confirm: React.FC<IConfirm> = ({
                         {nextResendCodeInSeconds > 0 && ` - ${secondsToMinutes(nextResendCodeInSeconds)}`}
                     </p>
                     {isLoadingData && <Spinner />}
-                    {loginError && <p>{loginError}</p>}
                 </PrimaryContainer>
+                <div className={styles.errorDescriptionContainer}>
+                    <p className={commonStyles.redText}>
+                        {loginError && <p>{t(ERRORS_TRANSLATIONS_MAP[loginError])}</p>}
+                    </p>
+
+                </div>
             </PrimaryContainer>
             <PrimaryContainer
                 direction={isMobile ? "column" : "row"}
@@ -152,6 +161,7 @@ const Confirm: React.FC<IConfirm> = ({
 };
 
 const mapDispatchToProps = (dispatch) => ({
+    clearError: () => dispatch(userEerrorClear()),
     resendEmail: (payload: string) => dispatch(checkEmailStart(payload)),
     verifyCode: (payload: IUserLogin) => dispatch(verifyCodeStart(payload)),
 });

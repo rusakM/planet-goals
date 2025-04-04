@@ -15,6 +15,11 @@
 
 }
 
+.errorDescriptionContainer {
+    min-height: 50px;
+    padding-top: 0.5em;
+}
+
 .bottomButtons {
     @media (max-width: breakpoints.$mobile) {
         margin-bottom: 1.5em;
