@@ -15,3 +15,12 @@ $rubik-one: "RubikOne";
 }
 
 $poppins-regular: "PoppinsRegular";
+
+@font-face {
+    font-family: "RobotoBlack";
+    src: url("../assets/fonts/Roboto-Black.ttf") format("truetype");
+    font-weight: 900;
+    font-size: normal;
+}
+
+$roboto-black: "RobotoBlack";

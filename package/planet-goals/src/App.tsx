@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useTolgee } from "@tolgee/react";
 
 import "./App.css";
 import { constantsUrls } from "./helpers/constants";
@@ -18,8 +19,9 @@ import { checkCurrentUser } from "./helpers/events.functions";
 
 function App() {
     const currentUser = useSelector(selectCurrentUser);
+    const tolgee = useTolgee(["language"]);
     return (
-        <>
+        <div lang={tolgee.getLanguage()}>
             <RootContainer>
                 <Routes>
                     <Route element={<LandingPage />} path={constantsUrls.LandingPage.main} />
@@ -43,7 +45,7 @@ function App() {
                     />
                 </Routes>
             </RootContainer>
-        </>
+        </div>
     );
 }
 

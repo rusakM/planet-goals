@@ -1,6 +1,7 @@
 @use "./breakpoints.scss";
 @use "./colors.scss";
 @use "./fonts.scss";
+@use "./mixins.scss";
 
 .basicText {
     font-family: fonts.$poppins-regular, sans-serif;
@@ -124,23 +125,21 @@
 }
 
 .basicHeader {
-    text-align: center;
-    padding: 1em;
-    font-family: fonts.$rubik-one, sans-serif;
-    text-transform: none;
     font-size: 24px;
+    @include mixins.basicHeader();
+    @include mixins.conditionalFont();
 
     @media (min-width: breakpoints.$desktop) {
         font-size: 46px;
     }
+
+
 }
 
 .basicHeader2 {
-    text-align: center;
-    padding: 1em;
-    font-family: fonts.$rubik-one, sans-serif;
-    text-transform: none;
     font-size: 24px;
+    @include mixins.basicHeader();
+    @include mixins.conditionalFont();
 
     @media (min-width: breakpoints.$desktop) {
         font-size: 40px;
@@ -148,11 +147,9 @@
 }
 
 .basicHeader3 {
-    text-align: center;
-    padding: 0.5em;
-    font-family: fonts.$rubik-one, sans-serif;
-    text-transform: none;
     font-size: 20px;
+    @include mixins.basicHeader();
+    @include mixins.conditionalFont();
 
     @media (min-width: breakpoints.$desktop) {
         font-size: 28px;
@@ -160,11 +157,9 @@
 }
 
 .basicHeader4 {
-    text-align: center;
-    padding: 0.5em;
-    font-family: fonts.$rubik-one, sans-serif;
-    text-transform: none;
     font-size: 14px;
+    @include mixins.basicHeader();
+    @include mixins.conditionalFont();
 
     @media (min-width: breakpoints.$desktop) {
         font-size: 20px;
@@ -172,7 +167,7 @@
 }
 
 .captionText {
-    font-family: fonts.$rubik-one, sans-serif;
+    @include mixins.conditionalFont();
 }
 
 .basicGap {

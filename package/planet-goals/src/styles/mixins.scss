@@ -1,0 +1,15 @@
+@use "./fonts.scss";
+
+@mixin basicHeader() {
+    text-align: center;
+    padding: 1em;
+    text-transform: none;
+}
+
+@mixin conditionalFont() {
+    font-family: fonts.$rubik-one, sans-serif;
+
+    [lang="el"] & {
+        font-family: fonts.$roboto-black, sans-serif;
+    }
+}

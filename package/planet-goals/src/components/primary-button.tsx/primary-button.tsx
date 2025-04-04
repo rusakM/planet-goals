@@ -26,11 +26,13 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
     size = "regular",
     type = "default"
 }) => {
+    const locale = localStorage.getItem("locale");
     return (
         <button
             className={`${styles.button} ${styles[color]} ${size !== 'regular' ? styles[size] : ''}${selected ? ` ${styles[`selected${color}`]}` : ''}${additionalClasses ? ` ${additionalClasses}` : ''}${type !== "default" ? ` ${styles[type]}` : ''}`}
             onClick={onClick}
             disabled={disabled}
+            lang={locale}
         >
             {children}
         </button>
