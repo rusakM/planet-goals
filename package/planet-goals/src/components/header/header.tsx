@@ -140,7 +140,10 @@ const Header: React.FC<MainPropsT> = ({
                 navigate(constantsUrls.Main.materials);
                 break;
             case MENU_ACTIONS.ME:
-                navigate(constantsUrls.Main.myProfile)
+                navigate(constantsUrls.Main.myProfile);
+                break;
+            case MENU_ACTIONS.START_LESSONS:
+                navigate(constantsUrls.Main.startLessons);
                 break;
             default:
                 console.log(action);

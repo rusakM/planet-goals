@@ -7,6 +7,7 @@ import { constantsUrls } from "./helpers/constants";
 import { selectCurrentUser } from "./redux/user/user.selectors";
 import { UserRoleEnum } from "./types/user";
 import Confirm from "./pages/confirm/confirm";
+import ChooseGameMode from "./pages/choose-game-mode/choose-game-mode";
 import EditProfile from "./pages/edit-profile/edit-profile";
 import FillRegisterData from "./pages/fill-register-data/fill-register-data";
 import LandingPage from "./pages/landing-page/landing-page";
@@ -42,6 +43,11 @@ function App() {
                         ? <Navigate to={constantsUrls.LandingPage.main } replace={true} />
                         : <FillRegisterData /> } 
                         path={constantsUrls.LandingPage.fillRegisterData}
+                    />
+                    <Route element={checkCurrentUser(currentUser)
+                        ? <ChooseGameMode />
+                        : <Navigate to={constantsUrls.LandingPage.signIn} replace={true} />}
+                        path={constantsUrls.Main.startLessons}
                     />
                 </Routes>
             </RootContainer>
