@@ -12,7 +12,11 @@
 
     @media (min-width: breakpoints.$desktop) {
         height: 100px;
-        padding: 0 1em;
+        padding: 0 2em;
+    }
+
+    @media (min-width: breakpoints.$large-desktop) {
+        padding: 0 138px;
     }
 }
 
@@ -27,13 +31,12 @@
 .logo {
     height: 100%;
     padding: 8px;
-    padding-left: 1em;
+    padding-left: 0;
     cursor: pointer;
 
     @media (min-width: breakpoints.$desktop) {
         height: 60%;
         padding: 0;
-        padding-left: 2em;
     }
 }
 
@@ -67,6 +70,12 @@
 
     @media (min-width: breakpoints.$desktop) {
         height: 60%;
+    }
+}
+
+.roleBadge {
+    @media (min-width: breakpoints.$large-desktop) {
+        padding: 5px 1em 5px 3em;
     }
 }
 

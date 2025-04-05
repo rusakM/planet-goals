@@ -170,7 +170,7 @@ const Header: React.FC<MainPropsT> = ({
                                 </div>
                             ))
                         }
-                        {currentUser?.role && <div className={`${styles.noHover} ${styles.control}`}>
+                        {currentUser?.role && <div className={`${styles.roleBadge} ${styles.noHover} ${styles.control}`}>
                             <PrimaryButton color="blue" size={isDesktop ? "desktopSmall" : "small" }>
                                 {t(constantsTranslations.ROLES_TRANSLATIONS[currentUser.role])}
                             </PrimaryButton>

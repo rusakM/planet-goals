@@ -32,6 +32,13 @@
     }
 }
 
+.startButtonsContainer {
+    @media (min-width: breakpoints.$desktop) {
+        width: 50% !important;
+        max-width: 380px !important;
+    }
+}
+
 .forTeachers {
     padding-top: 5em !important;
     padding-bottom: 0 !important;

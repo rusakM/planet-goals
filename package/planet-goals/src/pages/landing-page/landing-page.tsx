@@ -89,7 +89,7 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
                     </p>
                     <PrimaryContainer
                         direction="column"
-                        additionalClassess={`${styles.container} ${containersStyles.buttonsContainer} ${commonStyles.lightestGreyBackground}`}
+                        additionalClassess={`${styles.container} ${styles.startButtonsContainer} ${containersStyles.buttonsContainer} ${commonStyles.lightestGreyBackground}`}
                     >
                         <PrimaryButton
                             color="orange"
