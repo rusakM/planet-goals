@@ -177,6 +177,17 @@
     }
 }
 
+.basicHeader6 {
+    font-size: 32px;
+    @include mixins.basicHeader();
+    @include mixins.conditionalFont();
+    padding: 0.5em;
+
+    @media (min-width: breakpoints.$desktop) {
+        font-size: 56px;
+    }
+}
+
 .captionText {
     @include mixins.conditionalFont();
 }

@@ -1,0 +1,23 @@
+@use "@styles/breakpoints.scss";
+
+.header {
+    margin-top: 20vh;
+}
+
+.inputsContainer {
+    display: flex;
+    gap: 1em;
+    padding-top: 1em;
+
+    @media (min-width: breakpoints.$desktop) {
+        gap: 2em;
+        padding-top: 2em;
+    }
+
+}
+
+.button {
+    @media (max-width: breakpoints.$mobile) {
+        margin: 0.5em;
+    }
+}

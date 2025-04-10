@@ -1,0 +1,36 @@
+@use "@styles/breakpoints.scss";
+@use "@styles/colors.scss";
+@use "@styles/fonts.scss";
+
+.codeInput {
+    font-size: 40px;
+    color: colors.$orange;
+    font-family: fonts.$rubik-one, sans-serif;
+    width: 42px;
+    height: 66px;
+    border: 2px solid colors.$grey;
+    border-radius: 4px;
+    text-align: center;
+
+    &:focus {
+        outline: none;
+        border-color: colors.$orange;
+    }
+
+    @media (min-width: breakpoints.$desktop) {
+        width: 118px;
+        height: 184px;
+        font-size: 80px;
+        border-width: 4px;
+        border-radius: 8px;
+    }
+}
+
+.active {
+    border-color: colors.$orange;
+}
+
+.error {
+    border-color: colors.$red !important;
+    color: colors.$red !important;
+}

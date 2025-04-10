@@ -6,16 +6,19 @@ import "./App.css";
 import { constantsUrls } from "./helpers/constants";
 import { selectCurrentUser } from "./redux/user/user.selectors";
 import { UserRoleEnum } from "./types/user";
-import Confirm from "./pages/confirm/confirm";
+
 import ChooseGameMode from "./pages/choose-game-mode/choose-game-mode";
+import Confirm from "./pages/confirm/confirm";
 import EditProfile from "./pages/edit-profile/edit-profile";
 import FillRegisterData from "./pages/fill-register-data/fill-register-data";
 import LandingPage from "./pages/landing-page/landing-page";
+import Lobby from "./pages/lobby/lobby";
 import Materials from "./pages/materials/materials";
+import RedirectAfterLogin from "./components/redirect-after-login/redirect-after-login";
+import RootContainer from "./components/root-container/root-container";
 import SignIn from "./pages/sign-in/sign-in";
 import SignUp from "./pages/sign-up/sign-up";
-import RootContainer from "./components/root-container/root-container";
-import RedirectAfterLogin from "./components/redirect-after-login/redirect-after-login";
+
 import { checkCurrentUser } from "./helpers/events.functions";
 
 function App() {
@@ -48,6 +51,11 @@ function App() {
                         ? <ChooseGameMode />
                         : <Navigate to={constantsUrls.LandingPage.signIn} replace={true} />}
                         path={constantsUrls.Main.startLessons}
+                    />
+                    <Route element={checkCurrentUser(currentUser)
+                        ? <Lobby />
+                        : <Navigate to={constantsUrls.LandingPage.signIn} replace={true} />}
+                        path={constantsUrls.Main.lobby}
                     />
                 </Routes>
             </RootContainer>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslate } from '@tolgee/react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import PageContainer from '../../page-components/page-container/page-container';
 import PrimaryButton from '../../components/primary-button.tsx/primary-button';
@@ -14,6 +15,8 @@ import containersStyles from "../../styles/containers.module.scss";
 import { constantsUrls } from '../../helpers/constants';
 import { useDeviceType } from '../../helpers/responsiveContainers';
 
+import { setGameStage } from '../../redux/game/game.actions';
+
 import joinTheLessonImg from "../../assets/lessons-creator/i_compete_with_others.svg";
 import createANewLobbyImg from "../../assets/lessons-creator/create_a_new_room.svg";
 import startTheLessonImg from "../../assets/lessons-creator/start_lesson.svg";
@@ -21,10 +24,16 @@ import startTheLessonImg from "../../assets/lessons-creator/start_lesson.svg";
 const ChooseGameMode: React.FC = () => {
     const { t } = useTranslate();
     const { isMobile } = useDeviceType();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleBack = () => {
         navigate(constantsUrls.LandingPage.main);
+    }
+
+    const join = () => {
+        dispatch(setGameStage("join"));
+        navigate(constantsUrls.Main.lobby);
     }
 
     return (
@@ -46,7 +55,7 @@ const ChooseGameMode: React.FC = () => {
                                     </p>
                                 </div>
                                 <div>
-                                    <PrimaryButton color="orange" size="desktopSmall">
+                                    <PrimaryButton color="orange" size="desktopSmall" onClick={join}>
                                         {t("lesson.StartLesson.button")}
                                     </PrimaryButton>
                                 </div>
