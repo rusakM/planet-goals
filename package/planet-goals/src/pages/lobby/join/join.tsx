@@ -1,12 +1,16 @@
 import React, { ChangeEvent, KeyboardEvent, useState, useRef } from "react";
 import { useTranslate } from "@tolgee/react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import PageContainer from "../../../page-components/page-container/page-container";
 import PrimaryButton from "../../../components/primary-button.tsx/primary-button";
 import PrimaryContainer from "../../../components/primary-container/primary-container";
 import CodeInput from "../../../components/code-input/code-input";
 import { useDeviceType } from "../../../helpers/responsiveContainers";
+
+import { setGameStage } from "../../../redux/game/game.actions";
+import { selectCurrentUser } from "../../../redux/user/user.selectors";
 
 import styles from "./join.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
@@ -20,6 +24,8 @@ const Join: React.FC = () => {
     const { t } = useTranslate();
     const navigate = useNavigate();
     const { isMobile } = useDeviceType();
+    const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
     const validator = new RegExp("[A-Z0-9]", "g");
     const inputs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
 
@@ -63,6 +69,10 @@ const Join: React.FC = () => {
         setActiveIndex(index);
     }
 
+    const joinGame = () => {
+        if (currentUser.role === "TEACHER") dispatch(setGameStage("selectGameMode"));
+        else dispatch(setGameStage("lobby"));
+    }
 
     return (
         <PageContainer>
@@ -89,7 +99,7 @@ const Join: React.FC = () => {
                     ? `${containerStyles.buttonsContainer} ${commonStyles.bottom} ${signInStyles.bottomButtons}`
                     : signInStyles.bottomButtons
                 }>
-                <PrimaryButton color="orange" disabled={code.join("").length !== 5} onClick={() => console.log(`btn clicked, code: ${code}`)} type="action">
+                <PrimaryButton color="orange" disabled={code.join("").length !== 5} onClick={joinGame} type="action">
                     {t("main.confirm")}
                 </PrimaryButton>
                 <PrimaryButton onClick={() => navigate(constantsUrls.Main.startLessons)} type="action">
