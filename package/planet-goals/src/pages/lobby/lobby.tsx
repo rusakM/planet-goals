@@ -4,6 +4,7 @@ import { useSelector, /* useDispatch */} from "react-redux";
 
 import Join from "./join/join";
 import ChoosePlayerRole from "./choose-player-role/choose-player-role";
+import Wait from "./wait/wait";
 
 import { selectGameStage } from "../../redux/game/game.selectors";
 
@@ -17,6 +18,8 @@ const Lobby: React.FC = () => {
             return <Join />;
         case "selectGameMode":
             return <ChoosePlayerRole />
+        case "wait":
+            return <Wait />
         default: 
             return <>default screen</>
     }

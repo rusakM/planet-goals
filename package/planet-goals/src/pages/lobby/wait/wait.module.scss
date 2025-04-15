@@ -1,0 +1,41 @@
+@use "@styles/breakpoints.scss";
+@use "@styles/colors.scss";
+@use "@styles/fonts.scss";
+@use "@styles/mixins.scss";
+
+.waitContainer {
+    margin-top: -50px !important;
+}
+
+.img {
+    padding: 0;
+    transform: translateX(-100%) rotateZ(45deg);
+    width: 80px;
+
+    @media (min-width: breakpoints.$desktop) {
+        width: 190px;
+        height: 190px;
+        padding-bottom: 0;
+    }
+}
+
+.time {
+    @include mixins.basicHeader();
+    @include mixins.conditionalFont();
+    font-size: 80px;
+    padding: 0;
+
+    @media (min-width: breakpoints.$desktop) {
+        font-size: 200px;
+    }
+}
+
+.paragraph {
+    font-size: 18px;
+    font-family: fonts.$poppins-regular;
+    color: colors.$dark-text;
+
+    @media (min-width: breakpoints.$desktop) {
+        font-size: 48px;
+    }
+}
