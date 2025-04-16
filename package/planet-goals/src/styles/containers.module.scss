@@ -79,3 +79,11 @@
         padding-top: 5em !important;
     }
 }
+
+.pagePadding2 {
+    padding-top: 3em !important;
+
+    @media (min-width: breakpoints.$desktop) {
+        padding-top: 5em !important;
+    }
+}

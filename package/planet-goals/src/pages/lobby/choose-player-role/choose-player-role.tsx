@@ -45,7 +45,12 @@ const ChoosePlayerRole: React.FC = () => {
     
     return (
         <PageContainer>
-            <PrimaryContainer direction="column" additionalClassess={containersStyles.pagePadding}>
+            <PrimaryContainer direction="column" additionalClassess={containersStyles.pagePadding2}>
+                <PrimaryContainer direction="column">
+                    <p className={`${commonStyles.basicHeader6}`}>
+                        {t("lesson.mode.teacher.header")}
+                    </p>
+                </PrimaryContainer>
                 <PrimaryContainer direction={isMobile ? "column" : "row"} additionalClassess={`${cardsStyles.cardsContainer}`}>
                     <div className={cardsStyles.cardContainer}>
                         <div className={`${cardsStyles.card} ${styles.justWatchingCard}`}>

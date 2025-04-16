@@ -1,9 +1,11 @@
+@use "./colors.scss";
 @use "./fonts.scss";
 
 @mixin basicHeader() {
     text-align: center;
     padding: 1em;
     text-transform: none;
+    color: colors.$dark-text;
 }
 
 @mixin conditionalFont() {

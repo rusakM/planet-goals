@@ -203,3 +203,15 @@
 .nonClickableCursor {
     cursor: not-allowed !important;
 }
+
+.orangeBackground {
+    background-color: colors.$orange;
+}
+
+.blueBackground {
+    background-color: colors.$blue;
+}
+
+.redBackground {
+    background-color: colors.$red;
+}

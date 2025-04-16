@@ -36,9 +36,14 @@ const ChooseGameMode: React.FC = () => {
         navigate(constantsUrls.Main.lobby);
     }
 
+    const startLesson = () => {
+        dispatch(setGameStage("selectLesson"));
+        navigate(constantsUrls.Main.lobby);
+    }
+
     return (
         <PageContainer>
-            <PrimaryContainer direction="column" additionalClassess={containersStyles.pagePadding}>
+            <PrimaryContainer direction="column" additionalClassess={containersStyles.pagePadding2}>
                 <PrimaryContainer direction={isMobile ? "column" : "row"} additionalClassess={`${styles.cardsContainer}`}>
                     <div className={styles.cardContainer}>
                         <div className={styles.card}>
@@ -96,7 +101,7 @@ const ChooseGameMode: React.FC = () => {
                                     </p>
                                 </div>
                                 <div>
-                                    <PrimaryButton color="orange" size="desktopSmall">
+                                    <PrimaryButton color="orange" size="desktopSmall" onClick={startLesson}>
                                         {t("lesson.StartLesson.button")}
                                     </PrimaryButton>
                                 </div>

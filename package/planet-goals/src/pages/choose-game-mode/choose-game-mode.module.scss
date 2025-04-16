@@ -1,7 +1,7 @@
 @use "@styles/breakpoints.scss";
 
 .cardsContainer {
-    padding-top: 2.5em;
+    padding-top: 0;
     @media (min-width: breakpoints.$desktop) {
         width: 100%;
         max-width: breakpoints.$template-desktop;
