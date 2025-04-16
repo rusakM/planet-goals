@@ -43,7 +43,7 @@ const Wait: React.FC<IWait> = ({ waitingTimeUntil }) => {
         <PageContainer>
             <PrimaryContainer direction="column" additionalClassess={`${styles.waitContainer} ${commonStyles.centerFlex}`} height="allScreenHeight">
                 <img src={smileImg} className={`${styles.img}`} />
-                <p className={`${styles.time}${remainedSeconds <= 5 ? ` ${commonStyles.orangeText}`: ''}`}>{secondsToMinutes(remainedSeconds)}</p>
+                <p className={`${styles.time}${remainedSeconds <= 5 ? ` ${styles.orangeText}`: ''}`}>{secondsToMinutes(remainedSeconds)}</p>
                 <p className={styles.paragraph}>{t("start.lesson.info")}</p>
             </PrimaryContainer>
         </PageContainer>

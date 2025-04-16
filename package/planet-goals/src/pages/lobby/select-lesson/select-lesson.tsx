@@ -1,22 +1,25 @@
 import React, { useState } from "react";
 import { useTranslate } from "@tolgee/react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import PageContainer from "../../../page-components/page-container/page-container";
 import PrimaryContainer from "../../../components/primary-container/primary-container";
-import PrimaryButton from "../../../components/primary-button.tsx/primary-button";
+import PrimaryButton, { TButtonColor } from "../../../components/primary-button.tsx/primary-button";
 import DropdownButton from "../../../components/dropdown-button/dropdown-button";
 import SelectLessonButtonHeader from "./select-lesson-button-header";
+
+import { constantsUrls } from "../../../helpers/constants";
+import { setGameStage } from "../../../redux/game/game.actions";
 
 import styles from "./select-lesson.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 import containersStyles from "../../../styles/containers.module.scss";
-import { TButtonColor } from "../../../components/primary-button.tsx/primary-button";
-import { constantsUrls } from "../../../helpers/constants";
 
 const SelectLesson: React.FC = () => {
     const { t } = useTranslate();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [openedCards, setOpenedCards] = useState<boolean[]>(Array(7).fill(false));
 
 
@@ -26,7 +29,10 @@ const SelectLesson: React.FC = () => {
         setOpenedCards(newOpenedCards);
     }
 
-    const openLesson = (index: number) => console.log(`Opened lesson ${index + 1}`);
+    const openLesson = (index: number) => {
+        console.log(`Opened lesson ${index + 1}`);
+        dispatch(setGameStage("wait"));
+    }
     
     const getColor = (index: number): TButtonColor => {
         if (index % 3 === 0) return "orange";
