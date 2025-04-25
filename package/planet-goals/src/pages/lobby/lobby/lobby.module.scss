@@ -1,0 +1,101 @@
+@use "@styles/breakpoints.scss";
+@use "@styles/colors.scss";
+@use "@styles/mixins.scss";
+
+.invitationCode {
+    @include mixins.conditionalFont();
+    font-size: 48px;
+    text-align: center;
+    color: colors.$orange;
+    padding-bottom: 1em;
+
+    @media (min-width: breakpoints.$desktop) {
+        font-size: 96px;
+        padding-bottom: 2.5em;
+    }
+}
+
+.playersCount {
+    text-align: left;
+    width: 100%;
+    max-width: breakpoints.$desktop;
+    padding: 18px;
+}
+
+.lobbyItemsContainer {
+    width: 100%;
+    padding: 0.5em;
+    max-width: breakpoints.$desktop;
+
+    .lobbyListItem {
+        background-color: colors.$light-grey;
+        border-color: colors.$light-grey;
+        box-shadow: 0 4px 0 colors.$grey;
+        margin: 0.75em 0.5em;
+        height: 40px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        .listItemIndex {
+            color: colors.$grey;
+            font-size: 24px;
+        }
+
+        .nicknameContainer {
+            width: 100%;
+            padding-left: 1em;
+        }
+
+        .nickname {
+            font-size: 16px;
+            padding-left: 1em;
+            padding-top: 2px;
+        }
+
+        .trashIcon {
+            width: 16px;
+            height: 18px;
+            display: block;
+        }
+
+        @media (min-width: breakpoints.$desktop) {
+            height: 78px;
+
+            .listItemIndex {
+                font-size: 48px;
+            }
+
+            .nickname {
+                font-size: 32px;
+                padding-top: 0;
+            }
+
+            .trashIcon {
+                width: 28px;
+                height: 32px;
+            }
+        }
+    }
+
+}
+
+.popupDescription {
+    text-align: center;
+}
+
+.popupButtons, .navButtons {
+    gap: 1em;
+    padding-top: 0.75em;
+}
+
+.navButtons {
+    @media (max-width: breakpoints.$mobile) {
+        flex-wrap: nowrap;
+        & > button {
+            flex-basis: 1;     
+            width: 50%;     
+        }
+    }
+}

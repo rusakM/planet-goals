@@ -9,17 +9,20 @@ import PrimaryButton, { TButtonColor } from "../../../components/primary-button.
 import DropdownButton from "../../../components/dropdown-button/dropdown-button";
 import SelectLessonButtonHeader from "./select-lesson-button-header";
 
+import { useDeviceType } from "../../../helpers/responsiveContainers";
 import { constantsUrls } from "../../../helpers/constants";
 import { setGameStage } from "../../../redux/game/game.actions";
 
 import styles from "./select-lesson.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 import containersStyles from "../../../styles/containers.module.scss";
+import lobbyStyles from "../lobby/lobby.module.scss";
 
 const SelectLesson: React.FC = () => {
     const { t } = useTranslate();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { isMobile } = useDeviceType();
     const [openedCards, setOpenedCards] = useState<boolean[]>(Array(7).fill(false));
 
 
@@ -31,7 +34,7 @@ const SelectLesson: React.FC = () => {
 
     const openLesson = (index: number) => {
         console.log(`Opened lesson ${index + 1}`);
-        dispatch(setGameStage("wait"));
+        dispatch(setGameStage("lobby"));
     }
     
     const getColor = (index: number): TButtonColor => {
@@ -65,9 +68,9 @@ const SelectLesson: React.FC = () => {
                 </PrimaryContainer>
                 <PrimaryContainer
                     direction={"row"}
-                    additionalClassess={`${styles.bottomButtons}`}
+                    additionalClassess={`${styles.bottomButtons} ${lobbyStyles.navButtons}`}
                 >
-                    <PrimaryButton color="white" onClick={() => navigate(constantsUrls.Main.startLessons)} type="action">
+                    <PrimaryButton color="white" onClick={() => navigate(constantsUrls.Main.startLessons)} type={isMobile ? "default" : "action"} size={isMobile ? "desktopSmall" : "regular"} >
                         {t("main.back")}
                     </PrimaryButton>
                 </PrimaryContainer>

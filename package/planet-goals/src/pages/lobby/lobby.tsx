@@ -4,6 +4,7 @@ import { useSelector, /* useDispatch */} from "react-redux";
 
 import Join from "./join/join";
 import ChoosePlayerRole from "./choose-player-role/choose-player-role";
+import LobbyScreen from "./lobby/lobby";
 import SelectLesson from "./select-lesson/select-lesson";
 import Wait from "./wait/wait";
 
@@ -17,14 +18,16 @@ const Lobby: React.FC = () => {
     switch(gameStage) {
         case "join":
             return <Join />;
+        case "lobby":
+            return <LobbyScreen />;
         case "selectGameMode":
-            return <ChoosePlayerRole />
+            return <ChoosePlayerRole />;
         case "selectLesson":
-            return <SelectLesson />
+            return <SelectLesson />;
         case "wait":
-            return <Wait />
+            return <Wait />;
         default: 
-            return <>default screen</>
+            return <>default screen</>;
     }
 }
 

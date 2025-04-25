@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import PageContainer from "../../../page-components/page-container/page-container";
-import PrimaryButton from "../../../components/primary-button.tsx/primary-button";
+import PrimaryButton, { TButtonSize, TButtonType } from "../../../components/primary-button.tsx/primary-button";
 import PrimaryContainer from "../../../components/primary-container/primary-container";
 import CodeInput from "../../../components/code-input/code-input";
 import { useDeviceType } from "../../../helpers/responsiveContainers";
@@ -16,6 +16,7 @@ import styles from "./join.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 import containerStyles from "../../../styles/containers.module.scss";
 import signInStyles from "../../sign-in/sign-in.module.scss";
+import lobbyStyles from "../lobby/lobby.module.scss";
 
 import { constantsUrls } from "../../../helpers/constants";
 
@@ -23,8 +24,10 @@ import { constantsUrls } from "../../../helpers/constants";
 const Join: React.FC = () => {
     const { t } = useTranslate();
     const navigate = useNavigate();
-    const { isMobile } = useDeviceType();
     const dispatch = useDispatch();
+    const { isMobile } = useDeviceType();
+    const buttonsSize: TButtonSize = isMobile ? "desktopSmall" : "regular";
+    const buttonsType: TButtonType = isMobile ? "default" : "action";
     const currentUser = useSelector(selectCurrentUser);
     const validator = new RegExp("[A-Z0-9]", "g");
     const inputs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
@@ -96,13 +99,13 @@ const Join: React.FC = () => {
                 </div>
             </PrimaryContainer>
             <PrimaryContainer additionalClassess={isMobile 
-                    ? `${containerStyles.buttonsContainer} ${commonStyles.bottom} ${signInStyles.bottomButtons}`
+                    ? `${containerStyles.buttonsContainer} ${commonStyles.bottom} ${signInStyles.bottomButtons} ${lobbyStyles.navButtons}`
                     : signInStyles.bottomButtons
                 }>
-                <PrimaryButton color="orange" disabled={code.join("").length !== 5} onClick={joinGame} type="action">
+                <PrimaryButton color="orange" disabled={code.join("").length !== 5} onClick={joinGame} type={buttonsType} size={buttonsSize}>
                     {t("main.confirm")}
                 </PrimaryButton>
-                <PrimaryButton onClick={() => navigate(constantsUrls.Main.startLessons)} type="action">
+                <PrimaryButton onClick={() => navigate(constantsUrls.Main.startLessons)} type={buttonsType} size={buttonsSize}>
                     {t("main.back")}
                 </PrimaryButton>
             </PrimaryContainer>
