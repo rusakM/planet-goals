@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useState, useRef } from "react";
+import React, { ChangeEvent, KeyboardEvent, useState, useRef, useEffect } from "react";
 import { useTranslate } from "@tolgee/react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,8 +9,9 @@ import PrimaryContainer from "../../../components/primary-container/primary-cont
 import CodeInput from "../../../components/code-input/code-input";
 import { useDeviceType } from "../../../helpers/responsiveContainers";
 
-import { setGameStage } from "../../../redux/game/game.actions";
-import { selectCurrentUser } from "../../../redux/user/user.selectors";
+import { joinGameStart, setGameStage } from "../../../redux/game/game.actions";
+import { selectCurrentGame } from "../../../redux/game/game.selectors";
+//import { selectCurrentUser } from "../../../redux/user/user.selectors";
 
 import styles from "./join.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
@@ -28,14 +29,20 @@ const Join: React.FC = () => {
     const { isMobile } = useDeviceType();
     const buttonsSize: TButtonSize = isMobile ? "desktopSmall" : "regular";
     const buttonsType: TButtonType = isMobile ? "default" : "action";
-    const currentUser = useSelector(selectCurrentUser);
+    //const currentUser = useSelector(selectCurrentUser);
+    const currentGame = useSelector(selectCurrentGame);
     const validator = new RegExp("[A-Z0-9]", "g");
     const inputs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
 
     const [code, setCode] = useState<string[]>(["", "", "", "", ""]);
-    //const [lastChar, setLastChar] = useState<string>("");
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const validationError = false;
+
+    useEffect(() => {
+        if (currentGame && currentGame?.invitationCode === code.join("")) {
+            dispatch(setGameStage("lobby"));
+        }
+    }, [currentGame, code, dispatch]);
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -73,8 +80,9 @@ const Join: React.FC = () => {
     }
 
     const joinGame = () => {
-        if (currentUser.role === "TEACHER") dispatch(setGameStage("selectGameMode"));
-        else dispatch(setGameStage("lobby"));
+        dispatch(joinGameStart({
+            invitationCode: code.join('')
+        }));
     }
 
     return (
@@ -94,6 +102,7 @@ const Join: React.FC = () => {
                                 handleClick={() => handleClick(index) }
                                 handleKeyDown={(event: KeyboardEvent<HTMLInputElement>) => handleKeyDown(event, index)}
                                 ref={inputs[index]}
+                                key={index}
                             />)
                     }
                 </div>

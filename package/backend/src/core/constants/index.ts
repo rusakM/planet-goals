@@ -1,5 +1,6 @@
 import * as ConstantsCountries from './countries';
-import * as ConstantsEnv from './env';
+import * as ConstantsGame from './game';
 import * as ConstantsGlobal from './global';
+import * as ConstantsEnv from './env';
 
-export { ConstantsCountries, ConstantsEnv, ConstantsGlobal };
+export { ConstantsCountries, ConstantsGame, ConstantsGlobal, ConstantsEnv };

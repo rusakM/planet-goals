@@ -1,9 +1,20 @@
+import { IRemovePlayer } from "../../types/game";
+
 export const Footer = {
     conditionTerms: "/cdn/materials/manual_01.pdf",
     instagram: "https://www.instagram.com/planet_goals",
     linkedIn: "https://www.linkedin.com/company/104809294",
     privacyPolicy: "/cdn/materials/manual_02.pdf",
     youtube: "https://www.youtube.com/@PlanetGoals-SDGs",
+};
+
+export const Game = {
+    management: {
+        create: "/api/game",
+        join: "/api/game/join",
+        removePlayer: ({ gameId, playerId }: IRemovePlayer) => `/api/game/${gameId}/remove-player/${playerId}`,
+        start: (gameId: string) => `/api/game/${gameId}/start`,
+    }
 };
 
 export const LandingPage = {
@@ -16,6 +27,7 @@ export const LandingPage = {
 };
 
 export const Main = {
+    game: "/game",
     startLessons: "/lessons",
     lobby: "/lobby",
     myProgress: "/my-progress",

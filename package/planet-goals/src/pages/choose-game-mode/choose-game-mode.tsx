@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslate } from '@tolgee/react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import PageContainer from '../../page-components/page-container/page-container';
 import PrimaryButton from '../../components/primary-button.tsx/primary-button';
@@ -15,7 +15,8 @@ import containersStyles from "../../styles/containers.module.scss";
 import { constantsUrls } from '../../helpers/constants';
 import { useDeviceType } from '../../helpers/responsiveContainers';
 
-import { setGameStage } from '../../redux/game/game.actions';
+import { setGameMode, setGameStage, setIsGameCreatedByCurrentUser, setPlayerRole } from '../../redux/game/game.actions';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
 
 import joinTheLessonImg from "../../assets/lessons-creator/i_compete_with_others.svg";
 import createANewLobbyImg from "../../assets/lessons-creator/create_a_new_room.svg";
@@ -26,18 +27,38 @@ const ChooseGameMode: React.FC = () => {
     const { isMobile } = useDeviceType();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const currentUser = useSelector(selectCurrentUser);
 
     const handleBack = () => {
         navigate(constantsUrls.LandingPage.main);
     }
 
     const join = () => {
-        dispatch(setGameStage("join"));
+        if (currentUser.role === "TEACHER") {
+            dispatch(setGameStage("selectGameMode"));
+        } else {
+            dispatch(setGameStage("join"));
+        }
+        navigate(constantsUrls.Main.lobby);
+    }
+
+    const createLesson = () => {
+        if (currentUser.role === "TEACHER") {
+            dispatch(setGameStage("selectGameMode"));
+        } else {
+            dispatch(setPlayerRole("player"));
+            dispatch(setGameStage("selectLesson"));
+        }
+        dispatch(setIsGameCreatedByCurrentUser(true));
+        dispatch(setGameMode("multi"));
         navigate(constantsUrls.Main.lobby);
     }
 
     const startLesson = () => {
         dispatch(setGameStage("selectLesson"));
+        dispatch(setIsGameCreatedByCurrentUser(true));
+        dispatch(setGameMode('single'));
+        dispatch(setPlayerRole("player"));
         navigate(constantsUrls.Main.lobby);
     }
 
@@ -81,7 +102,7 @@ const ChooseGameMode: React.FC = () => {
                                     </p>
                                 </div>
                                 <div>
-                                    <PrimaryButton color="orange" size="desktopSmall">
+                                    <PrimaryButton color="orange" size="desktopSmall" onClick={createLesson}>
                                         {t("lesson.StartLesson.button")}
                                     </PrimaryButton>
                                 </div>

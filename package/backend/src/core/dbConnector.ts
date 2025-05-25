@@ -77,7 +77,10 @@ interface IFindMethods<IModel, TIndexes extends string> {
      * @param limit - Optional limit on the number of documents to return.
      * @returns An array of matching documents.
      */
-    byIndex: (key: TIndexes, value: string | number | boolean, limit?: number) => Promise<IModel[]>;
+    byIndex: {
+        (key: TIndexes, value: string, limit: 1): Promise<IModel>;
+        (key: TIndexes, value: string, limit?: number): Promise<IModel[]>;
+    };
 
     /**
      * Finds documents matching the given query conditions.
@@ -174,7 +177,7 @@ export class DbConnector<IDBModel extends Document, IModel, TIndexes extends str
         try {
             if (!Types.ObjectId.isValid(id)) throw new Error('"id" is not valid.');
 
-            const updatedItem = await (<IModel>this.Model.findByIdAndUpdate(id, payload, { new: true }).exec());
+            const updatedItem = await (<IModel>this.Model.findByIdAndUpdate(id, payload, { new: true }).lean().exec());
             return updatedItem;
         } catch (error) {
             console.log(`${this.errorMsg} update (id: ${id}):`, JSON.stringify(payload));
@@ -204,8 +207,7 @@ export class DbConnector<IDBModel extends Document, IModel, TIndexes extends str
                 return null;
             }
         },
-
-        byIndex: async (key: TIndexes, value: string | number | boolean, limit: number = 0): Promise<IModel[]> => {
+        byIndex: async (key: TIndexes, value: string, limit: number = 0) => {
             try {
                 if (!value) throw new Error(`Value "${value}" for ${key} is required.`);
 
@@ -214,11 +216,11 @@ export class DbConnector<IDBModel extends Document, IModel, TIndexes extends str
 
                 const query = this.Model.find(filter);
                 if (limit > 0) query.limit(limit);
-
+                if (limit === 1) return (<IModel>await query.lean().exec())?.[0];
                 return <IModel[]>await query.lean().exec();
             } catch (error) {
                 console.error(`${this.errorMsg} byIndex (key: ${key}, value: ${value}):`, error);
-                return [];
+                return limit === 1 ? null : [];
             }
         },
 

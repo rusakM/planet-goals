@@ -55,6 +55,35 @@ export namespace Core {
     }
 }
 
+export namespace Game {
+    export enum ErrorsEnum {
+        GAME_NOT_FOUND,
+        TOO_LITTLE_PLAYERS_LIST,
+    }
+
+    export const Game: { [key: string]: IError } = {
+        [ErrorsEnum.GAME_NOT_FOUND]: {
+            name: ErrorsEnum[ErrorsEnum.GAME_NOT_FOUND],
+            httpCode: 404,
+            message: 'Game not found',
+            type: ErrorTypesEnum[ErrorTypesEnum.Error],
+        },
+        [ErrorsEnum.TOO_LITTLE_PLAYERS_LIST]: {
+            name: ErrorsEnum[ErrorsEnum.TOO_LITTLE_PLAYERS_LIST],
+            httpCode: 422,
+            message: 'Not enough players to start game.',
+            type: ErrorTypesEnum[ErrorTypesEnum.Error],
+        },
+    };
+
+    export function createError(errosEnum: ErrorsEnum, data?: Record<string, unknown>) {
+        return new ApiError({
+            ...Game[errosEnum],
+            ...(data && { data }),
+        });
+    }
+}
+
 export namespace Global {
     export enum ErrorsEnum {
         ACCOUNT_TEMPORARILY_BLOCKED,

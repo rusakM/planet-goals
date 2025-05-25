@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslate } from "@tolgee/react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import PageContainer from "../../../page-components/page-container/page-container";
 import PrimaryContainer from "../../../components/primary-container/primary-container";
@@ -9,9 +9,12 @@ import PrimaryButton, { TButtonColor } from "../../../components/primary-button.
 import DropdownButton from "../../../components/dropdown-button/dropdown-button";
 import SelectLessonButtonHeader from "./select-lesson-button-header";
 
+import { TCreateGame, TGameStage } from "../../../types/game";
 import { useDeviceType } from "../../../helpers/responsiveContainers";
 import { constantsUrls } from "../../../helpers/constants";
-import { setGameStage } from "../../../redux/game/game.actions";
+import { createGameStart, resetGame, setGameStage, setSelectedLesson } from "../../../redux/game/game.actions";
+import { selectCurrentUser } from "../../../redux/user/user.selectors";
+import { selectGameMode, selectPlayerRole } from "../../../redux/game/game.selectors";
 
 import styles from "./select-lesson.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
@@ -24,7 +27,19 @@ const SelectLesson: React.FC = () => {
     const dispatch = useDispatch();
     const { isMobile } = useDeviceType();
     const [openedCards, setOpenedCards] = useState<boolean[]>(Array(7).fill(false));
+    const gameMode = useSelector(selectGameMode);
+    const playerRole = useSelector(selectPlayerRole);
+    const currentUser = useSelector(selectCurrentUser);
 
+    const lessonsIds = [
+        '6828addbd6da31b9e245207b',
+        '6828addbd6da31b9e245207b',
+        '6828addbd6da31b9e245207b',
+        '6828addbd6da31b9e245207b',
+        '6828addbd6da31b9e245207b',
+        '6828addbd6da31b9e245207b',
+        '6828addbd6da31b9e245207b',
+    ];
 
     const toggleCard = (index: number) => {
         const newOpenedCards = Array(7).fill(false);
@@ -32,9 +47,30 @@ const SelectLesson: React.FC = () => {
         setOpenedCards(newOpenedCards);
     }
 
+    const back = () => {
+        if (currentUser?.role === "TEACHER") {
+            dispatch(setGameStage("selectGameMode"));
+        } else {
+            dispatch(resetGame());
+            navigate(constantsUrls.Main.startLessons);
+        }
+    }
+
     const openLesson = (index: number) => {
-        console.log(`Opened lesson ${index + 1}`);
-        dispatch(setGameStage("lobby"));
+        const createGame: TCreateGame = {
+            hostRole: playerRole || "player",
+            lesson: lessonsIds[index],
+            singlePlayerMode: false
+        };
+        let gameStage: TGameStage = "lobby";
+        dispatch(setSelectedLesson(index + 1));
+        if (gameMode === "single") {
+            createGame.hostRole = "player";
+            createGame.singlePlayerMode = true;
+            gameStage = "wait";
+        }
+        dispatch(createGameStart(createGame));
+        dispatch(setGameStage(gameStage));
     }
     
     const getColor = (index: number): TButtonColor => {
@@ -70,7 +106,7 @@ const SelectLesson: React.FC = () => {
                     direction={"row"}
                     additionalClassess={`${styles.bottomButtons} ${lobbyStyles.navButtons}`}
                 >
-                    <PrimaryButton color="white" onClick={() => navigate(constantsUrls.Main.startLessons)} type={isMobile ? "default" : "action"} size={isMobile ? "desktopSmall" : "regular"} >
+                    <PrimaryButton color="white" onClick={back} type={isMobile ? "default" : "action"} size={isMobile ? "desktopSmall" : "regular"} >
                         {t("main.back")}
                     </PrimaryButton>
                 </PrimaryContainer>

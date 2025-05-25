@@ -50,6 +50,13 @@ export namespace appRoute {
                     register: `${servicesPrefix.api}/user/auth/register`,
                 },
             },
+
+            game: {
+                create: `${servicesPrefix.api}/game`,
+                join: `${servicesPrefix.api}/game/join`,
+                removePlayer: `${servicesPrefix}/game/:gameId/remove-player/:playerId`,
+                start: `${servicesPrefix.api}/game/:gameId/start`,
+            },
         };
     }
 }

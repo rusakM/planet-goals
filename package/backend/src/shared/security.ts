@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { validate as uuidValidate } from 'uuid';
 import { Request } from 'express';
+import { Types } from 'mongoose';
 import * as ErrorAdapter from '../core/errorAdapter';
 import { IDecodedToken } from '../shared/defs';
 import { ConstantsEnv, ConstantsGlobal } from '../core/constants';
@@ -83,7 +83,7 @@ export namespace security {
     export function validateParams(request: Request, response: any, next: any) {
         for (const param in request.params) {
             if (/Id$/.test(param)) {
-                if (!uuidValidate(request.params[param])) throw ErrorAdapter.Core.createError(ErrorAdapter.Core.ErrorsEnum.VALIDATION_ERROR, { details: 'Invalid path params.' });
+                if (!Types.ObjectId.isValid(request.params[param])) throw ErrorAdapter.Core.createError(ErrorAdapter.Core.ErrorsEnum.VALIDATION_ERROR, { details: 'Invalid path params.' });
             }
         }
 

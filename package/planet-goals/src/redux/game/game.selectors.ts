@@ -14,7 +14,27 @@ export const selectGameStage = createSelector(
   (game) => game.gameStage  
 );
 
+export const selectIsGameCreatedByCurrentUser = createSelector(
+  [selectGameState],
+  (game) => game.isGameCreatedByCurrentUser
+);
+
 export const selectPlayerRole = createSelector(
     [selectGameState],
     (game) => game.playerRole
+);
+
+export const selectSelectedLesson = createSelector(
+  [selectGameState],
+  (game) => game.selectedLesson
+);
+
+export const selectCurrentGame = createSelector(
+  [selectGameState],
+  (game) => game.currentGame
+);
+
+export const selectCurrentLesson = createSelector(
+  [selectGameState],
+  (game) => game.currentLesson
 );

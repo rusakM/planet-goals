@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslate } from "@tolgee/react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { resetGame } from "../../../redux/game/game.actions";
+import { startGameStart } from "../../../redux/game/game.actions";
 import { constantsUrls } from "../../../helpers/constants";
 
 import PageContainer from "../../../page-components/page-container/page-container";
 import PrimaryContainer from "../../../components/primary-container/primary-container";
+import { selectCurrentGame, selectIsGameCreatedByCurrentUser, selectPlayerRole } from "../../../redux/game/game.selectors";
 
 import styles from "./wait.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
@@ -25,20 +26,30 @@ const Wait: React.FC<IWait> = ({ waitingTimeUntil }) => {
     const dispatch = useDispatch();
     const remainedSecondsAtStart = waitingTimeUntil ? Math.floor(Math.abs(Date.now() - new Date(waitingTimeUntil).getTime()) / 1000): 10;
     const [ remainedSeconds, setRemainedSeconds ] = useState<number>(remainedSecondsAtStart);
+    const isGameCreatedByCurrentUser = useSelector(selectIsGameCreatedByCurrentUser);
+    const currentGame = useSelector(selectCurrentGame);
+    const playerRole = useSelector(selectPlayerRole);
+    
+    const startGame = useCallback(() => {
+        console.log(isGameCreatedByCurrentUser && playerRole === "player" && currentGame.singlePlayerMode);
+        if (isGameCreatedByCurrentUser && playerRole === "player" && currentGame.singlePlayerMode) {
+            dispatch(startGameStart(currentGame._id));
+        }
+        navigate(constantsUrls.Main.game);
+    }, [dispatch, isGameCreatedByCurrentUser, playerRole, currentGame, navigate]);
 
-    const back = useCallback(() => {
-        dispatch(resetGame());
-        navigate(constantsUrls.Main.startLessons);
-    }, [dispatch, navigate]);
+    // const back = useCallback(() => {
+    //     dispatch(resetGame());
+    //     navigate(constantsUrls.Main.startLessons);
+    // }, [dispatch, navigate]);
 
     useEffect(() => {
         if (remainedSeconds > 0) {
             setTimeout(() => setRemainedSeconds(remainedSeconds - 1), 1000);
+        } else {
+            startGame();
         }
-        //  else {
-            // back();
-        // }
-    }, [remainedSeconds, setRemainedSeconds, back])
+    }, [remainedSeconds, setRemainedSeconds, startGame])
     return (
         <PageContainer>
             <PrimaryContainer direction="column" additionalClassess={`${styles.waitContainer} ${commonStyles.centerFlex}`} height="allScreenHeight">

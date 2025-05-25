@@ -30,6 +30,7 @@ export interface IAccountBasic {
 }
 export interface IAccount extends IAccountBasic, SchemasGlobal.Schemas.IDocument {}
 export interface IDBAccount extends IAccountBasic, Document {}
+export type TBasicAccount = Pick<IAccount, '_id' | 'email' | 'firstName' | 'lastName' | 'role'>;
 
 export interface SecuredAccount {
     cookiesAgreement: IAccount['cookiesAgreement'];

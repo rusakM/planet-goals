@@ -6,6 +6,7 @@ export enum UserRoleEnum {
 }
 
 export interface IUser {
+    _id?: string;
     cookiesAgreement?: boolean;
     countryCode?: string;
     email?: string;

@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslate } from "@tolgee/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { setGameStage, resetGame } from "../../../redux/game/game.actions";
+import { setGameStage, resetGame, setIsGameCreatedByCurrentUser, removePlayerStart } from "../../../redux/game/game.actions";
 import { useDeviceType } from "../../../helpers/responsiveContainers";
 import { selectCurrentUser } from "../../../redux/user/user.selectors";
+import { selectCurrentGame, selectIsGameCreatedByCurrentUser } from "../../../redux/game/game.selectors";
 import { constantsUrls } from "../../../helpers/constants";
 
 import LobbyListItem from "./lobby-list-item";
@@ -25,16 +26,22 @@ const LobbyComponent: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const currentUser = useSelector(selectCurrentUser);
+    const currentGame = useSelector(selectCurrentGame);
+    const isGameCreatedByCurrentUser = useSelector(selectIsGameCreatedByCurrentUser);
     const { isMobile } = useDeviceType();
-    const invitationCode = "ABC12";
     const buttonsSize: TButtonSize = isMobile ? "desktopSmall" : "regular";
     const buttonsType: TButtonType = isMobile ? "default" : "action";
 
-    const [playersList, setPlayersList] = useState<string[]>(["Asterix Obelix", "Sebastian Winek", "Mateusz Rusak"]);
     const [isLeaving, setIsLeaving] = useState<boolean>(false);
 
-    const handleDelete = (index: number) => {
-        setPlayersList(playersList.splice(index, 1))
+    useEffect(() => {
+        if (!isGameCreatedByCurrentUser && currentGame.owner === currentUser._id) {
+            dispatch(setIsGameCreatedByCurrentUser(true));
+        }
+    }, [isGameCreatedByCurrentUser, dispatch, currentGame, currentUser]);
+
+    const handleDelete = (playerId: string) => {
+        dispatch(removePlayerStart({ playerId, gameId: currentGame._id }));
     }
 
     const leaveLobby = () => setIsLeaving(true);
@@ -55,15 +62,15 @@ const LobbyComponent: React.FC = () => {
                         { t("lesson.lobby.CodeHeader") }
                     </p>
                     <p className={styles.invitationCode}>
-                        {invitationCode}
+                        {currentGame?.invitationCode}
                     </p>
                 </PrimaryContainer>
                 <PrimaryContainer direction="column">
-                    <p className={`${commonStyles.basicHeader} ${styles.playersCount}`}>{t("lesson.lobby.PlayerList")} {playersList.length}/99</p>
+                    <p className={`${commonStyles.basicHeader} ${styles.playersCount}`}>{t("lesson.lobby.PlayerList")} {currentGame?.players?.length || 0}/99</p>
                     <div className={styles.lobbyItemsContainer}>
                         {
-                            playersList.map((item, index) => (
-                                <LobbyListItem key={index} index={index + 1} isDeleteEnabled={currentUser.role === "TEACHER"} handleDelete={() => handleDelete(index)} nickname={item}/>
+                            currentGame?.players?.map((player, index) => (
+                                <LobbyListItem key={index} index={index + 1} isDeleteEnabled={isGameCreatedByCurrentUser && currentUser._id !== player._id} handleDelete={() => handleDelete(player._id)} nickname={`${player.firstName} ${player.lastName}`}/>
                             ))
                         }
                     </div>
