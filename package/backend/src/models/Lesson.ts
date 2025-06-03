@@ -92,8 +92,6 @@ const LessonSchema = new Schema<IDBLesson>(
     SchemasGlobal.Options.dbSchema
 );
 
-LessonSchema.index({ lessonNumber: 1 });
-
 export type TIndexes = 'lessonNumber';
 
 export const Lesson = model<IDBLesson>(Helper.prepareTableName('lesson'), LessonSchema);

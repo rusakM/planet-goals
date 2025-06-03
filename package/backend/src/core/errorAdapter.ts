@@ -58,6 +58,7 @@ export namespace Core {
 export namespace Game {
     export enum ErrorsEnum {
         GAME_NOT_FOUND,
+        LESSON_NOT_FOUND,
         TOO_LITTLE_PLAYERS_LIST,
     }
 
@@ -66,6 +67,12 @@ export namespace Game {
             name: ErrorsEnum[ErrorsEnum.GAME_NOT_FOUND],
             httpCode: 404,
             message: 'Game not found',
+            type: ErrorTypesEnum[ErrorTypesEnum.Error],
+        },
+        [ErrorsEnum.LESSON_NOT_FOUND]: {
+            name: ErrorsEnum[ErrorsEnum.LESSON_NOT_FOUND],
+            httpCode: 404,
+            message: 'Lesson not found',
             type: ErrorTypesEnum[ErrorTypesEnum.Error],
         },
         [ErrorsEnum.TOO_LITTLE_PLAYERS_LIST]: {

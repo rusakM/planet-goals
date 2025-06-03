@@ -57,6 +57,10 @@ export namespace appRoute {
                 removePlayer: `${servicesPrefix}/game/:gameId/remove-player/:playerId`,
                 start: `${servicesPrefix.api}/game/:gameId/start`,
             },
+
+            lesson: {
+                get: `${servicesPrefix.api}/lesson/:lessonId`,
+            },
         };
     }
 }
