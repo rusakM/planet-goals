@@ -11,6 +11,7 @@ export const Footer = {
 export const Game = {
     management: {
         create: "/api/game",
+        getLessonById: (lessonId: string) => `/api/lesson/${lessonId}`,
         join: "/api/game/join",
         removePlayer: ({ gameId, playerId }: IRemovePlayer) => `/api/game/${gameId}/remove-player/${playerId}`,
         start: (gameId: string) => `/api/game/${gameId}/start`,

@@ -1,0 +1,123 @@
+@use "@styles/breakpoints.scss";
+@use "@styles/colors.scss";
+@use "@styles/game-colors.scss";
+@use "@styles/fonts.scss";
+@use "@styles/mixins.scss";
+
+.button {
+    border-radius: 4px;
+    font-size: 32px;
+    padding: 39px 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-width: 3px;
+    border-style: solid;
+    border-bottom-width: 5px;
+    color: colors.$white;
+    width: 100%;
+    text-align: center;
+    @include mixins.conditionalFont();
+
+    &:hover, &:active {
+        transform: translateY(4px);
+        box-shadow: none;
+        color: colors.$light-grey;
+    }
+
+    @media (min-width: breakpoints.$desktop) {
+        font-size: 48px;
+        border-radius: 10px;
+        padding: 52px 32px;
+    }
+}
+
+.thin {
+    padding-top: 14px;
+    padding-bottom: 14px;
+
+    @media (min-width: breakpoints.$desktop) {
+        padding-top: 52px;
+        padding-bottom: 52px;
+    }
+}
+
+.orange {
+    background-color: game-colors.$orange;
+    border-color: game-colors.$dark-orange;
+    box-shadow: 0 4px 0 game-colors.$dark-orange;
+
+    &:hover {
+        background-color: colors.$light-orange;
+    }
+}
+
+.blue {
+    background-color: game-colors.$blue;
+    border-color: game-colors.$dark-blue;
+    box-shadow: 0 4px 0 game-colors.$dark-blue;
+
+    &:hover {
+        background-color: colors.$light-blue;
+    }
+}
+
+.red {
+    background-color: game-colors.$red;
+    border-color: game-colors.$dark-red;
+    box-shadow: 0 4px 0 game-colors.$dark-red;
+
+    &:hover {
+        background-color: colors.$dark-red;
+    }
+}
+
+.green {
+    background-color: game-colors.$green;
+    border-color: game-colors.$dark-green;
+    box-shadow: 0 4px 0 game-colors.$dark-green;
+
+    &:hover {
+        background-color: game-colors.$dark-green;
+    }
+}
+
+.white {
+    background-color: game-colors.$white;
+    border-color: game-colors.$dark-white;
+    box-shadow: 0 4px 0 game-colors.$dark-white;
+    color: game-colors.$blue;
+
+    &:hover {
+        background-color: game-colors.$dark-white;
+    }
+}
+
+.selectedorange {
+    background-color: game-colors.$dark-orange;
+    border-color: game-colors.$dark-orange;
+    color: colors.$light-grey;
+}
+
+.selectedblue {
+    background-color: game-colors.$dark-blue;
+    border-color: game-colors.$dark-blue;
+    color: colors.$light-grey;
+}
+
+.selectedred {
+    background-color: game-colors.$dark-red;
+    border-color: game-colors.$dark-red;
+    color: colors.$light-grey;
+}
+
+.selectedgreen {
+    background-color: game-colors.$dark-green;
+    border-color: game-colors.$dark-green;
+    color: colors.$light-grey;
+}
+
+.selectedwhite {
+    background-color: game-colors.$white;
+    border-color: game-colors.$white;
+    color: game-colors.$dark-blue;
+}

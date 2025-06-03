@@ -1,0 +1,47 @@
+@use "@styles/breakpoints.scss";
+@use "@styles/colors.scss";
+@use "@styles/fonts.scss";
+@use "@styles/mixins.scss";
+
+.headerText {
+    font-size: 24px;
+    @include mixins.basicHeader();
+    @include mixins.conditionalFont();
+
+    @media (min-width: breakpoints.$desktop) {
+        font-size: 48px;
+    }
+}
+
+.basicText {
+    font-size: 14px;
+    color: colors.$dark-text;
+    font-family: fonts.$poppins-regular, sans-serif;
+
+    @media (min-width: breakpoints.$desktop) {
+        font-size: 24px;
+    }
+}
+
+.buttonContainer {
+    width: 100%;
+    padding: 0.5em;
+    display: block;
+
+    @media (min-width: breakpoints.$desktop) {
+        width: 50%;
+        padding: 2em;
+    }
+}
+
+.buttonsContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-top: 3em;
+
+    @media (min-width: breakpoints.$desktop) {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+}

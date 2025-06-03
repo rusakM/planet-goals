@@ -41,3 +41,5 @@ export interface ILesson extends globalTypes.IDBObject {
     nameTranslation?: string;
     questions?: IQuestion[];
 }
+
+export type TCurrentQuestion = [question: number, subquestion: number];

@@ -3,9 +3,12 @@ import { GameActionTypes, IGameState } from "./game.types";
 const INITIAL_STATE: IGameState = {
     currentGame: null,
     currentLesson: null,
+    currentQuestion: [0, 0],
+    gameError: "",
     gameMode: null,
     gameStage: null,
     isGameCreatedByCurrentUser: false,
+    lessonError: "",
     playerRole: null,
     selectedLesson: 0
 };
@@ -28,7 +31,7 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
             return {
                 ...state,
                 isGameCreatedByCurrentUser: action.payload
-            }
+            };
         case GameActionTypes.SET_PLAYER_ROLE:
             return {
                 ...state,
@@ -47,8 +50,30 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
                 ...state,
                 currentGame: action.payload
             }
+        case GameActionTypes.CREATE_GAME_FAILURE:
+        case GameActionTypes.JOIN_GAME_FAILURE:
+        case GameActionTypes.START_GAME_FAILURE:
+            return {
+                ...state,
+                gameError: action.payload
+            };
+        case GameActionTypes.FETCH_LESSON_SUCCESS:
+            return {
+                ...state,
+                currentLesson: action.payload
+            };
+        case GameActionTypes.FETCH_LESSON_FAILURE:
+            return {
+                ...state,
+                lessonError: action.payload
+            };
+        case GameActionTypes.SET_CURRENT_QUESTION:
+            return {
+                ...state,
+                currentQuestion: action.payload
+            }
         default:
-            return state
+            return state;
     }
 };
 

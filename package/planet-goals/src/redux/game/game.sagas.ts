@@ -8,6 +8,8 @@ import * as Api from "../../api/index";
 import {
     createGameFailure,
     createGameSuccess,
+    fetchLessonFailure,
+    fetchLessonSuccess,
     joinGameFailure,
     joinGameSuccess,
     removePlayerFailure,
@@ -16,8 +18,11 @@ import {
     startGameSuccess,
 } from "./game.actions";
 import { IGame, IRemovePlayer } from "../../types/game";
+import { ILesson } from "../../types/lesson";
+import { gameTypes } from "../../types";
 
 const createGameStart = createAction(GameActionTypes.CREATE_GAME_START);
+const fetchLessonStart = createAction(GameActionTypes.FETCH_LESSON_START);
 const joinGameStart = createAction(GameActionTypes.JOIN_GAME_START);
 const removePlayerStart = createAction(GameActionTypes.REMOVE_PLAYER_START);
 const startGameStart = createAction(GameActionTypes.START_GAME_START);
@@ -29,21 +34,30 @@ function* createGame({ payload }) {
             payload,
             "POST"
         );
-
+        sessionStorage.setItem("invitationCode", game.invitationCode);
         yield put(createGameSuccess(game));
     } catch (error) {
         yield put(createGameFailure(error.name));
     }
 }
 
-function* joinGame({ payload }) {
+function* fetchLesson({ payload }) {
+    try {
+        const lesson: ILesson = yield call(Api.getData, constantsUrls.Game.management.getLessonById(payload));
+        yield put(fetchLessonSuccess(lesson));
+    } catch (error) {
+        yield put(fetchLessonFailure(error.name));
+    }
+}
+
+function* joinGame({ payload }: { payload: gameTypes.TJoinGame }) {
     try {
         const game: IGame = yield call(Api.sendData,
             constantsUrls.Game.management.join,
             payload,
             "POST"
         );
-
+        sessionStorage.setItem("invitationCode", payload.invitationCode);
         yield put(joinGameSuccess(game));
     } catch (error) {
         yield put(joinGameFailure(error.name));
@@ -71,7 +85,7 @@ function* startGame({ payload }: { payload: string }) {
             {},
             "PATCH"
         );
-
+        sessionStorage.setItem("invitationCode", game.invitationCode)
         yield put(startGameSuccess(game));
     } catch (error) {
         yield put(startGameFailure(error.name));
@@ -80,6 +94,10 @@ function* startGame({ payload }: { payload: string }) {
 
 function* onCreateGameStart(): Generator {
     yield takeLatest(createGameStart, createGame);
+}
+
+function* onFetchLessonStart(): Generator {
+    yield takeLatest(fetchLessonStart, fetchLesson);
 }
 
 function* onJoinGameStart(): Generator {
@@ -97,6 +115,7 @@ function* onStartGameStart(): Generator {
 export function* gameSagas() {
     yield all([
         call(onCreateGameStart),
+        call(onFetchLessonStart),
         call(onJoinGameStart),
         call(onRemovePlayerStart),
         call(onStartGameStart)

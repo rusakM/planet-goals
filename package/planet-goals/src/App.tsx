@@ -11,6 +11,7 @@ import ChooseGameMode from "./pages/choose-game-mode/choose-game-mode";
 import Confirm from "./pages/confirm/confirm";
 import EditProfile from "./pages/edit-profile/edit-profile";
 import FillRegisterData from "./pages/fill-register-data/fill-register-data";
+import Game from "./pages/game/game";
 import LandingPage from "./pages/landing-page/landing-page";
 import Lobby from "./pages/lobby/lobby";
 import Materials from "./pages/materials/materials";
@@ -56,6 +57,11 @@ function App() {
                         ? <Lobby />
                         : <Navigate to={constantsUrls.LandingPage.signIn} replace={true} />}
                         path={constantsUrls.Main.lobby}
+                    />
+                    <Route element={checkCurrentUser(currentUser)
+                        ? <Game />
+                        : <Navigate to={constantsUrls.LandingPage.signIn} replace={true} />}
+                        path={constantsUrls.Main.game}
                     />
                 </Routes>
             </RootContainer>

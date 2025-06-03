@@ -38,3 +38,8 @@ export const selectCurrentLesson = createSelector(
   [selectGameState],
   (game) => game.currentLesson
 );
+
+export const selectCurrentQuestion = createSelector(
+  [selectGameState],
+  (game) => game.currentQuestion
+);

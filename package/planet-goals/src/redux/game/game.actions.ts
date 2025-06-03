@@ -1,8 +1,17 @@
 import { GameActionTypes } from "./game.types";
-import { gameTypes } from "../../types";
+import { gameTypes, lessonTypes } from "../../types";
+import { ILesson } from "../../types/lesson";
 
-export const resetGame = () => ({
-    type: GameActionTypes.RESET_GAME
+export const resetGame = () => {
+    sessionStorage.removeItem("invitationCode");
+    return {
+        type: GameActionTypes.RESET_GAME
+    }
+};
+
+export const setCurrentQuestion = (payload: lessonTypes.TCurrentQuestion) => ({
+    type: GameActionTypes.SET_CURRENT_QUESTION,
+    payload
 });
 
 export const setGameMode = (mode: gameTypes.TGameMode) => ({
@@ -45,6 +54,21 @@ export const createGameSuccess = (payload: gameTypes.IGame) => ({
 
 export const createGameFailure = (error) => ({
     type: GameActionTypes.CREATE_GAME_FAILURE,
+    payload: error
+});
+
+export const fetchLessonStart = (lessonId: string) => ({
+    type: GameActionTypes.FETCH_LESSON_START,
+    payload: lessonId
+});
+
+export const fetchLessonSuccess = (payload: ILesson) => ({
+    type: GameActionTypes.FETCH_LESSON_SUCCESS,
+    payload
+});
+
+export const fetchLessonFailure = (error) => ({
+    type: GameActionTypes.FETCH_LESSON_FAILURE,
     payload: error
 });
 

@@ -17,7 +17,7 @@ export async function getData<T>(
             },
         });
 
-        return response.data.data as T;
+        return response.data as T;
     } catch (error) {
         throw error?.response?.data;
     }

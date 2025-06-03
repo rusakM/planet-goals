@@ -71,3 +71,4 @@ export interface IRemovePlayer {
 
 export type TCreateGame = Pick<IGame, 'hostRole' | 'lesson' | 'singlePlayerMode'>;
 export type TJoinGame = Pick<IGame, 'invitationCode'>;
+
