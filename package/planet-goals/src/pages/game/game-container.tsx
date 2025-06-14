@@ -27,16 +27,21 @@ const GameContainer: React.FC<IGameContainer> = ({ children, currentQuestionInde
     const dispatch = useDispatch();
     const { t } = useTranslate();
     const navigate = useNavigate();
-
     const [remainedSeconds, setRemainedSeconds] = useState(timeInSek);
+    const [currentQuestionTemp, setCurrentQuestionTemp] = useState(currentQuestionIndex);
+    console.log('time', timeInSek, remainedSeconds);
     const [settingsVisible, setSettingsVisible] = useState(false);
     const [exitVisible, setExitVisible] = useState(false);
 
     useEffect(() => {
+        if (currentQuestionIndex !== currentQuestionTemp) {
+            setCurrentQuestionTemp(currentQuestionIndex);
+            setRemainedSeconds(timeInSek);
+        }
         if (remainedSeconds > 0) {
             setTimeout(() => setRemainedSeconds(remainedSeconds - 1), 1000);
         }
-    }, [remainedSeconds, currentQuestionIndex, nextQuestionIndex]);  
+    }, [remainedSeconds, currentQuestionIndex, timeInSek, currentQuestionTemp]);  
 
     const nextSLide = () => {
         if (currentQuestionIndex.join("") !== nextQuestionIndex.join("")) {
@@ -51,9 +56,9 @@ const GameContainer: React.FC<IGameContainer> = ({ children, currentQuestionInde
 
     return <div className={styles.gameContainer}>
         <div className={styles.header}>
-            <p className={styles.timer}>{secondsToMinutes(remainedSeconds)}</p>
+            <p className={styles.timer} onClick={nextSLide}>{secondsToMinutes(remainedSeconds)}</p>
         </div>
-        <div className={`${styles.questionContainer} ${commonStyles.centerFlex}`} onClick={nextSLide}>
+        <div className={`${styles.questionContainer} ${commonStyles.centerFlex}`}>
             {children}
         </div>
         <div className={styles.footer}>

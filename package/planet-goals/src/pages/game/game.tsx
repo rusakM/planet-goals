@@ -18,6 +18,9 @@ import MultiChoose from "../../page-components/questions/multi-choose/multi-choo
 import TrueFalse from "../../page-components/questions/true-false/true-false";
 import SelectCorrectAnswer from "../../page-components/questions/select-correct-answer/select-correct-answer";
 import SelectCorrectOrder from "../../page-components/questions/select-correct-order/select-correct-order";
+import ContentQuestion from "../../page-components/questions/content-question/content-question";
+import FillCorrectOrder from "../../page-components/questions/fill-in-correct-order/fill-in-correct-order";
+import FitTiles from "../../page-components/questions/fit-tiles/fit-tiles";
 
 const Game: React.FC = () => {
     const dispatch = useDispatch();
@@ -49,11 +52,22 @@ const Game: React.FC = () => {
         case QUESTION_TYPES_ENUM.CONTENT_INSTRUCTION:
             questionScreen = <ContentInstruction {...currentSubquestion}/>;
             break;
+        case QUESTION_TYPES_ENUM.CONTENT_QUESTION:
+            questionScreen = <ContentQuestion { ...currentSubquestion } />;
+            break;
         case QUESTION_TYPES_ENUM.CONTENT_TEXT:
             questionScreen = <ContentText { ...currentSubquestion } />;
             break;
         case QUESTION_TYPES_ENUM.CONTENT_TITLE:
             questionScreen = <ContentTitle { ...currentSubquestion } />;
+            break;
+        case QUESTION_TYPES_ENUM.FILL_IN_CORRECT_ORDER:
+            questionScreen = <FillCorrectOrder {...currentSubquestion} />;
+            break;
+        case QUESTION_TYPES_ENUM.FIT_TILES:
+            questionScreen = <FitTiles {...currentSubquestion} />;
+            break;
+        case QUESTION_TYPES_ENUM.LEFT_RIGHT:
             break;
         case QUESTION_TYPES_ENUM.MULTI_CHOOSE:
             questionScreen = <MultiChoose { ...currentSubquestion } />;

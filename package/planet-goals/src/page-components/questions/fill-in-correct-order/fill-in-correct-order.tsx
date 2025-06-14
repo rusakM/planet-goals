@@ -6,10 +6,12 @@ import commonStyles from "../../../styles/common.module.scss";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 
-const SelectCorrectOrder: React.FC<ISubquestion> = (questionData) => {
+const FillCorrectOrder: React.FC<ISubquestion> = (questionData) => {
     const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
     const [answers, setAnswers] = useState(new Array(questionData.answers.length).fill(0));
     const [currentAnswer, setCurrentAnswer] = useState(0);
+    const [description, setDescription] = useState(questionData.description);
+
 
     const markTile = (index) => {
         const tempAnswers = [...answers];
@@ -17,6 +19,7 @@ const SelectCorrectOrder: React.FC<ISubquestion> = (questionData) => {
         if (!answers[index]) {
             tempCurrentAnswers++;
             tempAnswers[index] = tempCurrentAnswers;
+            setDescription(description.replace("...", questionData.answers[index]));
         }
         
         setAnswers(tempAnswers);
@@ -24,7 +27,7 @@ const SelectCorrectOrder: React.FC<ISubquestion> = (questionData) => {
     }
 
     return <div>
-        <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
+        <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{description}</p>
         <div className={`${styles.buttonsContainer}`}>
             {
                 questionData.answers?.map((ans, index) => 
@@ -39,4 +42,4 @@ const SelectCorrectOrder: React.FC<ISubquestion> = (questionData) => {
     </div>
 }
 
-export default SelectCorrectOrder;
+export default FillCorrectOrder;

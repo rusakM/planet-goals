@@ -22,6 +22,7 @@ export namespace Game {
 export namespace Question {
     export enum TYPES_ENUM {
         CONTENT_INSTRUCTION = 'CONTENT_INSTRUCTION',
+        CONTENT_QUESTION = 'CONTENT_QUESTION',
         CONTENT_TEXT = 'CONTENT_TEXT',
         CONTENT_TITLE = 'CONTENT_TITLE',
         FILL_IN_CORRECT_ORDER = 'FILL_IN_CORRECT_ORDER',

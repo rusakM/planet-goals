@@ -18,7 +18,7 @@
     text-align: center;
     @include mixins.conditionalFont();
 
-    &:hover, &:active {
+    &:hover, &:active, &:disabled {
         transform: translateY(4px);
         box-shadow: none;
         color: colors.$light-grey;
