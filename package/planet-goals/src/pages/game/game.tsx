@@ -21,6 +21,7 @@ import SelectCorrectOrder from "../../page-components/questions/select-correct-o
 import ContentQuestion from "../../page-components/questions/content-question/content-question";
 import FillCorrectOrder from "../../page-components/questions/fill-in-correct-order/fill-in-correct-order";
 import FitTiles from "../../page-components/questions/fit-tiles/fit-tiles";
+import LeftRight from "../../page-components/questions/left-right/left-right";
 
 const Game: React.FC = () => {
     const dispatch = useDispatch();
@@ -68,6 +69,7 @@ const Game: React.FC = () => {
             questionScreen = <FitTiles {...currentSubquestion} />;
             break;
         case QUESTION_TYPES_ENUM.LEFT_RIGHT:
+            questionScreen = <LeftRight { ...currentSubquestion } />;
             break;
         case QUESTION_TYPES_ENUM.MULTI_CHOOSE:
             questionScreen = <MultiChoose { ...currentSubquestion } />;

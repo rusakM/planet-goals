@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ISubquestion } from "../../../types/lesson";
 
 import styles from "../questions.module.scss";
@@ -21,18 +21,28 @@ const FitTiles: React.FC<ISubquestion> = (questionData) => {
     const [lastClickedIndex, setLastClickedIndex] = useState(-1);
     const correctAnswers: Array<Array<number>> = JSON.parse(questionData.correctAnswer);
 
+    useEffect(() => {
+        if (!questionData) return;
+        setAnswers(new Array(Math.floor(questionData.answers.length / 2)).fill(new Array(2).fill(0)));
+        setResults(new Array(questionData.answers.length).fill(0));
+        setCurrentAnswer(0);
+        setCurrentPair(0);
+        setLastClickedIndex(-1);
+    }, [questionData]);
+
     const checkPair = (pair: Array<number>) => {
         return correctAnswers.some(correctPair => correctPair.includes(pair[0]) && correctPair.includes(pair[1]));
     }
 
     const markTile = (index: number) => {
         if (currentPair >= answers.length || currentAnswer >= questionData.answers.length) return;
+        if (results[index] !== 0) return;
         const tempAnswers = [...answers];
         const tempResults = [...results];
         const mod = currentAnswer % 2;
         
         tempAnswers[currentPair][mod] = index;
-        if (mod) {
+        if (!mod) {
             tempResults[index] = 2;
         } else {
             tempResults[index] = tempResults[lastClickedIndex] = checkPair(tempAnswers[currentPair]) ? 1 : -1;
