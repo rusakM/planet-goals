@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { ISubquestion } from "../../../types/lesson";
+import { ISubquestionComponent } from "../questions.types";
+import { getFeedback } from "../../../helpers/game";
 
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 
-const SelectCorrectAnswer: React.FC<ISubquestion> = (questionData) => {
-    const colors: TButtonColor[] = ["orange", "blue"];
+const colors: TButtonColor[] = ["orange", "blue"];
+
+const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, showAnswers }) => {
 
     const [answer, setAnswer] = useState(-1);
     const [answered, setAnswered] = useState(false);
@@ -20,11 +22,22 @@ const SelectCorrectAnswer: React.FC<ISubquestion> = (questionData) => {
         setAnswered(false);
     }, [questionData]);
 
+    const check = (index: number) => index === questionData.correctAnswerIndex;
+
     const mark = (index: number) => {
         if (answered) return;
         setAnswer(index);
-        setAnswerCorrect(index === questionData.correctAnswerIndex);
+        setAnswerCorrect(check(index));
         setAnswered(true);
+    }
+
+    const getCurrentColor = (index: number) => {
+        let color: TButtonColor = colors[index % 2];
+        if (!answered || (answered && answer === index && !showAnswers)) return color;
+        else color = "white";
+        if (showAnswers) color = check(index) ? colors[index % 2] : "white"; 
+
+        return color;
     }
 
     return <div>
@@ -33,7 +46,7 @@ const SelectCorrectAnswer: React.FC<ISubquestion> = (questionData) => {
             {
                 questionData.answers?.map((ans, index) => 
                     <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={colors?.[index] || colors[0]} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => mark(index)} disabled={answered && (answer !== index || !answerCorrect)}> 
+                        <GameButton color={getCurrentColor(index)} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => mark(index)} disabled={answered && (answer !== index || !answerCorrect)} feedback={getFeedback(showAnswers, answer === index, index, check)}> 
                             {ans}
                         </GameButton>
                     </div>

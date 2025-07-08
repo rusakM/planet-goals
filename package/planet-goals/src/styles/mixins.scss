@@ -1,5 +1,6 @@
 @use "./colors.scss";
 @use "./fonts.scss";
+@use "./game-colors.scss";
 
 @mixin basicHeader() {
     text-align: center;
@@ -14,4 +15,29 @@
     [lang="el"] & {
         font-family: fonts.$roboto-black, sans-serif;
     }
+}
+
+@mixin buttonShadow($color) {
+  box-shadow: 0 4px 0 $color;
+
+    &.feedbackcorrect:not(.unchangable) {
+        box-shadow: 
+        0 4px 0 $color,
+        0 0 16px 0 game-colors.$feedback-correct;
+    }
+
+    &.unchangable.feedbackcorrect {
+        box-shadow: 0 0 16px 0 game-colors.$feedback-correct !important;
+    }
+
+    &.feedbackincorrect:not(.unchangable) {
+        box-shadow: 
+        0 4px 0 $color,
+        0 0 16px 0 game-colors.$feedback-incorrect;
+    }
+
+    &.unchangable.feedbackincorrect {
+        box-shadow: 0 0 16px 0 game-colors.$feedback-incorrect !important;
+    }
+
 }

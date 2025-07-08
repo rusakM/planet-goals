@@ -18,35 +18,49 @@
     text-align: center;
     @include mixins.conditionalFont();
 
-    &:hover, &:active, &:disabled {
-        transform: translateY(4px);
+    &:not(.unchangable):hover, &:active, &:disabled {
         box-shadow: none;
+    }
+
+    &:not(.unchangable):hover, &:active {
         color: colors.$light-grey;
+    }
+    
+    &:not(:disabled):hover,
+    &:not(:disabled):active {
+        transform: translateY(4px);
+    }
+
+    &:disabled {
+        transform: translateY(0);
     }
 
     @media (min-width: breakpoints.$desktop) {
-        font-size: 48px;
+        font-size: 38px;
         border-radius: 10px;
-        padding: 52px 32px;
+        padding: 0 26px;
+        height: 138px;
     }
 }
+
+.noBoxShadow {
+    border-bottom-width: 3px;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
 
 .thin {
     padding-top: 14px;
     padding-bottom: 14px;
-
-    @media (min-width: breakpoints.$desktop) {
-        padding-top: 52px;
-        padding-bottom: 52px;
-    }
 }
 
 .orange {
     background-color: game-colors.$orange;
     border-color: game-colors.$dark-orange;
-    box-shadow: 0 4px 0 game-colors.$dark-orange;
+    @include mixins.buttonShadow(game-colors.$dark-orange);
 
-    &:hover {
+    &:not(.unchangable):hover {
         background-color: colors.$light-orange;
     }
 }
@@ -54,9 +68,9 @@
 .blue {
     background-color: game-colors.$blue;
     border-color: game-colors.$dark-blue;
-    box-shadow: 0 4px 0 game-colors.$dark-blue;
+    @include mixins.buttonShadow(game-colors.$dark-blue);
 
-    &:hover {
+    &:not(.unchangable):hover {
         background-color: colors.$light-blue;
     }
 }
@@ -64,9 +78,9 @@
 .red {
     background-color: game-colors.$red;
     border-color: game-colors.$dark-red;
-    box-shadow: 0 4px 0 game-colors.$dark-red;
+    @include mixins.buttonShadow(game-colors.$dark-red);
 
-    &:hover {
+    &:not(.unchangable):hover {
         background-color: colors.$dark-red;
     }
 }
@@ -74,9 +88,9 @@
 .green {
     background-color: game-colors.$green;
     border-color: game-colors.$dark-green;
-    box-shadow: 0 4px 0 game-colors.$dark-green;
+    @include mixins.buttonShadow(game-colors.$dark-green);
 
-    &:hover {
+    &:not(.unchangable):hover {
         background-color: game-colors.$dark-green;
     }
 }
@@ -84,11 +98,12 @@
 .white {
     background-color: game-colors.$white;
     border-color: game-colors.$dark-white;
-    box-shadow: 0 4px 0 game-colors.$dark-white;
     color: game-colors.$blue;
+    @include mixins.buttonShadow(game-colors.$dark-white);
 
-    &:hover {
+    &:not(.unchangable):hover {
         background-color: game-colors.$dark-white;
+        color: game-colors.$blue;
     }
 }
 

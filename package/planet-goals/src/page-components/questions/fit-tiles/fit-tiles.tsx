@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { ISubquestion } from "../../../types/lesson";
+import { ISubquestionComponent } from "../questions.types";
+import { getFeedback } from "../../../helpers/game";
 
 import styles from "../questions.module.scss";
 
@@ -12,7 +13,9 @@ const colorsMap: { [key: number]: TButtonColor } = {
     2: "blue"
 };
 
-const FitTiles: React.FC<ISubquestion> = (questionData) => {
+const colors: TButtonColor[] = ["green", "blue", "orange"];
+
+const FitTiles: React.FC<ISubquestionComponent> = ({questionData, showAnswers}) => {
     // correct answers JSON.parse("[[1,3], [0,2], [4,5]]")
     const [answers, setAnswers] = useState(new Array(Math.floor(questionData.answers.length / 2)).fill(new Array(2).fill(0)));
     const [results, setResults] = useState(new Array(questionData.answers.length).fill(0));
@@ -33,6 +36,8 @@ const FitTiles: React.FC<ISubquestion> = (questionData) => {
     const checkPair = (pair: Array<number>) => {
         return correctAnswers.some(correctPair => correctPair.includes(pair[0]) && correctPair.includes(pair[1]));
     }
+
+    const check = (index: number) => results[index] > 0;
 
     const markTile = (index: number) => {
         if (currentPair >= answers.length || currentAnswer >= questionData.answers.length) return;
@@ -55,13 +60,18 @@ const FitTiles: React.FC<ISubquestion> = (questionData) => {
         setLastClickedIndex(index);
     }
 
+    const getCurrentColor = (index: number) => {
+        if (!showAnswers) return colorsMap[results[index]];
+        return colors[correctAnswers.findIndex((pair) => pair.includes(index))];
+    }
+
     return <div>
         <div className={`${styles.buttonsContainer}`}>
             {
                 questionData.answers?.map((ans, index) => 
                     <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={colorsMap[results[index]]} size="thin" onClick={() => markTile(index)}> 
-                            {`${answers[index] > 0 ? `${answers[index]}. ` : ""}${ans}`}
+                        <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback(showAnswers, results[index] !== 0, index, check)}> 
+                            {`${ans}`}
                         </GameButton>
                     </div>
                 )

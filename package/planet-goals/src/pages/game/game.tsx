@@ -22,6 +22,7 @@ import ContentQuestion from "../../page-components/questions/content-question/co
 import FillCorrectOrder from "../../page-components/questions/fill-in-correct-order/fill-in-correct-order";
 import FitTiles from "../../page-components/questions/fit-tiles/fit-tiles";
 import LeftRight from "../../page-components/questions/left-right/left-right";
+import { ISubquestionComponent } from "../../page-components/questions/questions.types";
 
 const Game: React.FC = () => {
     const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const Game: React.FC = () => {
 
     const currentQuestion = currentLesson?.questions?.[currentQuestionIndex[0]];
     const currentSubquestion = currentQuestion?.subquestions?.[currentQuestionIndex[1]];
+    const currentSubquestionProps: ISubquestionComponent = { questionData: currentSubquestion, showAnswers: false };
     let questionScreen: React.ReactNode;
 
     useEffect(() => {
@@ -66,25 +68,25 @@ const Game: React.FC = () => {
             questionScreen = <FillCorrectOrder {...currentSubquestion} />;
             break;
         case QUESTION_TYPES_ENUM.FIT_TILES:
-            questionScreen = <FitTiles {...currentSubquestion} />;
+            questionScreen = <FitTiles {...currentSubquestionProps } />;
             break;
         case QUESTION_TYPES_ENUM.LEFT_RIGHT:
-            questionScreen = <LeftRight { ...currentSubquestion } />;
+            questionScreen = <LeftRight { ...currentSubquestionProps } />;
             break;
         case QUESTION_TYPES_ENUM.MULTI_CHOOSE:
-            questionScreen = <MultiChoose { ...currentSubquestion } />;
+            questionScreen = <MultiChoose { ...currentSubquestionProps} />;
             break;
         case QUESTION_TYPES_ENUM.SELECT_CORRECT_ANSWER:
-            questionScreen = <SelectCorrectAnswer { ...currentSubquestion } />;
+            questionScreen = <SelectCorrectAnswer { ...currentSubquestionProps } />;
             break;
         case QUESTION_TYPES_ENUM.SELECT_CORRECT_ORDER:
-            questionScreen = <SelectCorrectOrder { ...currentSubquestion } />;
+            questionScreen = <SelectCorrectOrder { ...currentSubquestionProps } />;
             break;
         case QUESTION_TYPES_ENUM.SINGLE_CHOOSE:
-            questionScreen = <SingleChoose { ...currentSubquestion } />;
+            questionScreen = <SingleChoose { ...currentSubquestionProps } />;
             break;
         case QUESTION_TYPES_ENUM.TRUE_FALSE:
-            questionScreen = <TrueFalse { ...currentSubquestion } />;
+            questionScreen = <TrueFalse { ...currentSubquestionProps } />;
             break;
         default: 
             questionScreen = <>default screen</>;

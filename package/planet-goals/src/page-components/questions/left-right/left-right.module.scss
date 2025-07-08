@@ -1,0 +1,31 @@
+@use "@styles/breakpoints.scss";
+@use "@styles/colors.scss";
+
+.buttonContainer {
+    width: 100%;
+    padding: 0;
+    display: block;
+
+    @media (min-width: breakpoints.$desktop) {
+        width: 33%;
+        padding: 2em 0;
+    }
+}
+
+.middleButton {
+    clip-path: polygon(50% 0, 100% 10%, 100% 90%, 50% 100%, 0 90%, 0 10%);
+    //border: none;
+    padding: 5% 0.5em;
+    background-color: colors.$light-grey;
+    margin: -4% 0;
+
+    @media (min-width: breakpoints.$desktop) {
+        margin: 0 -2em;
+        clip-path: polygon(10% 2em, 90% 2em, 100% 50%, 90% calc(100% - 2em), 10% calc(100% - 2em), 0% 50%);
+        padding: calc(2em + 3px) 25px;
+
+        & > button {
+            height: 132px;
+        }
+    }
+}

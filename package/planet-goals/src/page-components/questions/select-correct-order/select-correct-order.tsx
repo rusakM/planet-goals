@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { ISubquestion } from "../../../types/lesson";
+import { ISubquestionComponent } from "../questions.types";
+import { getFeedback } from "../../../helpers/game";
 
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 
-const SelectCorrectOrder: React.FC<ISubquestion> = (questionData) => {
+const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAnswers}) => {
     const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
     const [answers, setAnswers] = useState(new Array(questionData.answers.length).fill(0));
     const [currentAnswer, setCurrentAnswer] = useState(0);
@@ -18,6 +19,8 @@ const SelectCorrectOrder: React.FC<ISubquestion> = (questionData) => {
         setCurrentAnswer(0);
         setFinalAnswer("");
     }, [questionData]);
+
+    const check = (index: number) => (answers[index] - 1).toString() === questionData.correctAnswer[index];
 
     const markTile = (index) => {
         if (finalAnswer.length >= questionData.answers.length) return;
@@ -35,16 +38,25 @@ const SelectCorrectOrder: React.FC<ISubquestion> = (questionData) => {
         setFinalAnswer(tempFinalAnswer);
     }
 
+    const getCurrentColor = (index: number) => {
+        if (!currentAnswer || showAnswers || (currentAnswer > 0 && answers[index] > 0 && !showAnswers)) return colors[index % 4];
+        return "white"; 
+    }
+
     return <div>
         <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
         <div className={`${styles.buttonsContainer}`}>
             {
-                questionData.answers?.map((ans, index) => 
-                    <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={colors?.[index % 4] || colors[1]} size="thin" onClick={() => markTile(index)}> 
-                            {`${answers[index] > 0 ? `${answers[index]}. ` : ""}${ans}`}
+                questionData.answers?.map((ans, index) => {
+                    let tileIndex = answers[index] ? `${answers[index]}. ` : "";
+                    if (showAnswers) tileIndex = `${Number(questionData.correctAnswer[index]) + 1}. `;
+
+                    return <div className={styles.buttonContainer} key={index}>
+                        <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback(showAnswers, !!answers[index], index, check)}> 
+                            {`${tileIndex}${ans}`}
                         </GameButton>
                     </div>
+                    }
                 )
             }
         </div>
