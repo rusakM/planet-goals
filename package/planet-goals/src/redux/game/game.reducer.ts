@@ -1,9 +1,11 @@
 import { GameActionTypes, IGameState } from "./game.types";
+import { SocketActionTypes } from "../sockets/socket.types";
 
 const INITIAL_STATE: IGameState = {
     currentGame: null,
     currentLesson: null,
     currentQuestion: [0, 0],
+    currentLeaderboard: [],
     gameError: "",
     gameMode: null,
     gameStage: null,
@@ -71,6 +73,16 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
             return {
                 ...state,
                 currentQuestion: action.payload
+            }
+        case SocketActionTypes.GAME_LEADERBOARD:
+            return {
+                ...state,
+                currentLeaderboard: action.payload.leaderboard
+            }
+        case SocketActionTypes.GAME_SUBQUESTION: 
+            return {
+                ...state,
+                currentQuestion: [action.payload.question, action.payload.subquestion],
             }
         default:
             return state;

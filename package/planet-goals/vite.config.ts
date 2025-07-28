@@ -11,11 +11,18 @@ export default defineConfig({
             "/api": {
                 target: "http://localhost:8081",
                 changeOrigin: true,
+                ws: true
             },
             "/cdn": {
                 target: "http://localhost",
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/cdn/, "/cdn/")
+            },
+            "^/socket.io/.*": {
+                target: "http://localhost:8081",
+                changeOrigin: true,
+                ws: true,
+                secure: false,
             }
         },
     },

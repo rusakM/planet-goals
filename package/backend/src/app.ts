@@ -9,8 +9,10 @@ import routes from './controllers/index';
 import { appRoute } from './shared/route';
 import setupSchedulers from './schedulers/translations.schedulers';
 import { ConstantsEnv } from './core/constants';
+import { initializeSocketServer } from './sockets';
 
 import { errorHandler } from './middlewares/error.handler';
+import { gameManagerService } from './services';
 
 const app: express.Express = express();
 app.disable('x-powered-by');
@@ -83,7 +85,9 @@ app.use(errorHandler);
 async function init(): Promise<http.Server> {
     try {
         setupSchedulers();
+        gameManagerService.initializeGame();
         const server = http.createServer(app);
+        initializeSocketServer(server);
         return server;
     } catch (error) {
         console.error(error);

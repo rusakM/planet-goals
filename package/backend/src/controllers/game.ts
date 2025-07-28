@@ -1,10 +1,20 @@
 import { Request, Response, Router } from 'express';
+import { NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { appResponse, appRoute } from '../shared/route';
 import { security } from '../shared/security';
 import { accountService, gameService, lessonService, playerGameService } from '../services';
 import { ConstantsGame, ConstantsGlobal } from '../core/constants';
 import * as errorsAdapter from '../core/errorAdapter';
+import { validateAnswer } from '../middlewares/validators/game';
+
+interface IAnswerRequest {
+    lessonId: string;
+    questionNumber: number;
+    subquestionNumber: number;
+    answer: string;
+    questionType: ConstantsGame.Question.TYPES_ENUM;
+}
 
 async function createGame(req: Request, res: Response) {
     const { userId, role } = req.params;
@@ -126,9 +136,58 @@ async function removePlayer(req: Request, res: Response) {
     });
 }
 
+async function sendAnswer(req: Request, res: Response) {
+    const { userId, gameId } = req.params;
+    const answerData = req.body as IAnswerRequest;
+
+    const game = await gameService.DB.Find.byId(gameId);
+    if (!game) {
+        throw errorsAdapter.Game.createError(errorsAdapter.Game.ErrorsEnum.GAME_NOT_FOUND);
+    }
+    if (game.status !== ConstantsGame.Game.STATUS_ENUM.STARTED) {
+        throw errorsAdapter.Game.createError(errorsAdapter.Game.ErrorsEnum.GAME_NOT_STARTED);
+    }
+
+    const playerGame = await playerGameService.DB.Find.byMultipleKeys({
+        gameId,
+        playerId: userId,
+        lessonId: answerData.lessonId,
+    });
+
+    if (!playerGame || playerGame.length === 0) {
+        throw errorsAdapter.Game.createError(errorsAdapter.Game.ErrorsEnum.PLAYER_GAME_NOT_FOUND);
+    }
+
+    const currentPlayerGame = playerGame[0];
+
+    const newQuestionScore = {
+        question: answerData.questionNumber,
+        subquestion: answerData.subquestionNumber,
+        response: answerData.answer,
+        respondAt: new Date().toISOString(),
+        points: 0,
+    };
+
+    const questionScores = currentPlayerGame.questionScores || [];
+    const existingScoreIndex = questionScores.findIndex((qs) => qs.question === answerData.questionNumber && qs.subquestion === answerData.subquestionNumber);
+
+    if (existingScoreIndex !== -1) {
+        questionScores[existingScoreIndex] = { ...questionScores[existingScoreIndex], ...newQuestionScore };
+    } else {
+        questionScores.push(newQuestionScore);
+    }
+
+    const updatedPlayerGame = await playerGameService.DB.update(currentPlayerGame._id, {
+        questionScores,
+    });
+
+    appResponse.prepareJsonResponse(res, updatedPlayerGame);
+}
+
 export default function setup(router: Router) {
     router.post(appRoute.getMap().game.create, security.validateAuthenticatedRequest, createGame);
     router.post(appRoute.getMap().game.join, security.validateAuthenticatedRequest, joinGame);
     router.patch(appRoute.getMap().game.start, security.validateParams, security.validateAuthenticatedRequest, startGame);
     router.delete(appRoute.getMap().game.removePlayer, security.validateParams, security.validateAuthenticatedRequest, removePlayer);
+    router.post(appRoute.getMap().game.sendAnswer, security.validateParams, security.validateAuthenticatedRequest, validateAnswer, sendAnswer);
 }

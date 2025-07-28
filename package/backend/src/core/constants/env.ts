@@ -35,6 +35,11 @@ export namespace Mongodb {
     export const DB_URL: string = 'mongodb+srv://<username>:<password>@<host>/<database>?retryWrites=true&w=majority';
 }
 
+export namespace Redis {
+    export const REDIS_HOST_URL: string = process.env.REDIS_HOST_URL || 'localhost';
+    export const REDIS_HOST_PORT: number = +process.env.REDIS_HOST_PORT || 6379;
+}
+
 export namespace Sentry {
     export const SENTRY_DSN: string = process.env.SENTRY_DSN;
 }

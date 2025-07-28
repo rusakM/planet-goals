@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useTolgee } from "@tolgee/react";
 
 import "./App.css";
@@ -21,10 +22,22 @@ import SignIn from "./pages/sign-in/sign-in";
 import SignUp from "./pages/sign-up/sign-up";
 
 import { checkCurrentUser } from "./helpers/events.functions";
+import { socketConnect } from "./redux/sockets/socket.actions";
 
 function App() {
     const currentUser = useSelector(selectCurrentUser);
     const tolgee = useTolgee(["language"]);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token || !currentUser) return; 
+        dispatch(socketConnect(constantsUrls.Socket.main + "/player"));
+
+        // return () => {
+        //     dispatch(socketDisconnect());
+        // }
+    }, [currentUser, dispatch]);
     return (
         <div lang={tolgee.getLanguage()}>
             <RootContainer>

@@ -2,6 +2,7 @@ import * as crypto from 'crypto';
 import { ValidationErrorItem } from 'joi';
 import { JwtPayload } from 'jsonwebtoken';
 import { ConstantsEnv } from '../core/constants';
+import { Namespace, Socket } from 'socket.io';
 
 export class ResponseError {
     status: number;
@@ -36,7 +37,17 @@ export interface IDecodedToken extends JwtPayload {
     role?: string;
 }
 
+export interface IExtendedSocket extends Socket {
+    decoded_token: IDecodedToken;
+}
+
 export namespace Helper {
+    export function getClientsFromSockets(nsp: Namespace): string[] {
+        const ids: string[] = [];
+        nsp.sockets.forEach((socket: IExtendedSocket) => socket?.decoded_token?.id && ids.push(socket.decoded_token.id));
+        return ids;
+    }
+
     export function generateRandomInteger(min: number, max: number) {
         return Math.floor(min + Math.random() * (max - min + 1));
     }

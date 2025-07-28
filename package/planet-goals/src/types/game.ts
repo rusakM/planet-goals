@@ -63,6 +63,13 @@ export interface IGame extends globalTypes.IDBObject {
     winnerPoints?: number;
 }
 
+export interface ILeaderboardPlayer {
+    playerName: string;
+    playerLastName: string;
+    playerPosition: number;
+    playerPoints: number;
+}
+
 //requests
 export interface IRemovePlayer {
     playerId: string,

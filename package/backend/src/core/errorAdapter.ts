@@ -58,7 +58,9 @@ export namespace Core {
 export namespace Game {
     export enum ErrorsEnum {
         GAME_NOT_FOUND,
+        GAME_NOT_STARTED,
         LESSON_NOT_FOUND,
+        PLAYER_GAME_NOT_FOUND,
         TOO_LITTLE_PLAYERS_LIST,
     }
 
@@ -69,10 +71,22 @@ export namespace Game {
             message: 'Game not found',
             type: ErrorTypesEnum[ErrorTypesEnum.Error],
         },
+        [ErrorsEnum.GAME_NOT_STARTED]: {
+            name: ErrorsEnum[ErrorsEnum.GAME_NOT_STARTED],
+            httpCode: 422,
+            message: 'Game has not been started.',
+            type: ErrorTypesEnum[ErrorTypesEnum.Error],
+        },
         [ErrorsEnum.LESSON_NOT_FOUND]: {
             name: ErrorsEnum[ErrorsEnum.LESSON_NOT_FOUND],
             httpCode: 404,
             message: 'Lesson not found',
+            type: ErrorTypesEnum[ErrorTypesEnum.Error],
+        },
+        [ErrorsEnum.PLAYER_GAME_NOT_FOUND]: {
+            name: ErrorsEnum[ErrorsEnum.PLAYER_GAME_NOT_FOUND],
+            httpCode: 404,
+            message: 'Player game not found.',
             type: ErrorTypesEnum[ErrorTypesEnum.Error],
         },
         [ErrorsEnum.TOO_LITTLE_PLAYERS_LIST]: {

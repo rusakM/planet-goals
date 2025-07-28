@@ -2,6 +2,7 @@ import { legacy_createStore as createStore, applyMiddleware } from "redux";
 import logger from "redux-logger";
 import { persistStore } from "redux-persist";
 import createSagaMiddleware from "@redux-saga/core";
+import { socketMiddleware } from "./sockets/socketMiddleware";
 
 import rootReducer from "./root-reducer";
 import rootSaga from "./root-saga";
@@ -9,7 +10,7 @@ import rootSaga from "./root-saga";
 const sagaMiddleware = createSagaMiddleware();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const middlewares: any = [sagaMiddleware];
+const middlewares: any = [sagaMiddleware, socketMiddleware];
 
 if (process.env.NODE_ENV === "development") {
     middlewares.push(logger);

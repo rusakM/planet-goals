@@ -7,3 +7,8 @@ export interface IStore {
     game: IGameState;
     user: IUserState;
 }
+
+export interface IAction<T> {
+    type: string;
+    payload: T;
+}

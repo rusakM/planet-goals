@@ -29,6 +29,7 @@ export const GameActionTypes = {
 export interface IGameState {
     currentGame: gameTypes.IGame,
     currentLesson: lessonTypes.ILesson,
+    currentLeaderboard: gameTypes.ILeaderboardPlayer[],
     currentQuestion: lessonTypes.TCurrentQuestion,
     gameError: string,
     gameMode: gameTypes.TGameMode,

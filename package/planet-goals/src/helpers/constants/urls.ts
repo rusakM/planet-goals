@@ -36,6 +36,10 @@ export const Main = {
     myProfile: "/my-profile",
 }
 
+export const Socket = {
+    main: "/socket.io"
+}
+
 export const User = {
     checkEmail: "/api/user/auth/login",
     confirm: "/api/user/auth/confirm",

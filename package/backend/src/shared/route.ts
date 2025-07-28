@@ -56,6 +56,7 @@ export namespace appRoute {
                 join: `${servicesPrefix.api}/game/join`,
                 removePlayer: `${servicesPrefix}/game/:gameId/remove-player/:playerId`,
                 start: `${servicesPrefix.api}/game/:gameId/start`,
+                sendAnswer: `${servicesPrefix.api}/game/:gameId/answer`,
             },
 
             lesson: {
@@ -63,6 +64,20 @@ export namespace appRoute {
             },
         };
     }
+}
+
+export namespace appSocket {
+    export const namespace = {
+        PLAYER: '/player',
+    };
+
+    export const event = {
+        GAME_ENDED: 'game:ended',
+        GAME_LEADERBOARD: 'game:leaderboard',
+        GAME_PLAYER_GAME: 'game:playerGame',
+        GAME_SUBQUESTION: 'game:subquestion',
+        PLAYER_JOIN_GAME: 'join_game',
+    };
 }
 
 export namespace appRequest {
