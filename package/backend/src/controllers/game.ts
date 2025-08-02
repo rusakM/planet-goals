@@ -3,7 +3,7 @@ import { NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { appResponse, appRoute } from '../shared/route';
 import { security } from '../shared/security';
-import { accountService, gameService, lessonService, playerGameService } from '../services';
+import { accountService, gameManagerService, gameService, lessonService, playerGameService } from '../services';
 import { ConstantsGame, ConstantsGlobal } from '../core/constants';
 import * as errorsAdapter from '../core/errorAdapter';
 import { validateAnswer } from '../middlewares/validators/game';
@@ -110,6 +110,7 @@ async function startGame(req: Request, res: Response) {
     let playerGames: playerGameService.Model.IPlayerGame[] = game.players.map((player) => playerGameService.Helpers.createPlayerGameByGameAndLesson(game, lesson, player._id));
 
     playerGames = await playerGameService.DB.createMany(playerGames);
+    gameManagerService.gameManager.initializeGame(game, lesson, playerGames);
 
     appResponse.prepareJsonResponse(res, {
         ...game,
@@ -129,6 +130,7 @@ async function removePlayer(req: Request, res: Response) {
     const playerGame = playerGames?.find((pGame) => pGame.playerId === playerId);
     playerGames = playerGames.filter(({ _id }) => _id !== playerGame._id);
     playerGameService.DB.delete(playerGame?._id);
+    gameManagerService.gameManager.deletePlayer(playerId, gameId);
 
     appResponse.prepareJsonResponse(res, {
         ...game,

@@ -36,6 +36,7 @@ export namespace Helpers {
             joinedAt: gamePlayer.joinedAt,
             lessonId: game.lesson,
             playerId,
+            playerRole: gamePlayer.playerRole,
             position: 0,
             questionScores,
             score: 0,

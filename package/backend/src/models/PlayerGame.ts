@@ -20,6 +20,7 @@ interface IPlayerGameBasic {
     joinedAt?: string;
     lessonId?: string;
     playerId?: string;
+    playerRole?: ConstantsGame.Game.PLAYER_ROLE;
     position?: number;
     questionScores?: IQuestionScore[];
     score?: number;
@@ -47,6 +48,11 @@ const PlayerGameSchema = new Schema<IDBPlayerGame>(
         playerId: {
             type: String,
             required: true,
+        },
+        playerRole: {
+            type: String,
+            enum: Object.values(ConstantsGame.Game.PLAYER_ROLE),
+            default: ConstantsGame.Game.PLAYER_ROLE.player,
         },
         position: Number,
         questionScores: [

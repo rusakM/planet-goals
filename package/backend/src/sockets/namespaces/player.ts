@@ -1,26 +1,44 @@
 import { Namespace, Server } from 'socket.io';
-import { playerGameService, gameManagerService } from '../../services';
+import { playerGameService, gameManagerService, accountService } from '../../services';
 import { playerEmitter } from '../../services/socket.service';
 import { socketAuthMiddleware } from '../middleware/auth';
 import { IExtendedSocket } from 'src/shared/defs';
 import * as playerTypes from '../types/player.types';
 import { appSocket } from '../../shared/route';
 
+function emitToGame(nsp: Namespace, users: string[], endpoint: string, payload: any) {
+    for (const user of users) {
+        nsp.to(user).emit(endpoint, payload);
+    }
+}
+
 function setupOutcomeListeners(nsp: Namespace) {
     playerEmitter.on(appSocket.event.GAME_ENDED, ({ gameId }: playerTypes.IGameEnded) => {
         nsp.to(gameId).emit(appSocket.event.GAME_ENDED);
     });
 
-    playerEmitter.on(appSocket.event.GAME_LEADERBOARD, ({ gameId, leaderboard }: playerTypes.IGameLeaderboard) => {
-        nsp.to(gameId).emit(appSocket.event.GAME_LEADERBOARD, leaderboard);
+    playerEmitter.on(appSocket.event.GAME_LEADERBOARD, ({ users, ...payload }: playerTypes.IGameLeaderboard) => {
+        emitToGame(nsp, users, appSocket.event.GAME_LEADERBOARD, payload);
     });
 
     playerEmitter.on(appSocket.event.GAME_PLAYER_GAME, (payload: playerTypes.IGamePlayerGame) => {
         nsp.to(payload.userId).emit(appSocket.event.GAME_PLAYER_GAME, payload.playerGame);
     });
 
-    playerEmitter.on(appSocket.event.GAME_SUBQUESTION, (payload: playerTypes.IGameSubquestion) => {
-        nsp.to(payload.gameId).emit(appSocket.event.GAME_SUBQUESTION, payload);
+    playerEmitter.on(appSocket.event.GAME_PLAYER_DELETE, ({ users, ...payload }: playerTypes.IPlayerDelete) => {
+        emitToGame(nsp, users, appSocket.event.GAME_PLAYER_DELETE, payload);
+    });
+
+    playerEmitter.on(appSocket.event.GAME_PLAYER_JOIN, ({ users, ...payload }: playerTypes.IPlayerJoin) => {
+        emitToGame(nsp, users, appSocket.event.GAME_PLAYER_JOIN, payload);
+    });
+
+    playerEmitter.on(appSocket.event.GAME_START, ({ users, ...payload }: playerTypes.IGameStart) => {
+        emitToGame(nsp, users, appSocket.event.GAME_START, payload);
+    });
+
+    playerEmitter.on(appSocket.event.GAME_SUBQUESTION, ({ users, ...payload }: playerTypes.IGameSubquestion) => {
+        emitToGame(nsp, users, appSocket.event.GAME_SUBQUESTION, payload);
     });
 }
 
@@ -40,6 +58,7 @@ export const registerPlayerNamespace = (io: Server) => {
                 return;
             }
             let playerGame = gameManagerService.gameManager.getPlayerGame(gameId, playerId);
+            const player = await accountService.DB.Find.byId(playerId);
             if (!playerGame) playerGame = (await playerGameService.DB.Find.byMultipleKeys({ gameId, playerId }))?.[0];
             if (!playerGame) {
                 cb && cb({ err: 'Nie znaleziono PlayerGame' });
@@ -47,7 +66,7 @@ export const registerPlayerNamespace = (io: Server) => {
             }
             socket.join(gameId);
             socket.data = { playerId, gameId };
-            const error = gameManagerService.gameManager.joinPlayer(gameId, playerId, socket.id, playerGame);
+            const error = gameManagerService.gameManager.joinPlayer(player, socket.id, playerGame);
             if (error) {
                 cb && cb({ err: error });
                 return;

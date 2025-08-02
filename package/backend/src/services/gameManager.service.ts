@@ -1,12 +1,14 @@
-import { gameService, lessonService, playerGameService, socketService } from '.';
+import { accountService, gameService, lessonService, playerGameService, socketService } from '.';
 import { ConstantsGame } from '../core/constants';
 import { RedisConnector } from '../core/redisConnector';
 
 export interface ILeaderboardPlayer {
-    playerName: string;
+    playerId: string;
     playerLastName: string;
-    playerPosition: number;
+    playerName: string;
     playerPoints: number;
+    playerPosition: number;
+    playerRole: ConstantsGame.Game.PLAYER_ROLE;
 }
 
 export interface IActivePlayer {
@@ -64,6 +66,7 @@ class GameManagerService {
      * Inicjalizuje nową grę w silniku, po wywołaniu startGame
      */
     initializeGame(game: gameService.Model.IGame, lesson: lessonService.Model.ILesson, playerGames: playerGameService.Model.IPlayerGame[]) {
+        console.log(`Initialize game, ${game._id} with lesson: ${lesson._id}`);
         const questions = lesson.questions ?? [];
         const stage = questions[0]?.gameStage ?? ConstantsGame.Game.STAGE_ENUM.QUICK_CONTENT;
         const state: IGameState = {
@@ -75,6 +78,7 @@ class GameManagerService {
                 socketId: '',
                 playerGame: pg,
                 disconnected: true,
+                playerRole: pg.playerRole,
             })),
             currentQuestionIndex: 0,
             currentSubquestionIndex: 0,
@@ -89,26 +93,74 @@ class GameManagerService {
         this.redis.saveHash(game._id, state);
     }
 
+    startGame(gameId: string) {
+        const game = this.games.get(gameId);
+        if (!game) {
+            console.log(`No game with id: ${gameId}`);
+            return null;
+        }
+        if (game.started) {
+            return game;
+        }
+        game.started = true;
+        game.startTime = Date.now();
+        this.redis.saveHash(gameId, game);
+        socketService.Player.onGameStart({ gameId, users: this.getPlayersList(gameId) });
+
+        setTimeout(() => {
+            this.broadcastSubquestion(gameId);
+
+            const currentInfo = this.getCurrentSubquestion(gameId);
+            const subq = currentInfo?.subquestion;
+            if (subq?.timeInSek && game.stage !== ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
+                this.startSubquestionTimer(gameId, subq.timeInSek);
+            }
+            this.redis.saveHash(gameId, this.games.get(gameId)!);
+        }, 10000);
+
+        return game;
+    }
+
     /**
      * Dołącz użytkownika do gry przez websocket, rejestrując jego socket, odsyłając aktualny subquestion.
      * @returns null lub error jeśli nie można dołączyć (np. gra skończona)
      */
-    joinPlayer(gameId: string, userId: string, socketId: string, playerGame: playerGameService.Model.IPlayerGame): string | null {
-        const game = this.games.get(gameId);
-        if (!game) {
-            return 'NO_GAME';
-        }
+    joinPlayer(user: accountService.Model.IAccount, socketId: string, playerGame: playerGameService.Model.IPlayerGame) {
+        const { gameId, playerRole, playerId } = playerGame;
+        const game = this.games.get(playerGame.gameId);
+        if (!game) return 'NO_GAME';
         // Można dodać logikę blokowania dołączenia kiedy gra jest zakończona
-        const existing = game.players.find((x) => x.userId === userId);
+        const existing = game.players.find((x) => x.userId === playerId);
         if (existing) {
             existing.socketId = socketId;
             existing.disconnected = false;
         } else {
-            game.players.push({ userId, socketId, playerGame });
+            game.players.push({ userId: playerId, socketId, playerGame });
+        }
+        if (!game.started) {
+            const users = game.players.map(({ userId }) => userId);
+            socketService.Player.onPlayerJoin({
+                _id: playerId,
+                email: user.email,
+                firstName: user.firstName,
+                lastNAme: user.lastName,
+                role: playerRole,
+                users,
+            });
         }
         this.redis.saveHash(gameId, game);
-        this.sendPlayerGameToUser(gameId, userId);
+        this.sendPlayerGameToUser(gameId, playerId);
         return null;
+    }
+
+    deletePlayer(playerId: string, gameId: string) {
+        const game = this.games.get(gameId);
+        if (!game) return;
+        const playerGameIdx = game.players.findIndex(({ userId }) => userId === playerId);
+        if (playerGameIdx < 0) return;
+        game.players.splice(playerGameIdx, 1);
+        this.redis.saveHash(gameId, game);
+        socketService.Player.onPlayerDelete({ users: this.getPlayersList(gameId), playerId });
     }
 
     /**
@@ -132,6 +184,12 @@ class GameManagerService {
         if (!game) return null;
         const player = game.players.find((x) => x.userId == userId);
         return player?.playerGame ?? null;
+    }
+
+    getPlayersList(gameId: string): string[] {
+        const game = this.games.get(gameId);
+        if (!game) return [];
+        return game.players.map(({ userId }) => userId);
     }
 
     /**
@@ -220,7 +278,7 @@ class GameManagerService {
         }
         if (nq >= game.questions.length) {
             // End game
-            this.sendLeaderboard(gameId);
+            this.endGame(gameId);
             return;
         }
         game.currentQuestionIndex = nq;
@@ -246,6 +304,7 @@ class GameManagerService {
             question: info.qIndex,
             subquestion: info.sqIndex,
             gameId,
+            users: this.getPlayersList(gameId),
         });
     }
 
@@ -267,7 +326,7 @@ class GameManagerService {
     /**
      * Wysyła leaderboard po zakończeniu gry, oraz ustawia grę jako "skończoną" (nie można joinować!)
      */
-    sendLeaderboard(gameId: string) {
+    getLeaderboard(gameId: string) {
         const game = this.games.get(gameId);
         if (!game) return;
         // Licz punkty dla każdego gracza
@@ -280,23 +339,30 @@ class GameManagerService {
                 }
             }
             return {
-                playerName: (p.playerGame as any)?.playerName || '',
+                playerId: p.userId,
                 playerLastName: (p.playerGame as any)?.playerLastName || '',
-                playerPosition: idx + 1,
+                playerName: (p.playerGame as any)?.playerName || '',
                 playerPoints: points,
+                playerPosition: idx + 1,
+                playerRole: p.playerGame.playerRole,
             };
         });
         // Sortuj po punktach (desc)
         leaderboard.sort((a, b) => b.playerPoints - a.playerPoints);
-        // Zaktualizuj pozycje
         leaderboard.forEach((x, idx) => (x.playerPosition = idx + 1));
+        return leaderboard;
+    }
+
+    sendLeaderboard(gameId: string) {
+        const game = this.games.get(gameId);
+        if (!game) return;
+        // Licz punkty dla każdego gracza
+        const leaderboard: ILeaderboardPlayer[] = this.getLeaderboard(gameId);
         socketService.Player.onGameLeaderboard({
             leaderboard,
             gameId,
+            users: this.getPlayersList(gameId),
         });
-        // ustaw jako finished, po tym już nie można stanów zmienić
-        this.games.delete(gameId);
-        this.redis.delete(gameId);
     }
 
     handleDisconnect(gameId: string, userId: string) {
@@ -309,10 +375,25 @@ class GameManagerService {
         }
     }
 
-    endGame(gameId: string) {
+    async endGame(gameId: string) {
         const game = this.games.get(gameId);
         if (!game) return;
         this.stopSubquestionTimer(gameId);
+        const winnerFromLeaderboard = this.getLeaderboard(gameId)?.[0];
+        let winner: gameService.Model.IGamePlayer;
+        if (winnerFromLeaderboard) {
+            const gameDb = await gameService.DB.Find.byId(gameId);
+            winner = gameDb.players.find(({ _id }) => _id === winnerFromLeaderboard.playerId);
+        }
+
+        await gameService.DB.update(gameId, {
+            endedAt: new Date().toISOString(),
+            status: ConstantsGame.Game.STATUS_ENUM.FINISHED,
+            winnerPoints: winnerFromLeaderboard.playerPoints,
+            winner,
+        });
+
+        this.sendLeaderboard(gameId);
         socketService.Player.onGameEnded({ gameId });
         this.games.delete(gameId);
         this.redis.delete(gameId);

@@ -17,7 +17,19 @@ export namespace Player {
         playerEmitter.emit(appSocket.event.GAME_SUBQUESTION, payload);
     }
 
+    export function onGameStart(payload: playerTypes.IGameStart) {
+        playerEmitter.emit(appSocket.event.GAME_START, payload);
+    }
+
     export function onPlayerGame(payload: playerTypes.IGamePlayerGame) {
         playerEmitter.emit(appSocket.event.GAME_PLAYER_GAME, payload);
+    }
+
+    export function onPlayerDelete(payload: playerTypes.IPlayerDelete) {
+        playerEmitter.emit(appSocket.event.GAME_PLAYER_DELETE, payload);
+    }
+
+    export function onPlayerJoin(payload: playerTypes.IPlayerJoin) {
+        playerEmitter.emit(appSocket.event.GAME_PLAYER_JOIN, payload);
     }
 }

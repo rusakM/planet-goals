@@ -75,6 +75,9 @@ export namespace appSocket {
         GAME_ENDED: 'game:ended',
         GAME_LEADERBOARD: 'game:leaderboard',
         GAME_PLAYER_GAME: 'game:playerGame',
+        GAME_PLAYER_DELETE: 'game:playerDelete',
+        GAME_PLAYER_JOIN: 'game:playerJoin',
+        GAME_START: 'game:start',
         GAME_SUBQUESTION: 'game:subquestion',
         PLAYER_JOIN_GAME: 'join_game',
     };
