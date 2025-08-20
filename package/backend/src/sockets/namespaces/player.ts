@@ -5,9 +5,10 @@ import { socketAuthMiddleware } from '../middleware/auth';
 import { IExtendedSocket } from 'src/shared/defs';
 import * as playerTypes from '../types/player.types';
 import { appSocket } from '../../shared/route';
+import { ConstantsGame } from '../../core/constants';
 
 function emitToGame(nsp: Namespace, users: string[], endpoint: string, payload: any) {
-    for (const user of users) {
+    for (const user of new Set(users)) {
         nsp.to(user).emit(endpoint, payload);
     }
 }
@@ -49,37 +50,41 @@ export const registerPlayerNamespace = (io: Server) => {
     setupOutcomeListeners(nsp);
 
     nsp.on('connection', (socket: IExtendedSocket) => {
-        console.log('Player connected:', socket.id);
+        console.log('Player connected:', socket.data.decoded_token.id);
         socket.join(socket.data.decoded_token.id);
+        gameManagerService.gameManager.setUserAvailable(socket.data.decoded_token.id);
 
-        socket.on(appSocket.event.PLAYER_JOIN_GAME, async ({ gameId, playerId }: playerTypes.IJoinGame, cb) => {
+        socket.on('joinGame', async ({ gameId, playerId }: playerTypes.IJoinGame) => {
+            console.log(`Join player ${playerId} to game ${gameId}`);
             if (!playerId || !gameId) {
-                cb && cb({ err: 'Brak userId lub gameId' });
                 return;
             }
             let playerGame = gameManagerService.gameManager.getPlayerGame(gameId, playerId);
             const player = await accountService.DB.Find.byId(playerId);
             if (!playerGame) playerGame = (await playerGameService.DB.Find.byMultipleKeys({ gameId, playerId }))?.[0];
-            if (!playerGame) {
-                cb && cb({ err: 'Nie znaleziono PlayerGame' });
-                return;
-            }
-            socket.join(gameId);
+
+            const playerGameData: gameManagerService.IActivePlayer = {
+                playerGame,
+                playerRole: playerGame?.playerRole ?? ConstantsGame.Game.PLAYER_ROLE.player,
+                userId: playerId,
+                disconnected: false,
+                firstName: player.firstName,
+                lastName: player.lastName,
+                email: player.email,
+            };
             socket.data = { playerId, gameId };
-            const error = gameManagerService.gameManager.joinPlayer(player, socket.id, playerGame);
-            if (error) {
-                cb && cb({ err: error });
-                return;
-            }
-            const current = gameManagerService.gameManager.getCurrentSubquestion(gameId);
-            cb && cb({ ok: true, currentSubquestion: current });
+            await gameManagerService.gameManager.joinPlayer(player, gameId, playerGameData);
+            console.log('Join player success');
         });
 
-        socket.on('disconnect', (reason) => {
+        socket.on('testSocket', (payload) => console.log('Test socket\n', 'incoming data:\n', payload));
+
+        socket.on('disconnect', async (reason) => {
             const { gameId, userId } = socket.data || {};
             if (gameId && userId) {
-                gameManagerService.gameManager.handleDisconnect(gameId, userId);
+                await gameManagerService.gameManager.handleDisconnect(gameId, userId);
             }
+            gameManagerService.gameManager.setUserNotAvailable(userId);
             console.log('Player disconnected:', socket.id, reason);
         });
     });

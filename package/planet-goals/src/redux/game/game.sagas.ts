@@ -1,4 +1,4 @@
-import { takeLatest, put, all, call } from "redux-saga/effects";
+import { takeLatest, put, all, call, select } from "redux-saga/effects";
 import { createAction } from "@reduxjs/toolkit";
 
 import { GameActionTypes } from "./game.types";
@@ -20,12 +20,16 @@ import {
 import { IGame, IRemovePlayer } from "../../types/game";
 import { ILesson } from "../../types/lesson";
 import { gameTypes } from "../../types";
+import { IStore } from "../store.types";
+import { socketEmit } from "../sockets/socket.actions";
+import { SocketActionTypes } from "../sockets/socket.types";
 
 const createGameStart = createAction(GameActionTypes.CREATE_GAME_START);
 const fetchLessonStart = createAction(GameActionTypes.FETCH_LESSON_START);
 const joinGameStart = createAction(GameActionTypes.JOIN_GAME_START);
 const removePlayerStart = createAction(GameActionTypes.REMOVE_PLAYER_START);
 const startGameStart = createAction(GameActionTypes.START_GAME_START);
+const getCurrentUserState = (state: IStore) => state.user;
 
 function* createGame({ payload }) {
     try {
@@ -57,7 +61,14 @@ function* joinGame({ payload }: { payload: gameTypes.TJoinGame }) {
             payload,
             "POST"
         );
+        const user: IStore['user'] = yield select(getCurrentUserState);
         sessionStorage.setItem("invitationCode", payload.invitationCode);
+        yield put(socketEmit(SocketActionTypes.PLAYER_JOIN_GAME,
+            {
+                gameId: game._id,
+                playerId: user.currentUser._id,
+            }
+        ));
         yield put(joinGameSuccess(game));
     } catch (error) {
         yield put(joinGameFailure(error.name));

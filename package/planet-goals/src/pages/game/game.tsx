@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -22,7 +22,6 @@ import ContentQuestion from "../../page-components/questions/content-question/co
 import FillCorrectOrder from "../../page-components/questions/fill-in-correct-order/fill-in-correct-order";
 import FitTiles from "../../page-components/questions/fit-tiles/fit-tiles";
 import LeftRight from "../../page-components/questions/left-right/left-right";
-import { ISubquestionComponent } from "../../page-components/questions/questions.types";
 
 const Game: React.FC = () => {
     const dispatch = useDispatch();
@@ -35,9 +34,10 @@ const Game: React.FC = () => {
 
     const currentQuestion = currentLesson?.questions?.[currentQuestionIndex[0]];
     const currentSubquestion = currentQuestion?.subquestions?.[currentQuestionIndex[1]];
-    const currentSubquestionProps: ISubquestionComponent = { questionData: currentSubquestion, showAnswers: false };
     let questionScreen: React.ReactNode;
-
+    const [remainedTime, setRemainedTime] = useState(currentSubquestion.timeInSek);
+    const [questionIndexTemp, setQuestionIndexTemp] = useState(currentQuestionIndex.toString());
+    
     useEffect(() => {
         if (!currentGame) {
             return;
@@ -50,6 +50,21 @@ const Game: React.FC = () => {
             dispatch(fetchLessonStart(currentGame?.lesson));
         }
     }, [currentGame, currentLesson, dispatch, navigate ])
+
+    useEffect(() => {
+        if (remainedTime > 0) {
+            setTimeout(() => {
+                setRemainedTime(remainedTime - 1);
+            }, 1000);
+        }
+    }, [remainedTime]);
+
+    useEffect(() => {
+        if (currentQuestionIndex.toString() !== questionIndexTemp ) {
+            setRemainedTime(currentSubquestion.timeInSek);
+            setQuestionIndexTemp(currentQuestionIndex.toString());
+        }
+    }, [currentQuestionIndex, questionIndexTemp, currentSubquestion])
 
     switch(currentQuestion?.type) {
         case QUESTION_TYPES_ENUM.CONTENT_INSTRUCTION:
@@ -68,25 +83,25 @@ const Game: React.FC = () => {
             questionScreen = <FillCorrectOrder {...currentSubquestion} />;
             break;
         case QUESTION_TYPES_ENUM.FIT_TILES:
-            questionScreen = <FitTiles {...currentSubquestionProps } />;
+            questionScreen = <FitTiles {...{questionData: currentSubquestion, showAnswers: remainedTime === 0 }} />;
             break;
         case QUESTION_TYPES_ENUM.LEFT_RIGHT:
-            questionScreen = <LeftRight { ...currentSubquestionProps } />;
+            questionScreen = <LeftRight { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0 }} />;
             break;
         case QUESTION_TYPES_ENUM.MULTI_CHOOSE:
-            questionScreen = <MultiChoose { ...currentSubquestionProps} />;
+            questionScreen = <MultiChoose { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0 }} />;
             break;
         case QUESTION_TYPES_ENUM.SELECT_CORRECT_ANSWER:
-            questionScreen = <SelectCorrectAnswer { ...currentSubquestionProps } />;
+            questionScreen = <SelectCorrectAnswer { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0 }} />;
             break;
         case QUESTION_TYPES_ENUM.SELECT_CORRECT_ORDER:
-            questionScreen = <SelectCorrectOrder { ...currentSubquestionProps } />;
+            questionScreen = <SelectCorrectOrder { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0 }} />;
             break;
         case QUESTION_TYPES_ENUM.SINGLE_CHOOSE:
-            questionScreen = <SingleChoose { ...currentSubquestionProps } />;
+            questionScreen = <SingleChoose { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0 }} />;
             break;
         case QUESTION_TYPES_ENUM.TRUE_FALSE:
-            questionScreen = <TrueFalse { ...currentSubquestionProps } />;
+            questionScreen = <TrueFalse { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0 }} />;
             break;
         default: 
             questionScreen = <>default screen</>;

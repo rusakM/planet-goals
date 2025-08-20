@@ -10,7 +10,7 @@ import rootSaga from "./root-saga";
 const sagaMiddleware = createSagaMiddleware();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const middlewares: any = [sagaMiddleware, socketMiddleware];
+const middlewares: any = [socketMiddleware, sagaMiddleware];
 
 if (process.env.NODE_ENV === "development") {
     middlewares.push(logger);

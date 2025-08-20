@@ -54,7 +54,7 @@ export namespace appRoute {
             game: {
                 create: `${servicesPrefix.api}/game`,
                 join: `${servicesPrefix.api}/game/join`,
-                removePlayer: `${servicesPrefix}/game/:gameId/remove-player/:playerId`,
+                removePlayer: `${servicesPrefix.api}/game/:gameId/remove-player/:playerId`,
                 start: `${servicesPrefix.api}/game/:gameId/start`,
                 sendAnswer: `${servicesPrefix.api}/game/:gameId/answer`,
             },
@@ -79,7 +79,7 @@ export namespace appSocket {
         GAME_PLAYER_JOIN: 'game:playerJoin',
         GAME_START: 'game:start',
         GAME_SUBQUESTION: 'game:subquestion',
-        PLAYER_JOIN_GAME: 'join_game',
+        PLAYER_JOIN_GAME: 'joinGame',
     };
 }
 

@@ -1,8 +1,8 @@
 import * as socketTypes from "./socket.types";
 
-export const socketConnect = (url: string) => ({ 
+export const socketConnect = (url: string, namespace: string) => ({ 
     type: socketTypes.SocketActionTypes.SOCKET_CONNECT, 
-    payload: { url } 
+    payload: { url, namespace } 
 });
 
 export const socketDisconnect = () => ({ 
@@ -24,6 +24,11 @@ export const gameLeaderboard = (payload: socketTypes.IGameLeaderboard) => ({
     payload 
 });
 
+export const gameStart = (payload: socketTypes.IGameStart) => ({
+    type: socketTypes.SocketActionTypes.GAME_START,
+    payload
+});
+
 export const gamePlayerGame = (payload: socketTypes.IGamePlayerGame) => ({ 
     type: socketTypes.SocketActionTypes.GAME_PLAYER_GAME, 
     payload 
@@ -34,7 +39,13 @@ export const gameSubquestion = (payload: socketTypes.IGameSubquestion) => ({
     payload 
 });
 
-export const playerJoinGame = (payload: socketTypes.IJoinGame) => ({ 
-    type: socketTypes.SocketActionTypes.PLAYER_JOIN_GAME, 
+export const playerJoinGame = (payload: socketTypes.IPlayerJoin) => ({ 
+    type: socketTypes.SocketActionTypes.GAME_PLAYER_JOIN, 
     payload 
 });
+
+export const playerDeleted = (payload: socketTypes.IPlayerDelete) => ({
+    type: socketTypes.SocketActionTypes.GAME_PLAYER_DELETE,
+    payload
+});
+

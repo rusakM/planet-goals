@@ -31,10 +31,14 @@ export class RedisConnector<T> {
         return this.ttlSek;
     }
 
+    private getKey(id: string): string {
+        return `${this.mainKey}:${id}`;
+    }
+
     public async get(id: string): Promise<T | null> {
         try {
             await this.ensureConnected();
-            const result = (await redisClient.hGet(this.mainKey, id)) as string;
+            const result = (await redisClient.get(this.getKey(id))) as string;
             return result ? (JSON.parse(result) as T) : null;
         } catch (err) {
             return null;
@@ -46,18 +50,7 @@ export class RedisConnector<T> {
             if (!id) return null;
             await this.ensureConnected();
             const EX = this.getTtl(ttlSeconds);
-            await redisClient.set(`${this.mainKey}:${id}`, JSON.stringify(data), { EX });
-            return data;
-        } catch (err) {
-            return null;
-        }
-    }
-
-    public async saveHash(id: string, data: T): Promise<T> {
-        try {
-            if (!id) return null;
-            await this.ensureConnected();
-            await redisClient.hSet(this.mainKey, id, JSON.stringify(data));
+            await redisClient.set(this.getKey(id), JSON.stringify(data), { EX });
             return data;
         } catch (err) {
             return null;
@@ -67,7 +60,7 @@ export class RedisConnector<T> {
     public async delete(id: string): Promise<boolean> {
         try {
             await this.ensureConnected();
-            const result = await redisClient.hDel(this.mainKey, id);
+            const result = await redisClient.del(this.getKey(id));
             return Number(result) > 0;
         } catch (err) {
             return false;
@@ -77,16 +70,18 @@ export class RedisConnector<T> {
     public async find(matchKey: string, matchValue: string): Promise<T[]> {
         try {
             await this.ensureConnected();
-            const all = await redisClient.hGetAll(this.mainKey);
-            return Object.values(all)
-                .map((json) => {
+            const keys = await redisClient.keys(`${this.mainKey}:*`);
+            const values: T[] = await Promise.all(
+                keys.map(async (key) => {
+                    const value = (await redisClient.get(key)) as string;
                     try {
-                        return JSON.parse(json) as T;
+                        return value ? (JSON.parse(value) as T) : null;
                     } catch {
                         return null;
                     }
                 })
-                .filter((item): item is T => item !== null && (item as any)[matchKey] === matchValue);
+            );
+            return values.filter((item): item is T => item !== null && (item as any)[matchKey] === matchValue);
         } catch (err) {
             return [];
         }
@@ -95,16 +90,18 @@ export class RedisConnector<T> {
     public async getAll(): Promise<T[]> {
         try {
             await this.ensureConnected();
-            const all = await redisClient.hGetAll(this.mainKey);
-            return Object.values(all)
-                .map((json) => {
+            const keys = await redisClient.keys(`${this.mainKey}:*`);
+            const values: T[] = await Promise.all(
+                keys.map(async (key) => {
+                    const value = (await redisClient.get(key)) as string;
                     try {
-                        return JSON.parse(json) as T;
+                        return value ? (JSON.parse(value) as T) : null;
                     } catch {
                         return null;
                     }
                 })
-                .filter((item): item is T => item !== null);
+            );
+            return values.filter((item): item is T => item !== null);
         } catch (err) {
             return [];
         }

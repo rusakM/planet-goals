@@ -7,7 +7,7 @@ import { nodeProfilingIntegration } from '@sentry/profiling-node';
 
 import routes from './controllers/index';
 import { appRoute } from './shared/route';
-import setupSchedulers from './schedulers/translations.schedulers';
+import setupSchedulers from './schedulers';
 import { ConstantsEnv } from './core/constants';
 import { initializeSocketServer } from './sockets';
 
@@ -71,6 +71,10 @@ router.get(appRoute.getMap().public.test, (request, response) => {
 });
 
 app.use(router);
+app.use((req, res, next) => {
+    console.log(`Request path: ${req.path}`);
+    next();
+});
 app.use(routes);
 
 app.use(function (req, res) {
@@ -81,6 +85,12 @@ app.use(function (req, res) {
 });
 
 app.use(errorHandler);
+
+app.use('/socket.io', (req, res, next) => {
+    console.log('🌐 HTTP request to Socket.IO:', req.method, req.url);
+    console.log('Headers:', req.headers);
+    next();
+});
 
 async function init(): Promise<http.Server> {
     try {

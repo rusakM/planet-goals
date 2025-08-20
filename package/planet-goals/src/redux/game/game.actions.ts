@@ -57,6 +57,16 @@ export const createGameFailure = (error) => ({
     payload: error
 });
 
+export const endGameSuccess = (payload: gameTypes.IGame) => ({
+    type: GameActionTypes.END_GAME_SUCCESS,
+    payload
+});
+
+export const endGameFailure = (error) => ({
+    type: GameActionTypes.END_GAME_FAILURE,
+    error
+});
+
 export const fetchLessonStart = (lessonId: string) => ({
     type: GameActionTypes.FETCH_LESSON_START,
     payload: lessonId
@@ -84,6 +94,16 @@ export const joinGameSuccess = (payload: gameTypes.IGame) => ({
 
 export const joinGameFailure = (error) => ({
     type: GameActionTypes.JOIN_GAME_FAILURE,
+    payload: error
+});
+
+export const joinPlayerSuccess = (payload: gameTypes.IGame) => ({
+    type: GameActionTypes.JOIN_PLAYER_SUCCESS,
+    payload
+});
+
+export const joinPlayerFalure = (error) => ({
+    type: GameActionTypes.JOIN_PLAYER_FAILURE,
     payload: error
 });
 

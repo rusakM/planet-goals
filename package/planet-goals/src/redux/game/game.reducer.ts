@@ -10,6 +10,7 @@ const INITIAL_STATE: IGameState = {
     gameMode: null,
     gameStage: null,
     isGameCreatedByCurrentUser: false,
+    isGameStarted: false,
     lessonError: "",
     playerRole: null,
     selectedLesson: 0
@@ -46,12 +47,18 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
             };
         case GameActionTypes.CREATE_GAME_SUCCESS:
         case GameActionTypes.JOIN_GAME_SUCCESS:
+        case GameActionTypes.JOIN_PLAYER_SUCCESS:
         case GameActionTypes.REMOVE_PLAYER_SUCCESS:
-        case GameActionTypes.START_GAME_SUCCESS:
             return {
                 ...state,
                 currentGame: action.payload
             }
+        case GameActionTypes.START_GAME_SUCCESS:
+            return {
+                ...state,
+                currentGame: action.payload,
+                isGameStarted: true
+            };
         case GameActionTypes.CREATE_GAME_FAILURE:
         case GameActionTypes.JOIN_GAME_FAILURE:
         case GameActionTypes.START_GAME_FAILURE:

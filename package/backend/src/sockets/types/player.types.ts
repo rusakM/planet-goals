@@ -15,6 +15,7 @@ export interface IGameLeaderboard extends IGameEmittedSocket {
 }
 
 export interface IGamePlayerGame {
+    gameId: string;
     userId: string;
     playerGame: playerGameService.Model.IPlayerGame;
 }
@@ -31,12 +32,14 @@ export interface IGameSubquestion extends IGameEmittedSocket {
 
 export interface IPlayerDelete extends IGameEmittedSocket {
     playerId: string;
+    gameId: string;
 }
 
 export interface IPlayerJoin extends IGameEmittedSocket {
     _id: string;
     firstName: string;
-    lastNAme: string;
+    gameId: string;
+    lastName: string;
     email: string;
     role: ConstantsGame.Game.PLAYER_ROLE;
 }

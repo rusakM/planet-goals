@@ -7,6 +7,7 @@ import { accountService, gameManagerService, gameService, lessonService, playerG
 import { ConstantsGame, ConstantsGlobal } from '../core/constants';
 import * as errorsAdapter from '../core/errorAdapter';
 import { validateAnswer } from '../middlewares/validators/game';
+import { useRequestTime } from '../middlewares/requestTime';
 
 interface IAnswerRequest {
     lessonId: string;
@@ -28,25 +29,29 @@ async function createGame(req: Request, res: Response) {
         gamesWithCodeLength = (await gameService.DB.Find.byIndex('invitationCode', invitationCode))?.length;
     } while (gamesWithCodeLength > 0);
 
-    const newGame = await gameService.DB.create({
-        hostRole,
-        invitationCode,
-        lesson,
-        owner: userId,
-        singlePlayerMode,
-        status: ConstantsGame.Game.STATUS_ENUM.CREATED,
-        players: [
-            {
-                email: player.email,
-                firstName: player.firstName,
-                lastName: player.lastName,
-                playerRole: hostRole,
-                role: player.role,
-                _id: player._id,
-            },
-        ],
-    });
+    const [newGame, lessonData] = await Promise.all([
+        gameService.DB.create({
+            hostRole,
+            invitationCode,
+            lesson,
+            owner: userId,
+            singlePlayerMode,
+            status: ConstantsGame.Game.STATUS_ENUM.CREATED,
+            players: [
+                {
+                    email: player.email,
+                    firstName: player.firstName,
+                    lastName: player.lastName,
+                    playerRole: hostRole,
+                    role: player.role,
+                    _id: player._id,
+                },
+            ],
+        }),
+        lessonService.DB.Find.byId(lesson),
+    ]);
 
+    await gameManagerService.gameManager.initializeGame(newGame, lessonData, []);
     appResponse.prepareJsonResponse(res, newGame);
 }
 
@@ -60,7 +65,6 @@ async function joinGame(req: Request, res: Response) {
     if (!user) throw errorsAdapter.Global.createError(errorsAdapter.Global.ErrorsEnum.USER_NOT_FOUND);
 
     let game = await gameService.DB.Find.byIndex('invitationCode', invitationCode, 1);
-    let playerGames: gameService.Model.IGame['playerGames'] = [];
     if (!game || [ConstantsGame.Game.STATUS_ENUM.FINISHED, ConstantsGame.Game.STATUS_ENUM.CANCELLED].includes(game.status)) {
         throw errorsAdapter.Game.createError(errorsAdapter.Game.ErrorsEnum.GAME_NOT_FOUND);
     }
@@ -80,17 +84,15 @@ async function joinGame(req: Request, res: Response) {
 
         if (game.status === ConstantsGame.Game.STATUS_ENUM.STARTED) {
             const lesson = await lessonService.DB.Find.byId(game.lesson);
-            const playerGame = playerGameService.Helpers.createPlayerGameByGameAndLesson(game, lesson, userId);
-            await playerGameService.DB.create(playerGame);
+            const playerGameData = playerGameService.Helpers.createPlayerGameByGameAndLesson(game, lesson, userId);
+            await playerGameService.DB.create(playerGameData);
         }
-        [game, playerGames] = await Promise.all([gameService.DB.update(game._id, { players }), playerGameService.DB.Find.byIndex('gameId', game._id)]);
-    } else {
-        playerGames = await playerGameService.DB.Find.byIndex('gameId', game._id);
+
+        await gameService.DB.update(game._id, { players });
     }
 
     appResponse.prepareJsonResponse(res, {
         ...game,
-        playerGames,
     });
 }
 
@@ -110,7 +112,7 @@ async function startGame(req: Request, res: Response) {
     let playerGames: playerGameService.Model.IPlayerGame[] = game.players.map((player) => playerGameService.Helpers.createPlayerGameByGameAndLesson(game, lesson, player._id));
 
     playerGames = await playerGameService.DB.createMany(playerGames);
-    gameManagerService.gameManager.initializeGame(game, lesson, playerGames);
+    await gameManagerService.gameManager.initializeGame(game, lesson, playerGames);
 
     appResponse.prepareJsonResponse(res, {
         ...game,
@@ -125,21 +127,24 @@ async function removePlayer(req: Request, res: Response) {
     if (!game) throw errorsAdapter.Game.createError(errorsAdapter.Game.ErrorsEnum.GAME_NOT_FOUND);
     if (game.owner !== userId || playerId === userId) throw errorsAdapter.Global.createError(errorsAdapter.Global.ErrorsEnum.INSUFFICIENT_PERMISSIONS);
 
-    const players = game.players.filter(({ _id }) => _id !== playerId);
+    const players = game.players.filter(({ _id }) => _id.toString() !== playerId);
     [game, playerGames] = await Promise.all([gameService.DB.update(gameId, { players }), playerGameService.DB.Find.byMultipleKeys({ gameId })]);
     const playerGame = playerGames?.find((pGame) => pGame.playerId === playerId);
     playerGames = playerGames.filter(({ _id }) => _id !== playerGame._id);
-    playerGameService.DB.delete(playerGame?._id);
-    gameManagerService.gameManager.deletePlayer(playerId, gameId);
+    await Promise.all([
+        async () => {
+            if (playerGame?._id) await playerGameService.DB.delete(playerGame?._id);
+        },
+        gameManagerService.gameManager.deletePlayer(playerId, gameId),
+    ]);
 
     appResponse.prepareJsonResponse(res, {
         ...game,
-        playerGames,
     });
 }
 
 async function sendAnswer(req: Request, res: Response) {
-    const { userId, gameId } = req.params;
+    const { userId, gameId, requestTime } = req.params;
     const answerData = req.body as IAnswerRequest;
 
     const game = await gameService.DB.Find.byId(gameId);
@@ -183,13 +188,15 @@ async function sendAnswer(req: Request, res: Response) {
         questionScores,
     });
 
+    await gameManagerService.gameManager.processAnswer(gameId, userId, answerData.answer, new Date(requestTime).getTime());
+
     appResponse.prepareJsonResponse(res, updatedPlayerGame);
 }
 
 export default function setup(router: Router) {
+    router.delete(appRoute.getMap().game.removePlayer, security.validateParams, security.validateAuthenticatedRequest, removePlayer);
     router.post(appRoute.getMap().game.create, security.validateAuthenticatedRequest, createGame);
     router.post(appRoute.getMap().game.join, security.validateAuthenticatedRequest, joinGame);
     router.patch(appRoute.getMap().game.start, security.validateParams, security.validateAuthenticatedRequest, startGame);
-    router.delete(appRoute.getMap().game.removePlayer, security.validateParams, security.validateAuthenticatedRequest, removePlayer);
-    router.post(appRoute.getMap().game.sendAnswer, security.validateParams, security.validateAuthenticatedRequest, validateAnswer, sendAnswer);
+    router.post(appRoute.getMap().game.sendAnswer, useRequestTime, security.validateParams, security.validateAuthenticatedRequest, validateAnswer, sendAnswer);
 }

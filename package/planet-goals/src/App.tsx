@@ -29,15 +29,14 @@ function App() {
     const tolgee = useTolgee(["language"]);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token || !currentUser) return; 
-        dispatch(socketConnect(constantsUrls.Socket.main + "/player"));
-
-        // return () => {
-        //     dispatch(socketDisconnect());
-        // }
-    }, [currentUser, dispatch]);
+useEffect(() => {
+    console.log('🎯 useEffect called, currentUser:', currentUser?._id, 'timestamp:', Date.now());
+    const token = localStorage.getItem("token");
+    if (!token || !currentUser) return;
+    
+    console.log('🎯 Dispatching socketConnect');
+    dispatch(socketConnect(constantsUrls.Socket.url, constantsUrls.Socket.namespace));
+}, [currentUser, dispatch]);
     return (
         <div lang={tolgee.getLanguage()}>
             <RootContainer>

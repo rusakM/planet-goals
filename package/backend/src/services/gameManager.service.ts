@@ -12,10 +12,13 @@ export interface ILeaderboardPlayer {
 }
 
 export interface IActivePlayer {
-    userId: string;
-    socketId: string;
-    playerGame: playerGameService.Model.IPlayerGame;
     disconnected?: boolean;
+    playerGame?: playerGameService.Model.IPlayerGame;
+    playerRole?: ConstantsGame.Game.PLAYER_ROLE;
+    userId: string;
+    firstName: string;
+    lastName: string;
+    email: string;
 }
 
 /**
@@ -48,24 +51,39 @@ class GameManagerService {
      */
     private games: Map<string, IGameState> = new Map();
     private redis: RedisConnector<IGameState>;
+    public currentConnectedPlayers: Set<string>;
 
     constructor() {
-        this.redis = new RedisConnector<IGameState>('live_games', 24 * 60 * 60);
-        setTimeout(() => this.init(), 1500);
+        this.redis = new RedisConnector<IGameState>('gameManager', 24 * 60 * 60);
+        this.currentConnectedPlayers = new Set();
+        setTimeout(() => this.initializeStartedGames(), 1500);
     }
 
-    public async init() {
+    public async initializeStartedGames() {
+        console.log('Initialize games...');
         const allGames = await this.redis.getAll();
+        console.log(allGames?.length);
         allGames.forEach((game) => {
             this.games.set(game.gameId, game);
             this.broadcastSubquestion(game.gameId);
+            console.log(`Game ${game.gameId} initialized.`);
         });
+    }
+
+    public async getGame(gameId: string): Promise<IGameState> {
+        let game = this.games.get(gameId);
+        if (!game) {
+            game ||= await this.redis.get(gameId);
+            if (game) this.games.set(game.gameId, game);
+        }
+
+        return game;
     }
 
     /**
      * Inicjalizuje nową grę w silniku, po wywołaniu startGame
      */
-    initializeGame(game: gameService.Model.IGame, lesson: lessonService.Model.ILesson, playerGames: playerGameService.Model.IPlayerGame[]) {
+    async initializeGame(game: gameService.Model.IGame, lesson: lessonService.Model.ILesson, playerGames: playerGameService.Model.IPlayerGame[]) {
         console.log(`Initialize game, ${game._id} with lesson: ${lesson._id}`);
         const questions = lesson.questions ?? [];
         const stage = questions[0]?.gameStage ?? ConstantsGame.Game.STAGE_ENUM.QUICK_CONTENT;
@@ -73,12 +91,14 @@ class GameManagerService {
             gameId: game._id,
             lesson,
             questions,
-            players: playerGames.map((pg) => ({
-                userId: pg.playerId,
-                socketId: '',
-                playerGame: pg,
-                disconnected: true,
+            players: game.players?.map((pg) => ({
+                userId: pg._id,
+                disconnected: !!this.currentConnectedPlayers.has(pg._id),
+                playerGame: playerGames?.find((playerGame) => playerGame?.playerId === pg._id) || null,
                 playerRole: pg.playerRole,
+                firstName: pg.firstName,
+                lastName: pg.lastName,
+                email: pg.email,
             })),
             currentQuestionIndex: 0,
             currentSubquestionIndex: 0,
@@ -90,11 +110,11 @@ class GameManagerService {
             stage,
         };
         this.games.set(game._id, state);
-        this.redis.saveHash(game._id, state);
+        await this.redis.save(game._id, state);
     }
 
-    startGame(gameId: string) {
-        const game = this.games.get(gameId);
+    async startGame(gameId: string) {
+        const game = await this.getGame(gameId);
         if (!game) {
             console.log(`No game with id: ${gameId}`);
             return null;
@@ -104,18 +124,28 @@ class GameManagerService {
         }
         game.started = true;
         game.startTime = Date.now();
-        this.redis.saveHash(gameId, game);
+        const playerGames = await playerGameService.DB.Find.byIndex('gameId', gameId);
+        if (playerGames.length) {
+            game.players = game.players?.map((gamePlayer) => {
+                const playerGame = playerGames.find((item) => item.playerId === gamePlayer.userId);
+                return {
+                    ...gamePlayer,
+                    playerGame: playerGame ?? gamePlayer?.playerGame,
+                };
+            });
+        }
+        await this.redis.save(gameId, game);
         socketService.Player.onGameStart({ gameId, users: this.getPlayersList(gameId) });
 
-        setTimeout(() => {
+        setTimeout(async () => {
             this.broadcastSubquestion(gameId);
 
             const currentInfo = this.getCurrentSubquestion(gameId);
             const subq = currentInfo?.subquestion;
             if (subq?.timeInSek && game.stage !== ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
-                this.startSubquestionTimer(gameId, subq.timeInSek);
+                await this.startSubquestionTimer(gameId, subq.timeInSek);
             }
-            this.redis.saveHash(gameId, this.games.get(gameId)!);
+            await this.redis.save(gameId, this.games.get(gameId)!);
         }, 10000);
 
         return game;
@@ -125,42 +155,48 @@ class GameManagerService {
      * Dołącz użytkownika do gry przez websocket, rejestrując jego socket, odsyłając aktualny subquestion.
      * @returns null lub error jeśli nie można dołączyć (np. gra skończona)
      */
-    joinPlayer(user: accountService.Model.IAccount, socketId: string, playerGame: playerGameService.Model.IPlayerGame) {
-        const { gameId, playerRole, playerId } = playerGame;
-        const game = this.games.get(playerGame.gameId);
-        if (!game) return 'NO_GAME';
+    async joinPlayer(user: accountService.Model.IAccount, gameId: string, playerGameData: IActivePlayer) {
+        const game = await this.getGame(gameId);
+        console.log('Joining to game gameId');
+        if (!game) {
+            console.log('Player join: game not exist');
+            return 'NO_GAME';
+        }
         // Można dodać logikę blokowania dołączenia kiedy gra jest zakończona
-        const existing = game.players.find((x) => x.userId === playerId);
+        const existing = game.players.find((x) => x.userId === user._id.toString());
         if (existing) {
-            existing.socketId = socketId;
             existing.disconnected = false;
         } else {
-            game.players.push({ userId: playerId, socketId, playerGame });
+            game.players.push(playerGameData);
         }
         if (!game.started) {
             const users = game.players.map(({ userId }) => userId);
             socketService.Player.onPlayerJoin({
-                _id: playerId,
+                _id: user._id,
                 email: user.email,
+                gameId,
                 firstName: user.firstName,
-                lastNAme: user.lastName,
-                role: playerRole,
+                lastName: user.lastName,
+                role: playerGameData?.playerGame?.playerRole ?? ConstantsGame.Game.PLAYER_ROLE.player,
                 users,
             });
         }
-        this.redis.saveHash(gameId, game);
-        this.sendPlayerGameToUser(gameId, playerId);
+        await this.redis.save(gameId, game);
+        this.sendPlayerGameToUser(gameId, user._id);
         return null;
     }
 
-    deletePlayer(playerId: string, gameId: string) {
-        const game = this.games.get(gameId);
+    async deletePlayer(playerId: string, gameId: string) {
+        console.log('Remove player from game: ', gameId);
+        const game = await this.getGame(gameId);
         if (!game) return;
+        const users = this.getPlayersList(gameId);
         const playerGameIdx = game.players.findIndex(({ userId }) => userId === playerId);
         if (playerGameIdx < 0) return;
         game.players.splice(playerGameIdx, 1);
-        this.redis.saveHash(gameId, game);
-        socketService.Player.onPlayerDelete({ users: this.getPlayersList(gameId), playerId });
+        await this.redis.save(gameId, game);
+        console.log('Remove player success');
+        socketService.Player.onPlayerDelete({ users, gameId, playerId });
     }
 
     /**
@@ -195,7 +231,7 @@ class GameManagerService {
     /**
      * Akceptuj odpowiedź dla aktywnego gracza – obsługuje scoring, timeout, blokuje wielokrotne odpowiedzi itp.
      */
-    processAnswer(gameId: string, userId: string, answer: string, responseTime: number): { points: number; correct: boolean; done: boolean; error?: string } {
+    async processAnswer(gameId: string, userId: string, answer: string, responseTime: number): Promise<{ points: number; correct: boolean; done: boolean; error?: string }> {
         const game = this.games.get(gameId);
         if (!game) return { points: 0, correct: false, done: false, error: 'NO_GAME' };
 
@@ -226,7 +262,7 @@ class GameManagerService {
             // Competition calculation handled elsewhere
         }
         game.answers[userId][game.currentQuestionIndex][game.currentSubquestionIndex] = { answer, points, responseTime };
-        this.redis.saveHash(gameId, game);
+        await this.redis.save(gameId, game);
         return { points, correct, done: true };
     }
 
@@ -234,28 +270,69 @@ class GameManagerService {
      * Uruchamia timeout, po którym automatycznie zmieniana jest subquestion (oraz przyznaje tym co nie odpowiedzieli punkty=0).
      * Wywołuj zawsze po wysłaniu nowego subquestion do graczy.
      */
-    startSubquestionTimer(gameId: string, seconds: number) {
+    async startSubquestionTimer(gameId: string, seconds: number) {
         const game = this.games.get(gameId);
         if (!game) return;
-        this.stopSubquestionTimer(gameId);
+        await this.stopSubquestionTimer(gameId);
         game.subquestionEndTime = Date.now() + seconds * 1000;
-        game.subquestionTimer = setTimeout(() => this.nextSubquestion(gameId), seconds * 1000);
-        this.redis.saveHash(gameId, game);
+        game.subquestionTimer = setTimeout(async () => await this.nextSubquestion(gameId), seconds * 1000);
+        await this.redis.save(gameId, game);
     }
 
-    stopSubquestionTimer(gameId: string) {
+    async stopSubquestionTimer(gameId: string) {
         const game = this.games.get(gameId);
         if (game?.subquestionTimer) {
             clearTimeout(game.subquestionTimer);
             game.subquestionTimer = undefined;
-            this.redis.saveHash(gameId, game);
+            await this.redis.save(gameId, game);
         }
+    }
+
+    async startQuestionTimer(gameId: string) {
+        const game = this.games.get(gameId);
+        if (!game) return;
+
+        const currentQuestion = game.questions[game.currentQuestionIndex];
+        if (!currentQuestion?.subquestions) return;
+
+        // Oblicz sumę czasów wszystkich subquestions w aktualnym question
+        const totalTimeInSek = currentQuestion.subquestions.reduce((sum, sq) => {
+            return sum + (sq.timeInSek || 0);
+        }, 0);
+
+        this.stopSubquestionTimer(gameId);
+        game.subquestionEndTime = Date.now() + totalTimeInSek * 1000;
+        game.subquestionTimer = setTimeout(async () => {
+            // Po zakończeniu czasu przechodzimy do następnego pytania
+            let nextQuestionIndex = game.currentQuestionIndex + 1;
+            if (nextQuestionIndex >= game.questions.length) {
+                // Jeśli to było ostatnie pytanie, kończymy grę
+                await this.endGame(gameId);
+            } else {
+                // Przechodzimy do następnego pytania i ustawiamy subquestion na 0
+                game.currentQuestionIndex = nextQuestionIndex;
+                game.currentSubquestionIndex = 0;
+                game.stage = game.questions[nextQuestionIndex]?.gameStage ?? game.stage;
+                this.broadcastSubquestion(gameId);
+
+                // Jeśli następne pytanie też jest w trybie COMPETITION, startujemy timer dla niego
+                if (game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
+                    await this.startQuestionTimer(gameId);
+                } else if (game.questions[nextQuestionIndex]?.subquestions?.[0]?.timeInSek) {
+                    // Jeśli nie jest w trybie COMPETITION, wracamy do standardowego timera
+                    await this.startSubquestionTimer(gameId, game.questions[nextQuestionIndex].subquestions[0].timeInSek);
+                }
+            }
+            await this.redis.save(gameId, game);
+        }, totalTimeInSek * 1000);
+
+        await this.redis.save(gameId, game);
     }
 
     /**
      * Przechodzi do kolejnego subquestion w lekcji. Jeśli skończone → kończy grę i rozsyła leaderboard.
      */
-    nextSubquestion(gameId: string) {
+    async nextSubquestion(gameId: string) {
         const game = this.games.get(gameId);
         if (!game) return;
         // Najpierw przyznaj 0 punktów wszystkim którzy nie odpowiedzieli
@@ -278,7 +355,7 @@ class GameManagerService {
         }
         if (nq >= game.questions.length) {
             // End game
-            this.endGame(gameId);
+            await this.endGame(gameId);
             return;
         }
         game.currentQuestionIndex = nq;
@@ -288,10 +365,18 @@ class GameManagerService {
         this.broadcastSubquestion(gameId);
         // Ustal timeout dla nowych subquestions
         const nextSq: lessonService.Model.ISubquestion | undefined = game.questions[nq]?.subquestions?.[ns];
-        if (nextSq?.timeInSek && game.stage !== ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
-            this.startSubquestionTimer(gameId, nextSq.timeInSek);
+        if (nextSq?.timeInSek) {
+            if (game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
+                if (ns === 0) {
+                    // tylko dla pierwszego subquestion w trybie competition
+                    await this.startQuestionTimer(gameId);
+                }
+            } else {
+                const timeInSek = nextSq?.answers?.length ? nextSq.timeInSek + 1 : nextSq.timeInSek;
+                await this.startSubquestionTimer(gameId, timeInSek);
+            }
         }
-        this.redis.saveHash(gameId, game);
+        await this.redis.save(gameId, game);
     }
 
     /**
@@ -311,16 +396,15 @@ class GameManagerService {
     /**
      * Wysyła stan gry (playerGame/points itp.) do danego usera (np. po reconnect itp.)
      */
-    sendPlayerGameToUser(gameId: string, userId: string) {
-        const game = this.games.get(gameId);
+    async sendPlayerGameToUser(gameId: string, userId: string) {
+        const game = await this.getGame(gameId);
         if (!game) return;
         const player = game.players.find((x) => x.userId === userId);
-        if (player?.socketId) {
-            socketService.Player.onPlayerGame({
-                playerGame: player.playerGame,
-                userId,
-            });
-        }
+        socketService.Player.onPlayerGame({
+            gameId,
+            playerGame: player?.playerGame,
+            userId,
+        });
     }
 
     /**
@@ -365,20 +449,20 @@ class GameManagerService {
         });
     }
 
-    handleDisconnect(gameId: string, userId: string) {
+    async handleDisconnect(gameId: string, userId: string) {
         const game = this.games.get(gameId);
         if (!game) return;
         const player = game.players.find((x) => x.userId === userId);
         if (player) {
             player.disconnected = true;
-            this.redis.saveHash(gameId, game);
+            await this.redis.save(gameId, game);
         }
     }
 
     async endGame(gameId: string) {
         const game = this.games.get(gameId);
         if (!game) return;
-        this.stopSubquestionTimer(gameId);
+        await this.stopSubquestionTimer(gameId);
         const winnerFromLeaderboard = this.getLeaderboard(gameId)?.[0];
         let winner: gameService.Model.IGamePlayer;
         if (winnerFromLeaderboard) {
@@ -396,7 +480,19 @@ class GameManagerService {
         this.sendLeaderboard(gameId);
         socketService.Player.onGameEnded({ gameId });
         this.games.delete(gameId);
-        this.redis.delete(gameId);
+        await this.redis.delete(gameId);
+    }
+
+    setUserAvailable(userId: string) {
+        if (!this.currentConnectedPlayers.has(userId)) this.currentConnectedPlayers.add(userId);
+    }
+
+    setUserNotAvailable(userId: string) {
+        if (this.currentConnectedPlayers.has(userId)) this.currentConnectedPlayers.delete(userId);
+    }
+
+    getCurrentPlayedGamesIds(): string[] {
+        return Array.from(this.games.keys());
     }
 }
 

@@ -37,7 +37,8 @@ export const Main = {
 }
 
 export const Socket = {
-    main: "/socket.io"
+    namespace: "/socket.io",
+    url: "/player",
 }
 
 export const User = {

@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { TolgeeProvider } from "@tolgee/react";
@@ -15,15 +14,13 @@ import App from "./App.tsx";
 import Spinner from "./components/spinner/spinner.component.tsx";
 
 createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-        <Provider store={store}>
-            <BrowserRouter>
-                <PersistGate persistor={persistor}>
-                    <TolgeeProvider tolgee={tolgeeConfig} fallback={<Spinner/>}>
-                        <App />
-                    </TolgeeProvider>
-                </PersistGate>
-            </BrowserRouter>
-        </Provider>
-    </StrictMode>
+    <Provider store={store}>
+        <BrowserRouter>
+            <PersistGate persistor={persistor}>
+                <TolgeeProvider tolgee={tolgeeConfig} fallback={<Spinner/>}>
+                    <App />
+                </TolgeeProvider>
+            </PersistGate>
+        </BrowserRouter>
+    </Provider>
 );

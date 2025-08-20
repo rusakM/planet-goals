@@ -49,6 +49,7 @@ export interface IGamePlayer extends Pick<userTypes.IUser, '_id' | 'email' | 'fi
 }
 
 export interface IGame extends globalTypes.IDBObject {
+    _id?: string;
     endedAt?: string;
     hostRole?: TPlayerRole;
     invitationCode?: string;

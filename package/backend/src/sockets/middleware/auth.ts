@@ -11,6 +11,7 @@ export const socketAuthMiddleware = (socket: Socket, next: (err?: Error) => void
         }
         const decoded = jwt.verify(typeof token === 'string' ? token.replace(/^Bearer /, '') : token, Main.JWT_SECRET) as IDecodedToken;
         console.log(decoded);
+        //console.log(socket.handshake);
         socket.data.decoded_token = decoded;
         next();
     } catch (err) {

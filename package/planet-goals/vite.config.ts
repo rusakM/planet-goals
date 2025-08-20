@@ -23,7 +23,13 @@ export default defineConfig({
                 changeOrigin: true,
                 ws: true,
                 secure: false,
-            }
+            },
+            "/player": {
+                target: "http://localhost:8081/player",
+                changeOrigin: true,
+                ws: true,
+                secure: false
+            },
         },
     },
     plugins: [react()],

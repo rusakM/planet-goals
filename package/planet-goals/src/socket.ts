@@ -3,16 +3,16 @@ import { io, Socket } from "socket.io-client";
 class SocketService {
     private socket: Socket | null = null;
 
-    connect(url: string) {
+    connect(url: string, namespace: string) {
         const token = localStorage.getItem("token") || "";
-        console.log(url);
+        console.log(namespace, url);
         if (!this.socket) {
-            this.socket = io({
+            this.socket = io(`${url}`, {
                 autoConnect: true,
                 auth: {
                     token: `Bearer ${token}`
                 },
-                path: url,
+                //path: namespace,
                 transports: ['websocket', 'polling'],
             });
             this.socket.connect();
@@ -35,7 +35,28 @@ class SocketService {
     }
 
     emit(eventName: string, data?: unknown) {
-        this.socket?.emit(eventName, data);
+        console.log('Attempting to emit:', eventName, data);
+        console.log('Socket state:', {
+            exists: !!this.socket,
+            connected: this.socket?.connected,
+            id: this.socket?.id
+        });
+        
+        if (!this.socket) {
+            console.error('Socket instance does not exist');
+            return;
+        }
+        
+        if (!this.socket.connected) {
+            console.error('Socket is not connected');
+            return;
+        }
+        
+        this.socket.emit(eventName, data, (response: unknown) => {
+            console.log('📨 Server acknowledged:', response);
+        });
+        this.socket.send()
+        console.log('Emit completed');
     }
 
     isConnected() {
