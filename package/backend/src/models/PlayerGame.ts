@@ -4,7 +4,7 @@ import { Helper } from '../shared/defs';
 import { SchemasGlobal } from '.';
 import { ConstantsGame } from '../core/constants';
 
-interface IQuestionScore {
+export interface IQuestionScore {
     correctAnswer?: string;
     points?: number;
     question?: number;

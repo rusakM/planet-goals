@@ -10,7 +10,7 @@ import GameButton, { TButtonColor } from "../../../components/game-button/game-b
 
 const colors: TButtonColor[] = ["red", "green"];
 
-const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, showAnswers}) => {
+const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers}) => {
     const { t } = useTranslate();
     const [ answer, setAnswer ] = useState(false);
     const [ answered, setAnswered ] = useState(false);
@@ -30,6 +30,7 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, showAnswers})
         setAnswer(state);
         setAnswered(true);
         setAnswerCorrect(check(state));
+        sendAnswerAction(questionData.answers[Number(state)]);
     }
 
     const getCurrentColor = (ans: boolean): TButtonColor => {

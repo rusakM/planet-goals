@@ -13,7 +13,9 @@ const INITIAL_STATE: IGameState = {
     isGameStarted: false,
     lessonError: "",
     playerRole: null,
-    selectedLesson: 0
+    selectedLesson: 0,
+    waitingForPlayers: false,
+    waitingTimeUntil: 0,
 };
 
 const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
@@ -79,17 +81,31 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
         case GameActionTypes.SET_CURRENT_QUESTION:
             return {
                 ...state,
-                currentQuestion: action.payload
+                currentQuestion: action.payload,
+                waitingForPlayers: false,
             }
         case SocketActionTypes.GAME_LEADERBOARD:
             return {
                 ...state,
-                currentLeaderboard: action.payload.leaderboard
+                currentLeaderboard: action.payload.leaderboard,
+                waitingForPlayers: false,
             }
         case SocketActionTypes.GAME_SUBQUESTION: 
             return {
                 ...state,
                 currentQuestion: [action.payload.question, action.payload.subquestion],
+                waitingForPlayers: false,
+            }
+        case GameActionTypes.SET_WAITING_FOR_PLAYERS: {
+            return {
+                ...state,
+                waitingForPlayers: action.payload
+            };
+        }
+        case GameActionTypes.SET_WAITING_TIME_UNTIL:
+            return {
+                ...state,
+                waitingTimeUntil: action.payload
             }
         default:
             return state;

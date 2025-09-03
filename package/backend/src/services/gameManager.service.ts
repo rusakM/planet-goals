@@ -1,3 +1,4 @@
+import { addSeconds } from 'date-fns';
 import { accountService, gameService, lessonService, playerGameService, socketService } from '.';
 import { ConstantsGame } from '../core/constants';
 import { RedisConnector } from '../core/redisConnector';
@@ -34,6 +35,7 @@ export interface IGameState {
     started: boolean;
     startTime: number | null;
     // kiedy timeout się skończy (ms)
+    subquestionStartTime: number | null;
     subquestionEndTime: number | null;
     // KEY: userId, VALUE: odpowiedzi i scoring na konkrentne subquestion
     answers: { [userId: string]: { [q: number]: { [sq: number]: { answer: string; points: number; responseTime: number } } } };
@@ -65,7 +67,7 @@ class GameManagerService {
         console.log(allGames?.length);
         allGames.forEach((game) => {
             this.games.set(game.gameId, game);
-            this.broadcastSubquestion(game.gameId);
+            this.broadcastSubquestion(game.gameId, game?.subquestionEndTime || null);
             console.log(`Game ${game.gameId} initialized.`);
         });
     }
@@ -105,6 +107,7 @@ class GameManagerService {
             started: false,
             startTime: null,
             subquestionEndTime: null,
+            subquestionStartTime: null,
             answers: {},
             subquestionTimer: undefined,
             stage,
@@ -135,18 +138,22 @@ class GameManagerService {
             });
         }
         await this.redis.save(gameId, game);
-        socketService.Player.onGameStart({ gameId, users: this.getPlayersList(gameId) });
+        socketService.Player.onGameStart({
+            gameId,
+            users: this.getPlayersList(gameId),
+            waitingTimeUntil: game.startTime + ConstantsGame.Game.GAME_START_WAITING_TIME_MS,
+        });
 
         setTimeout(async () => {
-            this.broadcastSubquestion(gameId);
-
             const currentInfo = this.getCurrentSubquestion(gameId);
             const subq = currentInfo?.subquestion;
+            const subqTimeUntil = this.calculateSubquestionTimeUntil(subq);
+            this.broadcastSubquestion(gameId, subqTimeUntil);
             if (subq?.timeInSek && game.stage !== ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
-                await this.startSubquestionTimer(gameId, subq.timeInSek);
+                await this.startSubquestionTimer(gameId, subqTimeUntil);
             }
             await this.redis.save(gameId, this.games.get(gameId)!);
-        }, 10000);
+        }, ConstantsGame.Game.GAME_START_WAITING_TIME_MS);
 
         return game;
     }
@@ -180,9 +187,17 @@ class GameManagerService {
                 role: playerGameData?.playerGame?.playerRole ?? ConstantsGame.Game.PLAYER_ROLE.player,
                 users,
             });
+        } else {
+            const timeSinceStart = Date.now() - game.startTime;
+            if (timeSinceStart < ConstantsGame.Game.GAME_START_WAITING_TIME_MS)
+                socketService.Player.onGameStart({
+                    gameId,
+                    users: [user._id],
+                    waitingTimeUntil: game.startTime + ConstantsGame.Game.GAME_START_WAITING_TIME_MS,
+                });
         }
         await this.redis.save(gameId, game);
-        this.sendPlayerGameToUser(gameId, user._id);
+        //this.sendPlayerGameToUser(gameId, user._id);
         return null;
     }
 
@@ -231,14 +246,18 @@ class GameManagerService {
     /**
      * Akceptuj odpowiedź dla aktywnego gracza – obsługuje scoring, timeout, blokuje wielokrotne odpowiedzi itp.
      */
-    async processAnswer(gameId: string, userId: string, answer: string, responseTime: number): Promise<{ points: number; correct: boolean; done: boolean; error?: string }> {
-        const game = this.games.get(gameId);
+    async processAnswer(gameId: string, userId: string, answer: string, questionIndex: number, subquestionIndex: number, responseTime: number): Promise<{ points: number; correct: boolean; done: boolean; error?: string }> {
+        const game = await this.getGame(gameId);
         if (!game) return { points: 0, correct: false, done: false, error: 'NO_GAME' };
-
         const q = game.questions[game.currentQuestionIndex];
         if (!q) return { points: 0, correct: false, done: false, error: 'NO_QUESTION' };
         const sq = q.subquestions?.[game.currentSubquestionIndex];
         if (!sq) return { points: 0, correct: false, done: false, error: 'NO_SUBQUESTION' };
+        if (questionIndex !== game.currentQuestionIndex || subquestionIndex !== game.currentSubquestionIndex) {
+            console.log('questionIndexes:', game.currentQuestionIndex, questionIndex, 'subquestionIndexes:', game.currentSubquestionIndex, subquestionIndex);
+            return { points: 0, correct: false, done: false, error: 'INCORRECT_QUESTION' };
+        }
+
         if (!game.answers[userId]) game.answers[userId] = {};
         if (!game.answers[userId][game.currentQuestionIndex]) game.answers[userId][game.currentQuestionIndex] = {};
         if (game.answers[userId][game.currentQuestionIndex][game.currentSubquestionIndex]) {
@@ -251,15 +270,23 @@ class GameManagerService {
         let points = 0;
         if (game.stage === ConstantsGame.Game.STAGE_ENUM.QUICK_CONTENT) {
             points = 0;
-        } else if (game.stage === ConstantsGame.Game.STAGE_ENUM.KNOWLEDGE) {
-            correct = answer === sq.correctAnswer;
-            // Avoid division by 0:
+            correct = true;
+        } else {
+            correct = gameService.checkAnswer(sq, answer);
             const subsLen = q.subquestions?.length || 1;
-            points = correct ? (q.maxPoints || 0) / subsLen : 0;
-        } else if (game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
-            // Zapisywanie odpowiedzi, ale punkty ustalimy po zakończeniu subquestion
-            correct = answer === sq.correctAnswer;
-            // Competition calculation handled elsewhere
+            const sqMaxPoints = Number(((q.maxPoints || 0) / subsLen).toFixed());
+            if (game.stage === ConstantsGame.Game.STAGE_ENUM.KNOWLEDGE) {
+                points = correct ? sqMaxPoints : 0;
+            } else if (game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
+                if (correct) {
+                    // timeRatio = (answerTime - questionStartTime) / totalQuestionTime
+                    const timeRatio = (responseTime - game.subquestionStartTime) / (sq.timeInSek * 1000);
+                    // punkty = maxPoints × (1 - timeRatio)²
+                    points = Number((sqMaxPoints * Math.pow(1 - timeRatio, 2)).toFixed(2));
+                } else {
+                    points = 0;
+                }
+            }
         }
         game.answers[userId][game.currentQuestionIndex][game.currentSubquestionIndex] = { answer, points, responseTime };
         await this.redis.save(gameId, game);
@@ -270,12 +297,19 @@ class GameManagerService {
      * Uruchamia timeout, po którym automatycznie zmieniana jest subquestion (oraz przyznaje tym co nie odpowiedzieli punkty=0).
      * Wywołuj zawsze po wysłaniu nowego subquestion do graczy.
      */
-    async startSubquestionTimer(gameId: string, seconds: number) {
+    calculateSubquestionTimeUntil(subquestion: lessonService.Model.ISubquestion): number {
+        const timeUntil = addSeconds(new Date(), subquestion?.timeInSek || ConstantsGame.Game.GAME_START_WAITING_TIME_MS).getTime();
+        if (subquestion?.answers?.length) return timeUntil + 1000;
+        return timeUntil;
+    }
+
+    async startSubquestionTimer(gameId: string, timeUntil: number) {
         const game = this.games.get(gameId);
         if (!game) return;
         await this.stopSubquestionTimer(gameId);
-        game.subquestionEndTime = Date.now() + seconds * 1000;
-        game.subquestionTimer = setTimeout(async () => await this.nextSubquestion(gameId), seconds * 1000);
+        game.subquestionEndTime = timeUntil;
+        game.subquestionStartTime = Date.now();
+        game.subquestionTimer = setTimeout(async () => await this.nextSubquestion(gameId), timeUntil - Date.now());
         await this.redis.save(gameId, game);
     }
 
@@ -288,20 +322,24 @@ class GameManagerService {
         }
     }
 
-    async startQuestionTimer(gameId: string) {
+    calculateQuestionTimeUntil(question: lessonService.Model.IQuestion): number {
+        const totalTimeInSek = question.subquestions.reduce((sum, sq) => {
+            return sum + (sq.timeInSek || 0);
+        }, 0);
+
+        return addSeconds(new Date(), totalTimeInSek).getTime();
+    }
+
+    async startQuestionTimer(gameId: string, timeUntil: number) {
         const game = this.games.get(gameId);
         if (!game) return;
 
         const currentQuestion = game.questions[game.currentQuestionIndex];
         if (!currentQuestion?.subquestions) return;
-
-        // Oblicz sumę czasów wszystkich subquestions w aktualnym question
-        const totalTimeInSek = currentQuestion.subquestions.reduce((sum, sq) => {
-            return sum + (sq.timeInSek || 0);
-        }, 0);
-
+        if (!timeUntil) timeUntil = this.calculateQuestionTimeUntil(currentQuestion);
         this.stopSubquestionTimer(gameId);
-        game.subquestionEndTime = Date.now() + totalTimeInSek * 1000;
+        game.subquestionEndTime = timeUntil;
+        game.subquestionStartTime = Date.now();
         game.subquestionTimer = setTimeout(async () => {
             // Po zakończeniu czasu przechodzimy do następnego pytania
             let nextQuestionIndex = game.currentQuestionIndex + 1;
@@ -313,18 +351,20 @@ class GameManagerService {
                 game.currentQuestionIndex = nextQuestionIndex;
                 game.currentSubquestionIndex = 0;
                 game.stage = game.questions[nextQuestionIndex]?.gameStage ?? game.stage;
-                this.broadcastSubquestion(gameId);
+                const isCompetition = game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION;
+                const nqTimeUntil = isCompetition ? this.calculateQuestionTimeUntil(game.questions[nextQuestionIndex]) : this.calculateSubquestionTimeUntil(game.questions[nextQuestionIndex].subquestions[0]);
+                this.broadcastSubquestion(gameId, nqTimeUntil);
 
                 // Jeśli następne pytanie też jest w trybie COMPETITION, startujemy timer dla niego
-                if (game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
-                    await this.startQuestionTimer(gameId);
-                } else if (game.questions[nextQuestionIndex]?.subquestions?.[0]?.timeInSek) {
+                if (isCompetition) {
+                    await this.startQuestionTimer(gameId, nqTimeUntil);
+                } else {
                     // Jeśli nie jest w trybie COMPETITION, wracamy do standardowego timera
-                    await this.startSubquestionTimer(gameId, game.questions[nextQuestionIndex].subquestions[0].timeInSek);
+                    await this.startSubquestionTimer(gameId, nqTimeUntil);
                 }
             }
             await this.redis.save(gameId, game);
-        }, totalTimeInSek * 1000);
+        }, timeUntil - Date.now());
 
         await this.redis.save(gameId, game);
     }
@@ -362,18 +402,20 @@ class GameManagerService {
         game.currentSubquestionIndex = ns;
         // Zmień stage jeśli potrzeba:
         game.stage = game.questions[nq]?.gameStage ?? game.stage;
-        this.broadcastSubquestion(gameId);
+        const isCompetition = game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION;
+        const timeUntil = isCompetition ? this.calculateQuestionTimeUntil(game.questions[nq]) : this.calculateSubquestionTimeUntil(game.questions[nq].subquestions[ns]);
+
+        this.broadcastSubquestion(gameId, timeUntil);
         // Ustal timeout dla nowych subquestions
         const nextSq: lessonService.Model.ISubquestion | undefined = game.questions[nq]?.subquestions?.[ns];
         if (nextSq?.timeInSek) {
             if (game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
                 if (ns === 0) {
                     // tylko dla pierwszego subquestion w trybie competition
-                    await this.startQuestionTimer(gameId);
+                    await this.startQuestionTimer(gameId, timeUntil);
                 }
             } else {
-                const timeInSek = nextSq?.answers?.length ? nextSq.timeInSek + 1 : nextSq.timeInSek;
-                await this.startSubquestionTimer(gameId, timeInSek);
+                await this.startSubquestionTimer(gameId, timeUntil);
             }
         }
         await this.redis.save(gameId, game);
@@ -382,13 +424,14 @@ class GameManagerService {
     /**
      * Wysyła aktualny subquestion do wszystkich graczy w pokoju (Socket.io room)
      */
-    broadcastSubquestion(gameId: string) {
+    broadcastSubquestion(gameId: string, timeUntil: number) {
         const info = this.getCurrentSubquestion(gameId);
         if (!info) return;
         socketService.Player.onGameSubquestion({
             question: info.qIndex,
             subquestion: info.sqIndex,
             gameId,
+            timeUntil,
             users: this.getPlayersList(gameId),
         });
     }
@@ -424,11 +467,11 @@ class GameManagerService {
             }
             return {
                 playerId: p.userId,
-                playerLastName: (p.playerGame as any)?.playerLastName || '',
-                playerName: (p.playerGame as any)?.playerName || '',
+                playerLastName: p.lastName,
+                playerName: p.firstName,
                 playerPoints: points,
                 playerPosition: idx + 1,
-                playerRole: p.playerGame.playerRole,
+                playerRole: p.playerRole,
             };
         });
         // Sortuj po punktach (desc)

@@ -3,10 +3,10 @@ import { useTranslate } from "@tolgee/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { setGameStage, resetGame, setIsGameCreatedByCurrentUser, removePlayerStart } from "../../../redux/game/game.actions";
+import { resetGame, setIsGameCreatedByCurrentUser, removePlayerStart, startGameStart, fetchLessonStart } from "../../../redux/game/game.actions";
 import { useDeviceType } from "../../../helpers/responsiveContainers";
 import { selectCurrentUser } from "../../../redux/user/user.selectors";
-import { selectCurrentGame, selectIsGameCreatedByCurrentUser } from "../../../redux/game/game.selectors";
+import { selectCurrentGame, selectCurrentLesson, selectIsGameCreatedByCurrentUser } from "../../../redux/game/game.selectors";
 import { constantsUrls } from "../../../helpers/constants";
 
 import LobbyListItem from "./lobby-list-item";
@@ -27,6 +27,7 @@ const LobbyComponent: React.FC = () => {
     const dispatch = useDispatch();
     const currentUser = useSelector(selectCurrentUser);
     const currentGame = useSelector(selectCurrentGame);
+    const currentLesson = useSelector(selectCurrentLesson);
     const isGameCreatedByCurrentUser = useSelector(selectIsGameCreatedByCurrentUser);
     const { isMobile } = useDeviceType();
     const buttonsSize: TButtonSize = isMobile ? "desktopSmall" : "regular";
@@ -40,6 +41,11 @@ const LobbyComponent: React.FC = () => {
         }
     }, [isGameCreatedByCurrentUser, dispatch, currentGame, currentUser]);
 
+    useEffect(() => {
+        if (currentLesson?._id || !currentGame?.lesson) return;
+        dispatch(fetchLessonStart(currentGame.lesson));
+    }, [dispatch, currentGame, currentLesson]);
+
     const handleDelete = (playerId: string) => {
         dispatch(removePlayerStart({ playerId, gameId: currentGame._id }));
     }
@@ -52,7 +58,11 @@ const LobbyComponent: React.FC = () => {
         navigate(constantsUrls.Main.startLessons);
     }  
     
-    const startGame = () => dispatch(setGameStage("wait"));
+    const startGame = () => {
+        if (!isGameCreatedByCurrentUser) return;
+        dispatch(startGameStart(currentGame._id));
+        //dispatch(setGameStage("wait"));
+    }
 
     return (
         <PageContainer>
@@ -82,9 +92,12 @@ const LobbyComponent: React.FC = () => {
                         : signInStyles.bottomButtons
                     }
                 >
-                    <PrimaryButton color="orange" onClick={startGame} type={buttonsType} size={buttonsSize}>
-                        {t("lesson.lobby.start.button")}
-                    </PrimaryButton>
+                    {
+                        isGameCreatedByCurrentUser && 
+                            <PrimaryButton color="orange" onClick={startGame} type={buttonsType} size={buttonsSize}>
+                                {t("lesson.lobby.start.button")}
+                            </PrimaryButton>
+                    }
                     <PrimaryButton color="white" onClick={leaveLobby} type={buttonsType} size={buttonsSize}>
                         {t("lesson.lobby.exit.button")}
                     </PrimaryButton>

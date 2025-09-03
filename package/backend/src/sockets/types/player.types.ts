@@ -22,12 +22,14 @@ export interface IGamePlayerGame {
 
 export interface IGameStart extends IGameEmittedSocket {
     gameId: string;
+    waitingTimeUntil: number;
 }
 
 export interface IGameSubquestion extends IGameEmittedSocket {
     gameId: string;
     question: number;
     subquestion: number;
+    timeUntil?: number;
 }
 
 export interface IPlayerDelete extends IGameEmittedSocket {

@@ -33,13 +33,16 @@ export interface IGamePlayerGame extends IBasicGameSocketType {
 export interface IGameSubquestion extends IBasicGameSocketType {
 	question: number;
 	subquestion: number;
+	timeUntil?: number;
 }
 
 export interface IJoinGame extends IBasicGameSocketType {
 	playerId: string;
 }
 
-export type IGameStart = IBasicGameSocketType;
+export interface IGameStart extends IBasicGameSocketType {
+	waitingTimeUntil: number;
+}
 
 export interface IPlayerDelete extends IBasicGameSocketType	{
 	playerId: string;

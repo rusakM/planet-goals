@@ -43,3 +43,13 @@ export const selectCurrentQuestion = createSelector(
   [selectGameState],
   (game) => game.currentQuestion
 );
+
+export const selectWaitingForPlayers = createSelector(
+  [selectGameState],
+  (game) => game.waitingForPlayers
+);
+
+export const selectWaitingTimeUntil = createSelector(
+  [selectGameState],
+  (game) => game.waitingTimeUntil
+);

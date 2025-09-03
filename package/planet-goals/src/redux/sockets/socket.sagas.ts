@@ -4,13 +4,13 @@ import {
     IGameSubquestion,
     IPlayerDelete,
     IPlayerJoin,
+    IGameStart,
 } from './socket.types';
 import * as gameActions from '../game/game.actions';
 import { IStore } from '../store.types';
 import { createAction } from '@reduxjs/toolkit';
 import { STATUS_ENUM } from '../../types/game';
 import { ERRORS_ENUM as GAME_ERRORS_ENUM} from '../../api/game.api';
-//import { ERRORS_ENUM as USER_ERRORS_ENUM } from '../../api/user.api';
 
 const getCurrentGameState = (state: IStore) => state.game;
 const getCurrentUserState = (state: IStore) => state.user;
@@ -22,25 +22,28 @@ const startGameAction = createAction(SocketActionTypes.GAME_START);
 
 function* gameSubquestion({payload}: { payload: IGameSubquestion }) {
     try {
-        const { question, subquestion } = payload;
+        const { question, subquestion, timeUntil } = payload;
         const currentGameState: IStore['game'] = yield select(getCurrentGameState);
-        if (currentGameState?.isGameStarted) {
-            yield put(gameActions.setCurrentQuestion([question, subquestion]));
-        }
+        if (timeUntil) yield put(gameActions.setWaitingTimeUntil(timeUntil));
+        if (JSON.stringify(currentGameState.currentQuestion) === JSON.stringify([question, subquestion])) return;
+        if (currentGameState?.isGameStarted) yield put(gameActions.setCurrentQuestion([question, subquestion]));
     } catch (error) {
         console.error(error);
     }
 }
 
-function* startGame() {
+function* startGame({ payload }: { payload: IGameStart }) {
     try {
         const currentGameState: IStore["game"] = yield select(getCurrentGameState);
         if (!currentGameState.currentGame) throw GAME_ERRORS_ENUM.GAME_NOT_FOUND;
+        console.log('time until', payload.waitingTimeUntil, new Date().toISOString(), new Date(payload.waitingTimeUntil).toISOString())
         yield put(gameActions.startGameSuccess({
             ...currentGameState.currentGame,
             startedAt: new Date().toISOString(),
             status: STATUS_ENUM.STARTED,
         }));
+        yield put(gameActions.setWaitingTimeUntil(payload.waitingTimeUntil));
+        yield put(gameActions.setGameStage('wait'));
     } catch (error) {
         yield put(gameActions.startGameFailure(error));
     }

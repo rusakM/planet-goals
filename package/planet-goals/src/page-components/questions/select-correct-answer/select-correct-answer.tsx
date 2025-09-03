@@ -9,7 +9,7 @@ import GameButton, { TButtonColor } from "../../../components/game-button/game-b
 
 const colors: TButtonColor[] = ["orange", "blue"];
 
-const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, showAnswers }) => {
+const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers }) => {
 
     const [answer, setAnswer] = useState(-1);
     const [answered, setAnswered] = useState(false);
@@ -29,6 +29,7 @@ const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, sh
         setAnswer(index);
         setAnswerCorrect(check(index));
         setAnswered(true);
+        sendAnswerAction(questionData.answers[index]);
     }
 
     const getCurrentColor = (index: number) => {

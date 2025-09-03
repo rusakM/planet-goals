@@ -1,6 +1,7 @@
 import { GameActionTypes } from "./game.types";
 import { gameTypes, lessonTypes } from "../../types";
 import { ILesson } from "../../types/lesson";
+import { ISendAnswer } from "../../types/game";
 
 export const resetGame = () => {
     sessionStorage.removeItem("invitationCode");
@@ -37,6 +38,16 @@ export const setPlayerRole = (role: gameTypes.TPlayerRole) => ({
 export const setSelectedLesson = (lesson: number) => ({
     type: GameActionTypes.SET_SELECTED_LESSON,
     payload: lesson
+});
+
+export const SET_WAITING_FOR_PLAYERS = (payload: boolean) => ({
+    type: GameActionTypes.SET_WAITING_FOR_PLAYERS,
+    payload
+});
+
+export const setWaitingTimeUntil = (timeInSek: number) => ({
+    type: GameActionTypes.SET_WAITING_TIME_UNTIL,
+    payload: timeInSek
 });
 
 
@@ -119,6 +130,21 @@ export const removePlayerSuccess = (payload: gameTypes.IGame) => ({
 
 export const removePlayerFailure = (error) => ({
     type: GameActionTypes.REMOVE_PLAYER_FAILURE,
+    payload: error
+});
+
+export const sendAnswerStart = (payload: ISendAnswer) => ({
+    type: GameActionTypes.SEND_ANSWER_START,
+    payload
+});
+
+export const sendAnswerSuccess = (payload: boolean) => ({
+    type: GameActionTypes.SEND_ANSWER_SUCCESS,
+    payload
+});
+
+export const sendAnswerFailure = (error) => ({
+    type: GameActionTypes.SEND_ANSWER_FAILURE,
     payload: error
 });
 

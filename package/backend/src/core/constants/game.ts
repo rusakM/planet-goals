@@ -17,6 +17,8 @@ export namespace Game {
         KNOWLEDGE = 'KNOWLEDGE',
         QUICK_CONTENT = 'QUICK_CONTENT',
     }
+
+    export const GAME_START_WAITING_TIME_MS = 1000 * 10;
 }
 
 export namespace Question {

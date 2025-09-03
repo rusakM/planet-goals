@@ -14,10 +14,12 @@ import {
     joinGameSuccess,
     removePlayerFailure,
     removePlayerSuccess,
+    sendAnswerFailure,
+    sendAnswerSuccess,
     startGameFailure,
     startGameSuccess,
 } from "./game.actions";
-import { IGame, IRemovePlayer } from "../../types/game";
+import { IGame, IRemovePlayer, ISendAnswer } from "../../types/game";
 import { ILesson } from "../../types/lesson";
 import { gameTypes } from "../../types";
 import { IStore } from "../store.types";
@@ -28,6 +30,7 @@ const createGameStart = createAction(GameActionTypes.CREATE_GAME_START);
 const fetchLessonStart = createAction(GameActionTypes.FETCH_LESSON_START);
 const joinGameStart = createAction(GameActionTypes.JOIN_GAME_START);
 const removePlayerStart = createAction(GameActionTypes.REMOVE_PLAYER_START);
+const sendAnswerStart = createAction(GameActionTypes.SEND_ANSWER_START);
 const startGameStart = createAction(GameActionTypes.START_GAME_START);
 const getCurrentUserState = (state: IStore) => state.user;
 
@@ -89,6 +92,21 @@ function* removePlayer({ payload }: { payload: IRemovePlayer }) {
     }
 }
 
+function* sendAnswer({ payload }: { payload: ISendAnswer }) {
+    try {
+        const { gameId, ...restPayload } = payload;
+        const state: boolean = yield call(Api.sendData,
+            constantsUrls.Game.gameplay.sendAnswer(gameId),
+            restPayload,
+            "POST"
+        );
+
+        yield put(sendAnswerSuccess(!!state));
+    } catch (error) {
+        yield put(sendAnswerFailure(error));
+    }
+}
+
 function* startGame({ payload }: { payload: string }) {
     try {
         const game: IGame = yield call(Api.sendData,
@@ -119,6 +137,10 @@ function* onRemovePlayerStart(): Generator {
     yield takeLatest(removePlayerStart, removePlayer);
 }
 
+function* onSendAnswer(): Generator {
+    yield takeLatest(sendAnswerStart, sendAnswer);
+}
+
 function* onStartGameStart(): Generator {
     yield takeLatest(startGameStart, startGame);
 }
@@ -129,6 +151,7 @@ export function* gameSagas() {
         call(onFetchLessonStart),
         call(onJoinGameStart),
         call(onRemovePlayerStart),
+        call(onSendAnswer),
         call(onStartGameStart)
     ]);
 }

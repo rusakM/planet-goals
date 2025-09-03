@@ -10,11 +10,9 @@ import { validateAnswer } from '../middlewares/validators/game';
 import { useRequestTime } from '../middlewares/requestTime';
 
 interface IAnswerRequest {
-    lessonId: string;
     questionNumber: number;
     subquestionNumber: number;
     answer: string;
-    questionType: ConstantsGame.Question.TYPES_ENUM;
 }
 
 async function createGame(req: Request, res: Response) {
@@ -112,12 +110,9 @@ async function startGame(req: Request, res: Response) {
     let playerGames: playerGameService.Model.IPlayerGame[] = game.players.map((player) => playerGameService.Helpers.createPlayerGameByGameAndLesson(game, lesson, player._id));
 
     playerGames = await playerGameService.DB.createMany(playerGames);
-    await gameManagerService.gameManager.initializeGame(game, lesson, playerGames);
+    await gameManagerService.gameManager.startGame(gameId);
 
-    appResponse.prepareJsonResponse(res, {
-        ...game,
-        playerGames,
-    });
+    appResponse.prepareJsonResponse(res, game);
 }
 
 async function removePlayer(req: Request, res: Response) {
@@ -158,7 +153,6 @@ async function sendAnswer(req: Request, res: Response) {
     const playerGame = await playerGameService.DB.Find.byMultipleKeys({
         gameId,
         playerId: userId,
-        lessonId: answerData.lessonId,
     });
 
     if (!playerGame || playerGame.length === 0) {
@@ -166,17 +160,19 @@ async function sendAnswer(req: Request, res: Response) {
     }
 
     const currentPlayerGame = playerGame[0];
+    const { answer, questionNumber, subquestionNumber } = answerData;
 
-    const newQuestionScore = {
-        question: answerData.questionNumber,
-        subquestion: answerData.subquestionNumber,
-        response: answerData.answer,
-        respondAt: new Date().toISOString(),
-        points: 0,
+    const processedAnswer = await gameManagerService.gameManager.processAnswer(gameId, userId, answer, questionNumber, subquestionNumber, new Date(requestTime).getTime());
+    const newQuestionScore: playerGameService.Model.IQuestionScore = {
+        question: questionNumber,
+        subquestion: subquestionNumber,
+        response: answer,
+        respondAt: requestTime,
+        points: processedAnswer.points,
     };
 
     const questionScores = currentPlayerGame.questionScores || [];
-    const existingScoreIndex = questionScores.findIndex((qs) => qs.question === answerData.questionNumber && qs.subquestion === answerData.subquestionNumber);
+    const existingScoreIndex = questionScores.findIndex((qs) => qs.question === questionNumber && qs.subquestion === subquestionNumber);
 
     if (existingScoreIndex !== -1) {
         questionScores[existingScoreIndex] = { ...questionScores[existingScoreIndex], ...newQuestionScore };
@@ -184,13 +180,11 @@ async function sendAnswer(req: Request, res: Response) {
         questionScores.push(newQuestionScore);
     }
 
-    const updatedPlayerGame = await playerGameService.DB.update(currentPlayerGame._id, {
+    await playerGameService.DB.update(currentPlayerGame._id, {
         questionScores,
     });
 
-    await gameManagerService.gameManager.processAnswer(gameId, userId, answerData.answer, new Date(requestTime).getTime());
-
-    appResponse.prepareJsonResponse(res, updatedPlayerGame);
+    appResponse.prepareJsonResponse(res, processedAnswer);
 }
 
 export default function setup(router: Router) {

@@ -77,6 +77,13 @@ export interface IRemovePlayer {
     gameId: string,
 }
 
+export interface ISendAnswer {
+    answer: string;
+    gameId: string;
+    questionNumber: number;
+    subquestionNumber: number;
+}
+
 export type TCreateGame = Pick<IGame, 'hostRole' | 'lesson' | 'singlePlayerMode'>;
 export type TJoinGame = Pick<IGame, 'invitationCode'>;
 

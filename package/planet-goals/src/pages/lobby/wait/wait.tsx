@@ -8,23 +8,21 @@ import { constantsUrls } from "../../../helpers/constants";
 
 import PageContainer from "../../../page-components/page-container/page-container";
 import PrimaryContainer from "../../../components/primary-container/primary-container";
-import { selectCurrentGame, selectIsGameCreatedByCurrentUser, selectPlayerRole } from "../../../redux/game/game.selectors";
+import { selectCurrentGame, selectIsGameCreatedByCurrentUser, selectPlayerRole, selectWaitingTimeUntil } from "../../../redux/game/game.selectors";
 
 import styles from "./wait.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 
 import smileImg from "../../../assets/login-page/smiling_earth.svg";
-import { secondsToMinutes } from "../../../helpers/shared.functions";
+import { convertTimeUntilToRemainedSeconds, secondsToMinutes } from "../../../helpers/shared.functions";
 
-interface IWait {
-    waitingTimeUntil?: Date | string | number;
-} 
-
-const Wait: React.FC<IWait> = ({ waitingTimeUntil }) => {
+const Wait: React.FC = () => {
     const { t } = useTranslate();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const remainedSecondsAtStart = waitingTimeUntil ? Math.floor(Math.abs(Date.now() - new Date(waitingTimeUntil).getTime()) / 1000): 10;
+    const waitingTimeUntil = useSelector(selectWaitingTimeUntil);
+    const remainedSecondsAtStart = waitingTimeUntil ? convertTimeUntilToRemainedSeconds(waitingTimeUntil) || 10: 10;
+    console.log('remained seconds:', remainedSecondsAtStart)
     const [ remainedSeconds, setRemainedSeconds ] = useState<number>(remainedSecondsAtStart);
     const isGameCreatedByCurrentUser = useSelector(selectIsGameCreatedByCurrentUser);
     const currentGame = useSelector(selectCurrentGame);

@@ -7,7 +7,7 @@ import { getFeedback } from "../../../helpers/game";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 
-const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, showAnswers}) => {
+const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers}) => {
     const colors: TButtonColor[] = ["blue", "green", "orange", "red"];
     const [answer, setAnswer] = useState(-1);
     const [buttonsDisabled, setButtonsDisabled] = useState(new Array<boolean>(questionData.answers.length).fill(false));
@@ -26,7 +26,7 @@ const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, showAnswer
         setAnswer(index);
         for (let i = 0; i < tempButtons.length; i++) tempButtons[i] = !(questionData.correctAnswerIndex === index && i === index);
         setButtonsDisabled(tempButtons);
-        
+        sendAnswerAction(questionData.answers[index]);
     }
 
     return <div>

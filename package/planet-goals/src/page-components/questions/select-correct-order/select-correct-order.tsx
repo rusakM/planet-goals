@@ -7,7 +7,7 @@ import commonStyles from "../../../styles/common.module.scss";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 
-const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAnswers}) => {
+const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers}) => {
     const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
     const [answers, setAnswers] = useState(new Array(questionData.answers.length).fill(0));
     const [currentAnswer, setCurrentAnswer] = useState(0);
@@ -36,6 +36,7 @@ const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, show
         setAnswers(tempAnswers);
         setCurrentAnswer(tempCurrentAnswers);
         setFinalAnswer(tempFinalAnswer);
+        if (tempFinalAnswer.length >= questionData.answers.length) sendAnswerAction(tempFinalAnswer);
     }
 
     const getCurrentColor = (index: number) => {

@@ -9,6 +9,9 @@ export const Footer = {
 };
 
 export const Game = {
+    gameplay: {
+        sendAnswer: (gameId: string) => `/api/game/${gameId}/answer`,
+    },
     management: {
         create: "/api/game",
         getLessonById: (lessonId: string) => `/api/lesson/${lessonId}`,

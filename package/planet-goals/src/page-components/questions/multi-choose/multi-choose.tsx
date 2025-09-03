@@ -7,7 +7,7 @@ import { getFeedback } from "../../../helpers/game";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 
-const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, showAnswers }) => {
+const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers }) => {
     const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
     const answersLength = questionData.answers.length;
     const correctAnswersParsed: number[] = JSON.parse(questionData.correctAnswer);
@@ -35,15 +35,12 @@ const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, showAnswer
         const tempAnswersResults = [...answersResults];
         tempAnswers[answerNo] = index;
         tempAnswersResults[index] = Number(check(index));
-        console.log(tempAnswersResults);
+        const tempAnswerNo = answerNo + 1;
         setAnswers(tempAnswers);
-        setAnswerNo(answerNo + 1);
+        setAnswerNo(tempAnswerNo);
         setAnswersResults(tempAnswersResults);
 
-        // if (answerNo >= correctAnswersLength) {
-        //     //send result
-            
-        // }
+        if (tempAnswerNo >= correctAnswersParsed.length) sendAnswerAction(JSON.stringify(tempAnswers.filter(ans => ans != -1)));
     }    
 
     return <div>

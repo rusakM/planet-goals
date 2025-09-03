@@ -9,7 +9,7 @@ import { getFeedback } from "../../../helpers/game";
 
 const colors: TButtonColor[] = ["orange", "blue"];
 
-const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, showAnswers }) => {
+const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers }) => {
     const startCoordRef = useRef<number | null>(null);
     const isMouseDownRef = useRef(false);
     const isDraggingRef = useRef(false);
@@ -31,6 +31,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, showAnswers 
     const onAnswer = (index: number) => {
         if (answer > -1) return;
         setAnswer(index);
+        sendAnswerAction(index.toString());
     };
 
     const handleStart = (coord: number) => {

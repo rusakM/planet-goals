@@ -6,13 +6,9 @@ import { ConstantsGame } from '../../core/constants';
 
 export const validateAnswer = (req: Request, res: Response, next: NextFunction) => {
     const schema = Joi.object().keys({
-        lessonId: Joi.string().required(),
         questionNumber: Joi.number().min(0).required(),
         subquestionNumber: Joi.number().min(0).required(),
         answer: Joi.string().required(),
-        questionType: Joi.string()
-            .valid(...Object.values(ConstantsGame.Question.TYPES_ENUM))
-            .required(),
     });
 
     const error: Joi.ValidationError = schema.validate(req.body).error;

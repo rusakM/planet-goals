@@ -15,7 +15,7 @@ const colorsMap: { [key: number]: TButtonColor } = {
 
 const colors: TButtonColor[] = ["green", "blue", "orange"];
 
-const FitTiles: React.FC<ISubquestionComponent> = ({questionData, showAnswers}) => {
+const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers}) => {
     // correct answers JSON.parse("[[1,3], [0,2], [4,5]]")
     const [answers, setAnswers] = useState(new Array(Math.floor(questionData.answers.length / 2)).fill(new Array(2).fill(0)));
     const [results, setResults] = useState(new Array(questionData.answers.length).fill(0));
@@ -42,22 +42,26 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, showAnswers}) 
     const markTile = (index: number) => {
         if (currentPair >= answers.length || currentAnswer >= questionData.answers.length) return;
         if (results[index] !== 0) return;
-        const tempAnswers = [...answers];
-        const tempResults = [...results];
+        const tempAnswers = structuredClone(answers);
+        const tempResults = structuredClone(results);
         const mod = currentAnswer % 2;
+        let tempCurrentPair = currentPair;
         
         tempAnswers[currentPair][mod] = index;
         if (!mod) {
             tempResults[index] = 2;
         } else {
             tempResults[index] = tempResults[lastClickedIndex] = checkPair(tempAnswers[currentPair]) ? 1 : -1;
-            setCurrentPair(currentPair + 1);
+            tempCurrentPair++;
+            setCurrentPair(tempCurrentPair);
         }
         
         setAnswers(tempAnswers);
         setResults(tempResults);
         setCurrentAnswer(currentAnswer + 1);
         setLastClickedIndex(index);
+
+        if (tempCurrentPair >= answers.length) sendAnswerAction(JSON.stringify(tempAnswers));
     }
 
     const getCurrentColor = (index: number) => {

@@ -27,20 +27,8 @@ const GameContainer: React.FC<IGameContainer> = ({ children, currentQuestionInde
     const dispatch = useDispatch();
     const { t } = useTranslate();
     const navigate = useNavigate();
-    // const [remainedSeconds, setRemainedSeconds] = useState(timeInSek);
-    // const [currentQuestionTemp, setCurrentQuestionTemp] = useState(currentQuestionIndex);
     const [settingsVisible, setSettingsVisible] = useState(false);
-    const [exitVisible, setExitVisible] = useState(false);
-
-    // useEffect(() => {
-    //     if (currentQuestionIndex !== currentQuestionTemp) {
-    //         setCurrentQuestionTemp(currentQuestionIndex);
-    //         setRemainedSeconds(timeInSek);
-    //     }
-    //     if (remainedSeconds > 0) {
-    //         setTimeout(() => setRemainedSeconds(remainedSeconds - 1), 1000);
-    //     }
-    // }, [remainedSeconds, currentQuestionIndex, timeInSek, currentQuestionTemp]);  
+    const [exitVisible, setExitVisible] = useState(false);  
 
     const nextSLide = () => {
         if (currentQuestionIndex.join("") !== nextQuestionIndex.join("")) {
