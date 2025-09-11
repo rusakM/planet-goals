@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
     app:
         build:
@@ -9,9 +8,21 @@ services:
         container_name: planet-goals-backend
         restart: always
         ports:
-            - '8081:8081'
+            - '${PORT}:${PORT}'
         env_file:
             - .env
         volumes:
             - .:/usr/src/app
             - ${TOLGEE_CATALOG}:${TOLGEE_CATALOG}
+        depends_on:
+            - redis
+
+    redis:
+        image: redis:7-alpine
+        container_name: planet-goals-redis
+        restart: always
+        ports:
+            - '${REDIS_HOST_PORT}:${REDIS_HOST_PORT}'
+        command: redis-server --appendonly yes --port ${REDIS_HOST_PORT}
+        volumes:
+            - ${REDIS_CATALOG}:/data
