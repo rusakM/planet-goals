@@ -14,12 +14,13 @@ export class Email {
     newTransport() {
         if (ConstantsEnv.Main.APP_MODE !== ConstantsEnv.APP_MODES.DEV) {
             return createTransport({
-                service: 'SendGrid',
+                host: ConstantsEnv.Email.BREVO_ADDRESS,
+                port: ConstantsEnv.Email.BREVO_PORT,
                 auth: {
-                    user: ConstantsEnv.Email.SENDGRID_USERNAME,
-                    pass: ConstantsEnv.Email.SENDGRID_PASSWORD,
+                    user: ConstantsEnv.Email.BREVO_USERNAME,
+                    pass: ConstantsEnv.Email.BREVO_PASSWORD,
                 },
-            });
+            } as TransportOptions);
         }
         return createTransport({
             host: ConstantsEnv.Email.EMAIL_HOST,

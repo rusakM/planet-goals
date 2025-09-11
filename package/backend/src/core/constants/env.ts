@@ -17,13 +17,15 @@ export namespace Main {
 }
 
 export namespace Email {
+    export const BREVO_ADDRESS: string = process.env.BREVO_ADDRESS;
+    export const BREVO_PASSWORD: string = process.env.BREVO_PASSWORD;
+    export const BREVO_PORT: number = Number(process.env.BREVO_PORT) || 587;
+    export const BREVO_USERNAME: string = process.env.BREVO_USERNAME;
     export const EMAIL_FROM: string = process.env.EMAIL_FROM;
     export const EMAIL_HOST: string = process.env.EMAIL_HOST;
     export const EMAIL_PASSWORD: string = process.env.EMAIL_PASSWORD;
     export const EMAIL_PORT: string = process.env.EMAIL_PORT;
     export const EMAIL_USERNAME: string = process.env.EMAIL_USERNAME;
-    export const SENDGRID_PASSWORD: string = process.env.SENDGRID_PASSWORD;
-    export const SENDGRID_USERNAME: string = process.env.SENDGRID_USERNAME;
 }
 
 export namespace Mongodb {
