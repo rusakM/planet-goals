@@ -253,7 +253,11 @@ class GameManagerService {
         if (!q) return { points: 0, correct: false, done: false, error: 'NO_QUESTION' };
         const sq = q.subquestions?.[game.currentSubquestionIndex];
         if (!sq) return { points: 0, correct: false, done: false, error: 'NO_SUBQUESTION' };
-        if (questionIndex !== game.currentQuestionIndex || subquestionIndex !== game.currentSubquestionIndex) {
+        if ((questionIndex !== game.currentQuestionIndex || subquestionIndex !== game.currentSubquestionIndex) && game.stage === ConstantsGame.Game.STAGE_ENUM.KNOWLEDGE) {
+            console.log('questionIndexes:', game.currentQuestionIndex, questionIndex, 'subquestionIndexes:', game.currentSubquestionIndex, subquestionIndex);
+            return { points: 0, correct: false, done: false, error: 'INCORRECT_QUESTION' };
+        }
+        if (questionIndex !== game.currentQuestionIndex) {
             console.log('questionIndexes:', game.currentQuestionIndex, questionIndex, 'subquestionIndexes:', game.currentSubquestionIndex, subquestionIndex);
             return { points: 0, correct: false, done: false, error: 'INCORRECT_QUESTION' };
         }
