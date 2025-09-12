@@ -30,7 +30,7 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAct
         setAnswer(state);
         setAnswered(true);
         setAnswerCorrect(check(state));
-        sendAnswerAction(questionData.answers[Number(state)]);
+        sendAnswerAction(Number(state).toString());
     }
 
     const getCurrentColor = (ans: boolean): TButtonColor => {
