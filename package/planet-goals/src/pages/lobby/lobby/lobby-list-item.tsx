@@ -6,14 +6,16 @@ import buttonStyles from "../../../components/primary-button.tsx/primary-button.
 import trashIcon from "../../../assets/icons/trash_icon.svg";
 
 interface ILobbyListItem {
+    additionalClasses?: string;
     handleDelete?: () => void,
     index: number,
     isDeleteEnabled: boolean,
     nickname: string,
+    score?: number,
 }
 
-const LobbyListItem: React.FC<ILobbyListItem> = ({ handleDelete, index, isDeleteEnabled, nickname }) => (
-    <div className={`${buttonStyles.button} ${styles.lobbyListItem}`}>
+const LobbyListItem: React.FC<ILobbyListItem> = ({ additionalClasses, handleDelete, index, isDeleteEnabled, nickname, score }) => (
+    <div className={`${buttonStyles.button} ${styles.lobbyListItem}${additionalClasses ? ` ${additionalClasses}` : ""}`}>
         <p className={styles.listItemIndex}>{index}</p>
         <div className={styles.nicknameContainer}>
             <p className={styles.nickname}>{nickname}</p>
@@ -21,6 +23,9 @@ const LobbyListItem: React.FC<ILobbyListItem> = ({ handleDelete, index, isDelete
         {
             isDeleteEnabled && 
             <img src={trashIcon} onClick={handleDelete} className={styles.trashIcon}/>
+        }
+        {
+            (score || score === 0) && <p className={styles.nickname}>{score}</p>
         }
     </div>
 );

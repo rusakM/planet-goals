@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +23,10 @@ import ContentQuestion from "../../page-components/questions/content-question/co
 import FillCorrectOrder from "../../page-components/questions/fill-in-correct-order/fill-in-correct-order";
 import FitTiles from "../../page-components/questions/fit-tiles/fit-tiles";
 import LeftRight from "../../page-components/questions/left-right/left-right";
+import Leaderboard from "../../page-components/questions/leaderboard/leaderboard";
 import { gameTypes } from "../../types";
+
+
 
 const calculateTimeUntil = (stateTimeUntil: number, questionTimeSek: number): number  => {
     if (!stateTimeUntil || Date.now() >= stateTimeUntil) {
@@ -35,6 +38,7 @@ const calculateTimeUntil = (stateTimeUntil: number, questionTimeSek: number): nu
 const Game: React.FC = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const questionLockRef = useRef(false);
     useGame();
     const currentGame = useSelector(selectCurrentGame);
     const currentLesson = useSelector(selectCurrentLesson);
@@ -66,11 +70,13 @@ const Game: React.FC = () => {
 
     useEffect(() => {
         if (remainedTime > 0) {
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 setRemainedTime(remainedTime - 1);
             }, 1000);
+            questionLockRef.current &&= false;
+            return () => clearTimeout(timeout);
         }
-    }, [remainedTime]);
+    }, [remainedTime, currentSubquestion]);
 
     useEffect(() => {
         if (currentQuestionIndex.toString() !== questionIndexTemp ) {
@@ -85,6 +91,18 @@ const Game: React.FC = () => {
             )
         )
     }, [timeUntil, currentSubquestion]);
+
+    useEffect(() => {
+        if (
+            currentGame?.singlePlayerMode &&
+            remainedTime === 0 &&
+            !questionLockRef.current
+        ) {
+            questionLockRef.current = true;
+            const timeout = currentLesson?.questions[currentQuestionIndex[0]]?.subquestions[currentQuestionIndex[1]]?.correctAnswerIndex !== null ? 1200 : 100;
+            setTimeout(() => dispatch(setCurrentQuestion(getNextSubquestionIndex(currentLesson.questions, currentQuestionIndex))), timeout);
+        }
+    }, [remainedTime, currentGame, currentQuestionIndex, currentLesson, dispatch]);
 
     const sendAnswerAction = (answer: string) => {
         dispatch(sendAnswerStart({
@@ -120,6 +138,10 @@ const Game: React.FC = () => {
             break;
         case QUESTION_TYPES_ENUM.FIT_TILES:
             questionScreen = <FitTiles {...{questionData: currentSubquestion, showAnswers: remainedTime === 0, sendAnswerAction }} />;
+            break;
+        case QUESTION_TYPES_ENUM.LEADERBOARD:
+        case QUESTION_TYPES_ENUM.FINAL:
+            questionScreen = <Leaderboard />;
             break;
         case QUESTION_TYPES_ENUM.LEFT_RIGHT:
             questionScreen = <LeftRight { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0, sendAnswerAction }} />;

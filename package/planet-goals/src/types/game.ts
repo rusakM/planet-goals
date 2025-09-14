@@ -65,10 +65,12 @@ export interface IGame extends globalTypes.IDBObject {
 }
 
 export interface ILeaderboardPlayer {
-    playerName: string;
+    playerId: string;
     playerLastName: string;
-    playerPosition: number;
+    playerName: string;
     playerPoints: number;
+    playerPosition: number;
+    playerRole: TPlayerRole;
 }
 
 //requests

@@ -148,7 +148,7 @@ class GameManagerService {
             const currentInfo = this.getCurrentSubquestion(gameId);
             const subq = currentInfo?.subquestion;
             const subqTimeUntil = this.calculateSubquestionTimeUntil(subq);
-            this.broadcastSubquestion(gameId, subqTimeUntil);
+            await this.broadcastSubquestion(gameId, subqTimeUntil);
             if (subq?.timeInSek && game.stage !== ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
                 await this.startSubquestionTimer(gameId, subqTimeUntil);
             }
@@ -357,7 +357,7 @@ class GameManagerService {
                 game.stage = game.questions[nextQuestionIndex]?.gameStage ?? game.stage;
                 const isCompetition = game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION;
                 const nqTimeUntil = isCompetition ? this.calculateQuestionTimeUntil(game.questions[nextQuestionIndex]) : this.calculateSubquestionTimeUntil(game.questions[nextQuestionIndex].subquestions[0]);
-                this.broadcastSubquestion(gameId, nqTimeUntil);
+                await this.broadcastSubquestion(gameId, nqTimeUntil);
 
                 // Jeśli następne pytanie też jest w trybie COMPETITION, startujemy timer dla niego
                 if (isCompetition) {
@@ -409,7 +409,7 @@ class GameManagerService {
         const isCompetition = game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION;
         const timeUntil = isCompetition ? this.calculateQuestionTimeUntil(game.questions[nq]) : this.calculateSubquestionTimeUntil(game.questions[nq].subquestions[ns]);
 
-        this.broadcastSubquestion(gameId, timeUntil);
+        await this.broadcastSubquestion(gameId, timeUntil);
         // Ustal timeout dla nowych subquestions
         const nextSq: lessonService.Model.ISubquestion | undefined = game.questions[nq]?.subquestions?.[ns];
         if (nextSq?.timeInSek) {
@@ -428,9 +428,13 @@ class GameManagerService {
     /**
      * Wysyła aktualny subquestion do wszystkich graczy w pokoju (Socket.io room)
      */
-    broadcastSubquestion(gameId: string, timeUntil: number) {
+    async broadcastSubquestion(gameId: string, timeUntil: number) {
         const info = this.getCurrentSubquestion(gameId);
         if (!info) return;
+        if (info?.question?.type === ConstantsGame.Question.TYPES_ENUM.LEADERBOARD) {
+            await this.sendLeaderboard(gameId);
+        }
+
         socketService.Player.onGameSubquestion({
             question: info.qIndex,
             subquestion: info.sqIndex,
@@ -457,8 +461,8 @@ class GameManagerService {
     /**
      * Wysyła leaderboard po zakończeniu gry, oraz ustawia grę jako "skończoną" (nie można joinować!)
      */
-    getLeaderboard(gameId: string) {
-        const game = this.games.get(gameId);
+    async getLeaderboard(gameId: string) {
+        const game = await this.getGame(gameId);
         if (!game) return;
         // Licz punkty dla każdego gracza
         const leaderboard: ILeaderboardPlayer[] = game.players.map((p, idx) => {
@@ -484,11 +488,9 @@ class GameManagerService {
         return leaderboard;
     }
 
-    sendLeaderboard(gameId: string) {
-        const game = this.games.get(gameId);
-        if (!game) return;
-        // Licz punkty dla każdego gracza
-        const leaderboard: ILeaderboardPlayer[] = this.getLeaderboard(gameId);
+    async sendLeaderboard(gameId: string) {
+        const leaderboard: ILeaderboardPlayer[] = await this.getLeaderboard(gameId);
+        if (!leaderboard) return;
         socketService.Player.onGameLeaderboard({
             leaderboard,
             gameId,

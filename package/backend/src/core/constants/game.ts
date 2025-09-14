@@ -28,6 +28,7 @@ export namespace Question {
         CONTENT_TEXT = 'CONTENT_TEXT',
         CONTENT_TITLE = 'CONTENT_TITLE',
         FILL_IN_CORRECT_ORDER = 'FILL_IN_CORRECT_ORDER',
+        FINAL = 'FINAL',
         FIT_TILES = 'FIT_TILES',
         LEADERBOARD = 'LEADERBOARD',
         LEFT_RIGHT = 'LEFT_RIGHT',

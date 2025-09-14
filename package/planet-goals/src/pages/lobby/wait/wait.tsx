@@ -3,7 +3,7 @@ import { useTranslate } from "@tolgee/react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { startGameStart } from "../../../redux/game/game.actions";
+import { setCurrentQuestion, startGameStart } from "../../../redux/game/game.actions";
 import { constantsUrls } from "../../../helpers/constants";
 
 import PageContainer from "../../../page-components/page-container/page-container";
@@ -32,6 +32,7 @@ const Wait: React.FC = () => {
         console.log(isGameCreatedByCurrentUser && playerRole === "player" && currentGame.singlePlayerMode);
         if (isGameCreatedByCurrentUser && playerRole === "player" && currentGame.singlePlayerMode) {
             dispatch(startGameStart(currentGame._id));
+            dispatch(setCurrentQuestion([0, 0]));
         }
         navigate(constantsUrls.Main.game);
     }, [dispatch, isGameCreatedByCurrentUser, playerRole, currentGame, navigate]);

@@ -49,7 +49,7 @@ async function createGame(req: Request, res: Response) {
         lessonService.DB.Find.byId(lesson),
     ]);
 
-    await gameManagerService.gameManager.initializeGame(newGame, lessonData, []);
+    if (!singlePlayerMode) await gameManagerService.gameManager.initializeGame(newGame, lessonData, []);
     appResponse.prepareJsonResponse(res, newGame);
 }
 
@@ -110,7 +110,7 @@ async function startGame(req: Request, res: Response) {
     let playerGames: playerGameService.Model.IPlayerGame[] = game.players.map((player) => playerGameService.Helpers.createPlayerGameByGameAndLesson(game, lesson, player._id));
 
     playerGames = await playerGameService.DB.createMany(playerGames);
-    await gameManagerService.gameManager.startGame(gameId);
+    if (!game.singlePlayerMode) await gameManagerService.gameManager.startGame(gameId);
 
     appResponse.prepareJsonResponse(res, game);
 }

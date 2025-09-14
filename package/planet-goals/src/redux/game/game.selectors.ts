@@ -34,6 +34,11 @@ export const selectCurrentGame = createSelector(
   (game) => game.currentGame
 );
 
+export const selectCurrentLeaderboard = createSelector(
+  [selectGameState],
+  (game) => game.currentLeaderboard
+);
+
 export const selectCurrentLesson = createSelector(
   [selectGameState],
   (game) => game.currentLesson
