@@ -45,6 +45,7 @@
         width: 100%;
         height: 46px;
         padding-left: 12px;
+        padding-right: 1.5em;
         display: flex;
         flex-direction: row;
         justify-content: flex-end;
@@ -53,6 +54,7 @@
         .settingsBtn {
             width: 28px;
             height: 28px;
+            cursor: pointer;
         }
     }
     

@@ -7,7 +7,7 @@ import { getFeedback } from "../../../helpers/game";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 
-const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers}) => {
+const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers, spectatorMode}) => {
     const colors: TButtonColor[] = ["blue", "green", "orange", "red"];
     const [answer, setAnswer] = useState(-1);
     const [buttonsDisabled, setButtonsDisabled] = useState(new Array<boolean>(questionData.answers.length).fill(false));
@@ -21,7 +21,7 @@ const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswer
     const check = (index: number) => index === questionData.correctAnswerIndex;
 
     const onSelect = (index: number) => {
-        if (answer !== -1) return;
+        if (answer !== -1 || spectatorMode) return;
         const tempButtons = [...buttonsDisabled];
         setAnswer(index);
         for (let i = 0; i < tempButtons.length; i++) tempButtons[i] = !(questionData.correctAnswerIndex === index && i === index);
@@ -38,7 +38,7 @@ const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswer
                     const feedback = getFeedback(showAnswers, answer === index, index, check);
                     if (showAnswers) color = check(index) ? colors[index % 4] : "white";
                     return <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={color} size="thin" additionalClasses={commonStyles.leftSideText} disabled={buttonsDisabled[index]} onClick={() => onSelect(index)} feedback={feedback}> 
+                        <GameButton color={color} size="thin" additionalClasses={commonStyles.leftSideText} disabled={spectatorMode || buttonsDisabled[index]} onClick={() => onSelect(index)} feedback={feedback}> 
                             {`${String.fromCharCode(65 + index)}. ${ans}`}
                         </GameButton>
                     </div>

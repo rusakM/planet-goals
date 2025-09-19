@@ -40,6 +40,7 @@ export interface IGameState {
     currentLesson: lessonTypes.ILesson,
     currentLeaderboard: gameTypes.ILeaderboardPlayer[],
     currentQuestion: lessonTypes.TCurrentQuestion,
+    currentQuestionSetAt?: number,
     gameError: string,
     gameMode: gameTypes.TGameMode,
     gameStage: gameTypes.TGameStage,

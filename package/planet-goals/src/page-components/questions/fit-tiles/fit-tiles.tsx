@@ -15,7 +15,7 @@ const colorsMap: { [key: number]: TButtonColor } = {
 
 const colors: TButtonColor[] = ["green", "blue", "orange"];
 
-const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers}) => {
+const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers, spectatorMode}) => {
     // correct answers JSON.parse("[[1,3], [0,2], [4,5]]")
     const [answers, setAnswers] = useState(new Array(Math.floor(questionData.answers.length / 2)).fill(new Array(2).fill(0)));
     const [results, setResults] = useState(new Array(questionData.answers.length).fill(0));
@@ -40,7 +40,7 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
     const check = (index: number) => results[index] > 0;
 
     const markTile = (index: number) => {
-        if (currentPair >= answers.length || currentAnswer >= questionData.answers.length) return;
+        if (spectatorMode || (currentPair >= answers.length || currentAnswer >= questionData.answers.length)) return;
         if (results[index] !== 0) return;
         const tempAnswers = structuredClone(answers);
         const tempResults = structuredClone(results);

@@ -32,9 +32,10 @@ export interface IGameState {
     players: IActivePlayer[];
     currentQuestionIndex: number;
     currentSubquestionIndex: number;
+    singlePlayerMode: boolean;
     started: boolean;
     startTime: number | null;
-    // kiedy timeout się skończy (ms)
+    // kiedy timeout się skończy (ms)1
     subquestionStartTime: number | null;
     subquestionEndTime: number | null;
     // KEY: userId, VALUE: odpowiedzi i scoring na konkrentne subquestion
@@ -43,6 +44,13 @@ export interface IGameState {
     subquestionTimer?: NodeJS.Timeout;
     // KNOWN issues: przy reconnect musimy dla danego usera "dociągnąć" playerGame z DB
     stage: ConstantsGame.Game.STAGE_ENUM;
+}
+
+export interface IProcessedAnswer {
+    correct: boolean;
+    done: boolean;
+    error?: string;
+    points: number;
 }
 
 export let gameManager: GameManagerService;
@@ -104,6 +112,7 @@ class GameManagerService {
             })),
             currentQuestionIndex: 0,
             currentSubquestionIndex: 0,
+            singlePlayerMode: game.singlePlayerMode,
             started: false,
             startTime: null,
             subquestionEndTime: null,
@@ -149,7 +158,7 @@ class GameManagerService {
             const subq = currentInfo?.subquestion;
             const subqTimeUntil = this.calculateSubquestionTimeUntil(subq);
             await this.broadcastSubquestion(gameId, subqTimeUntil);
-            if (subq?.timeInSek && game.stage !== ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
+            if (subq?.timeInSek && (game.stage !== ConstantsGame.Game.STAGE_ENUM.COMPETITION || game.singlePlayerMode)) {
                 await this.startSubquestionTimer(gameId, subqTimeUntil);
             }
             await this.redis.save(gameId, this.games.get(gameId)!);
@@ -246,7 +255,7 @@ class GameManagerService {
     /**
      * Akceptuj odpowiedź dla aktywnego gracza – obsługuje scoring, timeout, blokuje wielokrotne odpowiedzi itp.
      */
-    async processAnswer(gameId: string, userId: string, answer: string, questionIndex: number, subquestionIndex: number, responseTime: number): Promise<{ points: number; correct: boolean; done: boolean; error?: string }> {
+    async processAnswer(gameId: string, userId: string, answer: string, questionIndex: number, subquestionIndex: number, responseTime: number): Promise<IProcessedAnswer> {
         const game = await this.getGame(gameId);
         if (!game) return { points: 0, correct: false, done: false, error: 'NO_GAME' };
         const q = game.questions[game.currentQuestionIndex];
@@ -279,9 +288,9 @@ class GameManagerService {
             correct = gameService.checkAnswer(sq, answer);
             const subsLen = q.subquestions?.length || 1;
             const sqMaxPoints = Number(((q.maxPoints || 0) / subsLen).toFixed());
-            if (game.stage === ConstantsGame.Game.STAGE_ENUM.KNOWLEDGE) {
+            if (game.stage === ConstantsGame.Game.STAGE_ENUM.KNOWLEDGE || game.singlePlayerMode) {
                 points = correct ? sqMaxPoints : 0;
-            } else if (game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
+            } else if (game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION && !game.singlePlayerMode) {
                 if (correct) {
                     // timeRatio = (answerTime - questionStartTime) / totalQuestionTime
                     const timeRatio = (responseTime - game.subquestionStartTime) / (sq.timeInSek * 1000);
@@ -355,7 +364,7 @@ class GameManagerService {
                 game.currentQuestionIndex = nextQuestionIndex;
                 game.currentSubquestionIndex = 0;
                 game.stage = game.questions[nextQuestionIndex]?.gameStage ?? game.stage;
-                const isCompetition = game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION;
+                const isCompetition = game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION && !game.singlePlayerMode;
                 const nqTimeUntil = isCompetition ? this.calculateQuestionTimeUntil(game.questions[nextQuestionIndex]) : this.calculateSubquestionTimeUntil(game.questions[nextQuestionIndex].subquestions[0]);
                 await this.broadcastSubquestion(gameId, nqTimeUntil);
 
@@ -406,14 +415,14 @@ class GameManagerService {
         game.currentSubquestionIndex = ns;
         // Zmień stage jeśli potrzeba:
         game.stage = game.questions[nq]?.gameStage ?? game.stage;
-        const isCompetition = game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION;
+        const isCompetition = game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION && !game.singlePlayerMode;
         const timeUntil = isCompetition ? this.calculateQuestionTimeUntil(game.questions[nq]) : this.calculateSubquestionTimeUntil(game.questions[nq].subquestions[ns]);
 
         await this.broadcastSubquestion(gameId, timeUntil);
         // Ustal timeout dla nowych subquestions
         const nextSq: lessonService.Model.ISubquestion | undefined = game.questions[nq]?.subquestions?.[ns];
         if (nextSq?.timeInSek) {
-            if (game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION) {
+            if (isCompetition) {
                 if (ns === 0) {
                     // tylko dla pierwszego subquestion w trybie competition
                     await this.startQuestionTimer(gameId, timeUntil);
@@ -425,13 +434,21 @@ class GameManagerService {
         await this.redis.save(gameId, game);
     }
 
+    public async enforceNextSubquestion(gameId) {
+        const game = await this.getGame(gameId);
+        if (!game || !game.started || !game.singlePlayerMode) return;
+        if (game.currentQuestionIndex === game.questions.length - 1 && game.currentSubquestionIndex === game.questions?.[game.currentQuestionIndex]?.subquestions?.length - 1) return;
+
+        await this.nextSubquestion(gameId);
+    }
+
     /**
      * Wysyła aktualny subquestion do wszystkich graczy w pokoju (Socket.io room)
      */
     async broadcastSubquestion(gameId: string, timeUntil: number) {
         const info = this.getCurrentSubquestion(gameId);
         if (!info) return;
-        if (info?.question?.type === ConstantsGame.Question.TYPES_ENUM.LEADERBOARD) {
+        if (ConstantsGame.Question.LEADERBOARD_QUESTION_TYPES.includes(info?.question?.type)) {
             await this.sendLeaderboard(gameId);
         }
 
@@ -509,22 +526,21 @@ class GameManagerService {
     }
 
     async endGame(gameId: string) {
-        const game = this.games.get(gameId);
+        const game = await this.getGame(gameId);
         if (!game) return;
         await this.stopSubquestionTimer(gameId);
-        const winnerFromLeaderboard = this.getLeaderboard(gameId)?.[0];
-        let winner: gameService.Model.IGamePlayer;
+        const winnerFromLeaderboard = (await this.getLeaderboard(gameId))?.[0];
         if (winnerFromLeaderboard) {
             const gameDb = await gameService.DB.Find.byId(gameId);
-            winner = gameDb.players.find(({ _id }) => _id === winnerFromLeaderboard.playerId);
-        }
+            const winner = gameDb.players.find(({ _id }) => _id === winnerFromLeaderboard.playerId);
 
-        await gameService.DB.update(gameId, {
-            endedAt: new Date().toISOString(),
-            status: ConstantsGame.Game.STATUS_ENUM.FINISHED,
-            winnerPoints: winnerFromLeaderboard.playerPoints,
-            winner,
-        });
+            await gameService.DB.update(gameId, {
+                endedAt: new Date().toISOString(),
+                status: ConstantsGame.Game.STATUS_ENUM.FINISHED,
+                winnerPoints: winnerFromLeaderboard?.playerPoints || 0,
+                winner,
+            });
+        }
 
         this.sendLeaderboard(gameId);
         socketService.Player.onGameEnded({ gameId });

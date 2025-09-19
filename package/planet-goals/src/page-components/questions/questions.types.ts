@@ -4,4 +4,5 @@ export interface ISubquestionComponent {
     questionData: ISubquestion;
     sendAnswerAction: (answer: string) => void
     showAnswers?: boolean;
+    spectatorMode?: boolean;
 }

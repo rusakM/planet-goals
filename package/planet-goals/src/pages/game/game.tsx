@@ -7,8 +7,8 @@ import ContentInstruction from "../../page-components/questions/content-instruct
 import { convertTimeUntilToRemainedSeconds } from "../../helpers/shared.functions";
 
 import { QUESTION_TYPES_ENUM } from "../../types/lesson";
-import { selectCurrentGame, selectCurrentLesson, selectCurrentQuestion, selectWaitingTimeUntil } from "../../redux/game/game.selectors";
-import { constantsUrls } from "../../helpers/constants";
+import { selectCurrentGame, selectCurrentLesson, selectCurrentQuestion, selectWaitingTimeUntil, selectPlayerRole, selectGameMode } from "../../redux/game/game.selectors";
+import { constantsGame, constantsUrls } from "../../helpers/constants";
 import { fetchLessonStart, resetGame, sendAnswerStart, setCurrentQuestion } from "../../redux/game/game.actions";
 import useGame from "../../hooks/useGame";
 import { getNextSubquestionIndex } from "../../hooks/useLesson";
@@ -25,6 +25,7 @@ import FitTiles from "../../page-components/questions/fit-tiles/fit-tiles";
 import LeftRight from "../../page-components/questions/left-right/left-right";
 import Leaderboard from "../../page-components/questions/leaderboard/leaderboard";
 import { gameTypes } from "../../types";
+import ContentIntroduction from "../../page-components/questions/content-introduction/content-introduction";
 
 
 
@@ -43,6 +44,8 @@ const Game: React.FC = () => {
     const currentGame = useSelector(selectCurrentGame);
     const currentLesson = useSelector(selectCurrentLesson);
     const currentQuestionIndex = useSelector(selectCurrentQuestion);
+    const playerRole = useSelector(selectPlayerRole);
+    const gameMode = useSelector(selectGameMode);
     const nextQuestionIndex = getNextSubquestionIndex(currentLesson?.questions, currentQuestionIndex);
     const timeUntil = useSelector(selectWaitingTimeUntil);
     const currentQuestion = currentLesson?.questions?.[currentQuestionIndex[0]];
@@ -92,18 +95,6 @@ const Game: React.FC = () => {
         )
     }, [timeUntil, currentSubquestion]);
 
-    useEffect(() => {
-        if (
-            currentGame?.singlePlayerMode &&
-            remainedTime === 0 &&
-            !questionLockRef.current
-        ) {
-            questionLockRef.current = true;
-            const timeout = currentLesson?.questions[currentQuestionIndex[0]]?.subquestions[currentQuestionIndex[1]]?.correctAnswerIndex !== null ? 1200 : 100;
-            setTimeout(() => dispatch(setCurrentQuestion(getNextSubquestionIndex(currentLesson.questions, currentQuestionIndex))), timeout);
-        }
-    }, [remainedTime, currentGame, currentQuestionIndex, currentLesson, dispatch]);
-
     const sendAnswerAction = (answer: string) => {
         dispatch(sendAnswerStart({
             gameId: currentGame._id,
@@ -114,15 +105,28 @@ const Game: React.FC = () => {
 
         if (currentQuestion.gameStage === gameTypes.GAME_PLAY_STAGE_ENUM.COMPETITION) {
             if (currentQuestionIndex[1] < currentQuestion.subquestions.length - 1) {
-                dispatch(setCurrentQuestion([currentQuestionIndex[0], currentQuestionIndex[1] + 1]));
+                const remainedTime = Math.abs(timeUntil - Date.now());
+                const timeout = remainedTime <= constantsGame.FEEDBACK_TIME ? remainedTime : constantsGame.FEEDBACK_TIME;
+                setTimeout(() => 
+                    dispatch(setCurrentQuestion([currentQuestionIndex[0], currentQuestionIndex[1] + 1])),
+                    timeout
+                );
                 return;
             }
         }
+    }
+
+    const shouldAnswersBeVisible = () => {
+        if (playerRole === 'spectator' && gameMode === 'multi') return true;
+        return remainedTime === 0;
     }
     
     switch(currentQuestion?.type) {
         case QUESTION_TYPES_ENUM.CONTENT_INSTRUCTION:
             questionScreen = <ContentInstruction {...currentSubquestion}/>;
+            break;
+        case QUESTION_TYPES_ENUM.CONTENT_INTRODUCTION:
+            questionScreen = <ContentIntroduction {...{ questionData: currentSubquestion, subquestionNumber: currentQuestionIndex[1] || 0 }} />
             break;
         case QUESTION_TYPES_ENUM.CONTENT_QUESTION:
             questionScreen = <ContentQuestion { ...currentSubquestion } />;
@@ -134,32 +138,32 @@ const Game: React.FC = () => {
             questionScreen = <ContentTitle { ...currentSubquestion } />;
             break;
         case QUESTION_TYPES_ENUM.FILL_IN_CORRECT_ORDER:
-            questionScreen = <FillCorrectOrder {...{questionData: currentSubquestion, showAnswers: remainedTime === 0, sendAnswerAction }} />;
+            questionScreen = <FillCorrectOrder {...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
             break;
         case QUESTION_TYPES_ENUM.FIT_TILES:
-            questionScreen = <FitTiles {...{questionData: currentSubquestion, showAnswers: remainedTime === 0, sendAnswerAction }} />;
+            questionScreen = <FitTiles {...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
             break;
         case QUESTION_TYPES_ENUM.LEADERBOARD:
         case QUESTION_TYPES_ENUM.FINAL:
             questionScreen = <Leaderboard />;
             break;
         case QUESTION_TYPES_ENUM.LEFT_RIGHT:
-            questionScreen = <LeftRight { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0, sendAnswerAction }} />;
+            questionScreen = <LeftRight { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
             break;
         case QUESTION_TYPES_ENUM.MULTI_CHOOSE:
-            questionScreen = <MultiChoose { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0, sendAnswerAction }} />;
+            questionScreen = <MultiChoose { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
             break;
         case QUESTION_TYPES_ENUM.SELECT_CORRECT_ANSWER:
-            questionScreen = <SelectCorrectAnswer { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0, sendAnswerAction }} />;
+            questionScreen = <SelectCorrectAnswer { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
             break;
         case QUESTION_TYPES_ENUM.SELECT_CORRECT_ORDER:
-            questionScreen = <SelectCorrectOrder { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0, sendAnswerAction }} />;
+            questionScreen = <SelectCorrectOrder { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
             break;
         case QUESTION_TYPES_ENUM.SINGLE_CHOOSE:
-            questionScreen = <SingleChoose { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0, sendAnswerAction }} />;
+            questionScreen = <SingleChoose { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
             break;
         case QUESTION_TYPES_ENUM.TRUE_FALSE:
-            questionScreen = <TrueFalse { ...{questionData: currentSubquestion, showAnswers: remainedTime === 0, sendAnswerAction }} />;
+            questionScreen = <TrueFalse { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
             break;
         default: 
             questionScreen = <>default screen</>;

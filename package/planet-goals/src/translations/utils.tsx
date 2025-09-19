@@ -10,3 +10,13 @@ export const formatNewLines = (text: string) => (
         ))}
     </>
 );
+
+export const parseBoldTags = (text: string, additionalClassess?: string) => (
+    <>
+        {text.split(/<b>|<\/b>/g).map((part, index) => (
+            <React.Fragment key={index}>
+                {index % 2 === 1 ? <strong className={additionalClassess || ""} lang={localStorage.getItem("locale")}>{part}</strong> : part}
+            </React.Fragment>
+        ))}
+    </>
+);

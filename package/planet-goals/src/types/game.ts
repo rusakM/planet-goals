@@ -7,6 +7,7 @@ export type TPlayerRole = "player" | "spectator";
 export enum GAME_PLAY_STAGE_ENUM {
     COMPETITION = 'COMPETITION',
     FINAL = 'FINAL', // not for questions
+    INTRODUCTION = 'INTRODUCTION',
     KNOWLEDGE = 'KNOWLEDGE',
     QUICK_CONTENT = 'QUICK_CONTENT',
 }

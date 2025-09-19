@@ -94,6 +94,7 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
             return {
                 ...state,
                 currentQuestion: [action.payload.question, action.payload.subquestion],
+                currentQuestionSetAt: Date.now(),
                 waitingForPlayers: false,
             }
         case GameActionTypes.SET_WAITING_FOR_PLAYERS: {

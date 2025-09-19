@@ -7,7 +7,7 @@ import { getFeedback } from "../../../helpers/game";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 
-const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers }) => {
+const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers, spectatorMode }) => {
     const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
     const answersLength = questionData.answers.length;
     const correctAnswersParsed: number[] = JSON.parse(questionData.correctAnswer);
@@ -28,7 +28,7 @@ const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswer
     }
 
     const mark = (index: number) => {
-        if (answers.includes(index)) return;
+        if (spectatorMode || answers.includes(index)) return;
         if (answerNo >= correctAnswersParsed.length) return;
 
         const tempAnswers = [...answers];
@@ -52,7 +52,7 @@ const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswer
                     const feedback = getFeedback(showAnswers, answers.includes(index), index, check);
                     if (showAnswers) color = check(index) ? colors[index % 4] : "white";
                     return <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={color} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => mark(index)} disabled={answersResults[index] === 0} feedback={feedback}> 
+                        <GameButton color={color} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => mark(index)} disabled={spectatorMode || answersResults[index] === 0} feedback={feedback}> 
                             {`${String.fromCharCode(65 + index)}. ${ans}`}
                         </GameButton>
                     </div>

@@ -23,6 +23,16 @@
     }
 }
 
+.basicTextBold {
+    font-size: 14px;
+    color: colors.$dark-text;
+    @include mixins.conditionalFont();
+
+    @media (min-width: breakpoints.$desktop) {
+        font-size: 24px;
+    }
+}
+
 .buttonContainer {
     width: 100%;
     padding: 0.5em;

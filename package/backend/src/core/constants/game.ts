@@ -14,6 +14,7 @@ export namespace Game {
     export enum STAGE_ENUM {
         COMPETITION = 'COMPETITION',
         FINAL = 'FINAL', // not for questions
+        INTRODUCTION = 'INTRODUCTION',
         KNOWLEDGE = 'KNOWLEDGE',
         QUICK_CONTENT = 'QUICK_CONTENT',
     }
@@ -24,6 +25,7 @@ export namespace Game {
 export namespace Question {
     export enum TYPES_ENUM {
         CONTENT_INSTRUCTION = 'CONTENT_INSTRUCTION',
+        CONTENT_INTRODUCTION = 'CONTENT_INTRODUCTION',
         CONTENT_QUESTION = 'CONTENT_QUESTION',
         CONTENT_TEXT = 'CONTENT_TEXT',
         CONTENT_TITLE = 'CONTENT_TITLE',
@@ -38,4 +40,6 @@ export namespace Question {
         SINGLE_CHOOSE = 'SINGLE_CHOOSE',
         TRUE_FALSE = 'TRUE_FALSE',
     }
+
+    export const LEADERBOARD_QUESTION_TYPES: TYPES_ENUM[] = [TYPES_ENUM.FINAL, TYPES_ENUM.LEADERBOARD];
 }

@@ -34,7 +34,7 @@ const SelectLesson: React.FC = () => {
     const lessonsIds = [
         '6828addbd6da31b9e245207b',
         '507f1f77bcf86cd799439011',
-        '6828addbd6da31b9e245207b',
+        '68cc2a36f2516e1b47b74a8a',
         '6828addbd6da31b9e245207b',
         '6828addbd6da31b9e245207b',
         '6828addbd6da31b9e245207b',

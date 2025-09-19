@@ -9,7 +9,7 @@ import GameButton, { TButtonColor } from "../../../components/game-button/game-b
 
 const colors: TButtonColor[] = ["orange", "blue"];
 
-const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers }) => {
+const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers, spectatorMode }) => {
 
     const [answer, setAnswer] = useState(-1);
     const [answered, setAnswered] = useState(false);
@@ -25,11 +25,16 @@ const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, se
     const check = (index: number) => index === questionData.correctAnswerIndex;
 
     const mark = (index: number) => {
-        if (answered) return;
+        if (answered || spectatorMode) return;
         setAnswer(index);
         setAnswerCorrect(check(index));
         setAnswered(true);
         sendAnswerAction(questionData.answers[index]);
+    }
+
+    const checkDisabledByIndex = (index: number) => {
+        if (spectatorMode) return true;
+        return answered && (answer !== index || !answerCorrect);
     }
 
     const getCurrentColor = (index: number) => {
@@ -47,7 +52,7 @@ const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, se
             {
                 questionData.answers?.map((ans, index) => 
                     <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={getCurrentColor(index)} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => mark(index)} disabled={answered && (answer !== index || !answerCorrect)} feedback={getFeedback(showAnswers, answer === index, index, check)}> 
+                        <GameButton color={getCurrentColor(index)} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => mark(index)} disabled={checkDisabledByIndex(index)} feedback={getFeedback(showAnswers, answer === index, index, check)}> 
                             {ans}
                         </GameButton>
                     </div>

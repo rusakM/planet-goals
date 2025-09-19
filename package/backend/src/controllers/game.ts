@@ -49,7 +49,7 @@ async function createGame(req: Request, res: Response) {
         lessonService.DB.Find.byId(lesson),
     ]);
 
-    if (!singlePlayerMode) await gameManagerService.gameManager.initializeGame(newGame, lessonData, []);
+    await gameManagerService.gameManager.initializeGame(newGame, lessonData, []);
     appResponse.prepareJsonResponse(res, newGame);
 }
 
@@ -160,29 +160,41 @@ async function sendAnswer(req: Request, res: Response) {
     }
 
     const currentPlayerGame = playerGame[0];
-    const { answer, questionNumber, subquestionNumber } = answerData;
-
-    const processedAnswer = await gameManagerService.gameManager.processAnswer(gameId, userId, answer, questionNumber, subquestionNumber, new Date(requestTime).getTime());
-    const newQuestionScore: playerGameService.Model.IQuestionScore = {
-        question: questionNumber,
-        subquestion: subquestionNumber,
-        response: answer,
-        respondAt: requestTime,
-        points: processedAnswer.points,
+    let processedAnswer: gameManagerService.IProcessedAnswer = {
+        done: true,
+        points: 0,
+        correct: true,
     };
 
-    const questionScores = currentPlayerGame.questionScores || [];
-    const existingScoreIndex = questionScores.findIndex((qs) => qs.question === questionNumber && qs.subquestion === subquestionNumber);
+    if (currentPlayerGame.playerRole !== ConstantsGame.Game.PLAYER_ROLE.spectator) {
+        const { answer, questionNumber, subquestionNumber } = answerData;
 
-    if (existingScoreIndex !== -1) {
-        questionScores[existingScoreIndex] = { ...questionScores[existingScoreIndex], ...newQuestionScore };
-    } else {
-        questionScores.push(newQuestionScore);
+        processedAnswer = await gameManagerService.gameManager.processAnswer(gameId, userId, answer, questionNumber, subquestionNumber, new Date(requestTime).getTime());
+        const newQuestionScore: playerGameService.Model.IQuestionScore = {
+            question: questionNumber,
+            subquestion: subquestionNumber,
+            response: answer,
+            respondAt: requestTime,
+            points: processedAnswer.points,
+        };
+
+        const questionScores = currentPlayerGame.questionScores || [];
+        const existingScoreIndex = questionScores.findIndex((qs) => qs.question === questionNumber && qs.subquestion === subquestionNumber);
+
+        if (existingScoreIndex !== -1) {
+            questionScores[existingScoreIndex] = { ...questionScores[existingScoreIndex], ...newQuestionScore };
+        } else {
+            questionScores.push(newQuestionScore);
+        }
+
+        await playerGameService.DB.update(currentPlayerGame._id, {
+            questionScores,
+        });
     }
 
-    await playerGameService.DB.update(currentPlayerGame._id, {
-        questionScores,
-    });
+    if (currentPlayerGame.singlePlayerMode) {
+        await gameManagerService.gameManager.enforceNextSubquestion(gameId);
+    }
 
     appResponse.prepareJsonResponse(res, processedAnswer);
 }

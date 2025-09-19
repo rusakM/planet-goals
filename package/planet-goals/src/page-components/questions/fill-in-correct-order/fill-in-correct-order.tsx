@@ -8,7 +8,7 @@ import GameButton, { TButtonColor } from "../../../components/game-button/game-b
 import { ISubquestionComponent } from "../questions.types";
 
 const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
-const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAnswers, sendAnswerAction}) => {
+const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAnswers, sendAnswerAction, spectatorMode}) => {
     const [answers, setAnswers] = useState(new Array(questionData.answers.length).fill(0));
     const [currentAnswer, setCurrentAnswer] = useState(0);
     const [description, setDescription] = useState(questionData.description);
@@ -25,7 +25,7 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
     const check = (index: number) => answers[index].toString() === questionData.correctAnswer[index];
     
     const markTile = (index: number) => {
-        if (finalAnswer.length >= answers.length) return;
+        if (finalAnswer.length >= answers.length || spectatorMode) return;
         const tempAnswers = [...answers];
         let tempCurrentAnswers = currentAnswer;
         let tempFinalAnswer = finalAnswer;

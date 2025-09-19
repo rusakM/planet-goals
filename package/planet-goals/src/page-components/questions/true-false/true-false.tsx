@@ -10,7 +10,7 @@ import GameButton, { TButtonColor } from "../../../components/game-button/game-b
 
 const colors: TButtonColor[] = ["red", "green"];
 
-const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers}) => {
+const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers, spectatorMode}) => {
     const { t } = useTranslate();
     const [ answer, setAnswer ] = useState(false);
     const [ answered, setAnswered ] = useState(false);
@@ -26,7 +26,7 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAct
     const check = (state: boolean) => state === Boolean(questionData.correctAnswerIndex);
 
     const mark = (state: boolean) => {
-        if (answered) return;
+        if (answered || spectatorMode) return;
         setAnswer(state);
         setAnswered(true);
         setAnswerCorrect(check(state));
@@ -46,12 +46,12 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAct
         <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
         <div className={`${styles.buttonsContainer}`}>
             <div className={styles.buttonContainer}>
-                <GameButton color={getCurrentColor(true)} onClick={() => mark(true)} disabled={answered && answerCorrect} feedback={getFeedback(showAnswers, answer === true, true, check)}> 
+                <GameButton color={getCurrentColor(true)} onClick={() => mark(true)} disabled={spectatorMode || (answered && answerCorrect)} feedback={getFeedback(showAnswers, answer === true, true, check)}> 
                     {t("main.buttons.booleans.true")}
                 </GameButton>
             </div>
             <div className={styles.buttonContainer}>
-                <GameButton color={getCurrentColor(false)} onClick={() => mark(false)} disabled={answered && answerCorrect} feedback={getFeedback(showAnswers, answer === false, false, check)}> 
+                <GameButton color={getCurrentColor(false)} onClick={() => mark(false)} disabled={spectatorMode || (answered && answerCorrect)} feedback={getFeedback(showAnswers, answer === false, false, check)}> 
                     {t("main.buttons.booleans.false")}
                 </GameButton>
             </div>

@@ -12,6 +12,5 @@ export function msToSeconds(timeInMs: number) {
 export function convertTimeUntilToRemainedSeconds(timeUntil: number): number {
     const remainedTime = timeUntil - Date.now();
     const seconds = msToSeconds(remainedTime);
-    console.log('Remained seconds calculated from timeUntil:', timeUntil, seconds);
     return seconds;
 }
