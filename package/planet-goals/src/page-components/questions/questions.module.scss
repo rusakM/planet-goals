@@ -1,5 +1,6 @@
 @use "@styles/breakpoints.scss";
 @use "@styles/colors.scss";
+@use "@styles/game-colors.scss";
 @use "@styles/fonts.scss";
 @use "@styles/mixins.scss";
 
@@ -53,5 +54,23 @@
     @media (min-width: breakpoints.$desktop) {
         flex-direction: row;
         flex-wrap: wrap;
+    }
+}
+
+.leaderboardContainer {
+    width: 100%;
+}
+
+.leaderboardFirstPosition {
+    background-color: game-colors.$orange !important;
+    border-color: game-colors.$dark-orange !important;
+    @include mixins.buttonShadow(game-colors.$dark-orange);
+
+    & p {
+        color: colors.$white !important;
+    }
+
+    &:not(.unchangable):hover {
+        background-color: colors.$light-orange;
     }
 }

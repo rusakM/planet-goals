@@ -11,14 +11,14 @@ const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
 const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAnswers, sendAnswerAction, spectatorMode}) => {
     const [answers, setAnswers] = useState(new Array(questionData.answers.length).fill(0));
     const [currentAnswer, setCurrentAnswer] = useState(0);
-    const [description, setDescription] = useState(questionData.description);
+    const [description, setDescription] = useState(questionData.question);
     const [finalAnswer, setFinalAnswer] = useState("");
     
     useEffect(() => {
         if (!questionData) return;
         setAnswers(new Array(questionData.answers.length).fill(0));
         setCurrentAnswer(0);
-        setDescription(questionData.description);
+        setDescription(questionData.question);
         setFinalAnswer("");
     }, [questionData]);
     

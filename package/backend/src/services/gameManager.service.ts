@@ -256,17 +256,18 @@ class GameManagerService {
      * Akceptuj odpowiedź dla aktywnego gracza – obsługuje scoring, timeout, blokuje wielokrotne odpowiedzi itp.
      */
     async processAnswer(gameId: string, userId: string, answer: string, questionIndex: number, subquestionIndex: number, responseTime: number): Promise<IProcessedAnswer> {
+        console.log(gameId, userId, answer, questionIndex);
         const game = await this.getGame(gameId);
         if (!game) return { points: 0, correct: false, done: false, error: 'NO_GAME' };
         const q = game.questions[game.currentQuestionIndex];
         if (!q) return { points: 0, correct: false, done: false, error: 'NO_QUESTION' };
         const sq = q.subquestions?.[game.currentSubquestionIndex];
         if (!sq) return { points: 0, correct: false, done: false, error: 'NO_SUBQUESTION' };
-        if ((questionIndex !== game.currentQuestionIndex || subquestionIndex !== game.currentSubquestionIndex) && game.stage === ConstantsGame.Game.STAGE_ENUM.KNOWLEDGE) {
+        if ((questionIndex !== game.currentQuestionIndex || subquestionIndex !== game.currentSubquestionIndex) && game.stage === ConstantsGame.Game.STAGE_ENUM.KNOWLEDGE && !game.singlePlayerMode) {
             console.log('questionIndexes:', game.currentQuestionIndex, questionIndex, 'subquestionIndexes:', game.currentSubquestionIndex, subquestionIndex);
             return { points: 0, correct: false, done: false, error: 'INCORRECT_QUESTION' };
         }
-        if (questionIndex !== game.currentQuestionIndex) {
+        if (questionIndex !== game.currentQuestionIndex && !game.singlePlayerMode) {
             console.log('questionIndexes:', game.currentQuestionIndex, questionIndex, 'subquestionIndexes:', game.currentSubquestionIndex, subquestionIndex);
             return { points: 0, correct: false, done: false, error: 'INCORRECT_QUESTION' };
         }

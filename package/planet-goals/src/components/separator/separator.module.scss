@@ -17,6 +17,13 @@
     }
 }
 
+.noPadding {
+    @media (min-width: breakpoints.$desktop) {
+        margin-top: 1em !important;
+        margin-bottom: 1em !important;
+    }
+}
+
 .orange {
     background-color: colors.$orange;
 }
