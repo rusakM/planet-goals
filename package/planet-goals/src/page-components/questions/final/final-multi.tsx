@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { useTranslate } from "@tolgee/react";
 import LobbyListItem from "../../../pages/lobby/lobby/lobby-list-item";
 import Separator from "../../../components/separator/separator";
+import PrimaryContainer from "../../../components/primary-container/primary-container";
 import PrimaryButton from "../../../components/primary-button.tsx/primary-button";
+import FinalPodiumPosition from "./final-podium-position";
 import { useDeviceType } from "../../../helpers/responsiveContainers";
 
 import styles from "../questions.module.scss";
@@ -13,10 +16,8 @@ import commonStyles from "../../../styles/common.module.scss";
 
 import { selectCurrentLeaderboard } from "../../../redux/game/game.selectors";
 import { selectCurrentUser } from "../../../redux/user/user.selectors";
-import PrimaryContainer from "../../../components/primary-container/primary-container";
-import FinalPodiumPosition from "./final-podium-position";
-
-
+import { resetGame } from "../../../redux/game/game.actions";
+import { constantsUrls } from "../../../helpers/constants";
 
 const get3Randoms = () => {
     const indices: number[] = [];
@@ -37,10 +38,18 @@ const get3Randoms = () => {
 const FinalMulti: React.FC = () => {
     const currentLeaderboard = useSelector(selectCurrentLeaderboard);
     const currentUser = useSelector(selectCurrentUser);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const playerLeaderboard = currentLeaderboard?.find((position) => position.playerId === currentUser._id);
     const [avatarsIndices] = useState(get3Randoms());
     const { isMobile } = useDeviceType();
     const { t } = useTranslate();
+
+    const exit = () => {
+        dispatch(resetGame());
+        navigate(constantsUrls.Main.startLessons);
+    }
+    
     return <div className={`${finalStyles.finalContainer} ${styles.leaderboardContainer}`}>
         <PrimaryContainer direction="row" additionalClassess={`${finalStyles.podium} ${commonStyles.inheritBackground}`}>
             {
@@ -87,7 +96,7 @@ const FinalMulti: React.FC = () => {
                 </div>
             }
             <PrimaryContainer additionalClassess={`${finalStyles.exitButtonContainer} ${commonStyles.inheritBackground} ${commonStyles.bottom}`}>
-                <PrimaryButton color="white" >
+                <PrimaryButton color="white" onClick={exit}>
                     {t("game.leave.exit.button")}
                 </PrimaryButton>
             </PrimaryContainer>
