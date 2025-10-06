@@ -17,7 +17,12 @@
     }
 }
 
+.noMargin {
+    margin: 0 !important;
+}
+
 .noPadding {
+    padding: 0;
     @media (min-width: breakpoints.$desktop) {
         margin-top: 1em !important;
         margin-bottom: 1em !important;

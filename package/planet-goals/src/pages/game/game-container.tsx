@@ -17,16 +17,16 @@ import { TCurrentQuestion } from "../../types/lesson";
 import { selectCurrentLesson, selectCurrentQuestionSetAt, selectGameMode, selectPlayerRole } from "../../redux/game/game.selectors";
 import { GAME_PLAY_STAGE_ENUM } from "../../types/game";
 
-import bgIntroductionMobile from "../../assets/game/topic_0_bg_mobile.svg";
-import bgIntroduction from "../../assets/game/topic_0_bg_pc.svg";
-import bgKnowledgeMobile from "../../assets/game/topic_1_bg_mobile.svg";
-import bgKnowledge from "../../assets/game/topic_1_bg_pc.svg";
-import bgQuickContentMobile from "../../assets/game/topic_2_bg_mobile.svg";
-import bgQuickContent from "../../assets/game/topic_2_bg_pc.svg";
-import bgCompetitionMobile from "../../assets/game/topic_3_bg_mobile.svg";
-import bgCompetition from "../../assets/game/topic_3_bg_pc.svg";
-import bgFinalMobile from "../../assets/game/topic_4_bg_mobile.svg";
-import bgFinal from "../../assets/game/topic_4_bg_pc.svg";
+import bgIntroductionMobile from "../../assets/game/topic_1_mobile.svg";
+import bgIntroduction from "../../assets/game/topic_1_pc.svg";
+import bgKnowledgeMobile from "../../assets/game/topic_2_mobile.svg";
+import bgKnowledge from "../../assets/game/topic_2_pc.svg";
+import bgQuickContentMobile from "../../assets/game/topic_3_mobile.svg";
+import bgQuickContent from "../../assets/game/topic_3_pc.svg";
+import bgCompetitionMobile from "../../assets/game/topic_4_mobile.svg";
+import bgCompetition from "../../assets/game/topic_4_pc.svg";
+import bgFinalMobile from "../../assets/game/topic_5_mobile.svg";
+import bgFinal from "../../assets/game/topic_5_pc.svg";
 import PrimaryContainer from "../../components/primary-container/primary-container";
 
 const getBackgroundImg = (stage: GAME_PLAY_STAGE_ENUM, isMobile: boolean) => {

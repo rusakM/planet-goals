@@ -22,12 +22,11 @@ import SelectCorrectOrder from "../../page-components/questions/select-correct-o
 import ContentQuestion from "../../page-components/questions/content-question/content-question";
 import FillCorrectOrder from "../../page-components/questions/fill-in-correct-order/fill-in-correct-order";
 import FitTiles from "../../page-components/questions/fit-tiles/fit-tiles";
+import Final from "../../page-components/questions/final/final";
 import LeftRight from "../../page-components/questions/left-right/left-right";
 import Leaderboard from "../../page-components/questions/leaderboard/leaderboard";
 import { gameTypes } from "../../types";
 import ContentIntroduction from "../../page-components/questions/content-introduction/content-introduction";
-
-
 
 const calculateTimeUntil = (stateTimeUntil: number, questionTimeSek: number): number  => {
     if (!stateTimeUntil || Date.now() >= stateTimeUntil) {
@@ -143,8 +142,10 @@ const Game: React.FC = () => {
         case QUESTION_TYPES_ENUM.FIT_TILES:
             questionScreen = <FitTiles {...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
             break;
-        case QUESTION_TYPES_ENUM.LEADERBOARD:
         case QUESTION_TYPES_ENUM.FINAL:
+            questionScreen = <Final />
+            break;
+        case QUESTION_TYPES_ENUM.LEADERBOARD:
             questionScreen = <Leaderboard />;
             break;
         case QUESTION_TYPES_ENUM.LEFT_RIGHT:

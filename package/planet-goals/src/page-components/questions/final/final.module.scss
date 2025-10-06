@@ -1,0 +1,140 @@
+@use "@styles/breakpoints.scss";
+@use "@styles/colors.scss";
+@use "@styles/game-colors.scss";
+
+.finalMultiContainer {
+    padding-top: 15%;
+}
+
+.finalSingleContainer {
+    padding-top: 25%;
+}
+
+.finalMultiContainer, .finalSingleContainer {
+    align-self: baseline;
+}
+
+.podium {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    width: 100%;
+    flex-direction: row;
+}
+
+.podiumPosition {
+    width: 33.33%;
+    padding: 5px;
+    justify-content: flex-end;
+}
+
+.cube {
+    width: 88px;
+    color: colors.$white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    margin-top: 5px;
+
+    &::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		width: 100%;
+		height: 20px;
+		clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+		transform-origin: top;
+        bottom: 100%;
+	}
+
+    .rank {
+        font-size: 28px;
+    }
+    
+    .score {
+        font-size: 14px;
+    }
+}
+
+.cube1 {
+    height: 110px;
+    background: colors.$orange;
+    order: 2;
+
+    &::after {
+        background-color: colors.$light-orange;
+    }
+}
+
+.cube2 {
+    height: 77px;
+    background: colors.$lightest-blue;
+    order: 1;
+
+    &::after {
+        background-color: game-colors.$gradient-blue;
+    }
+}
+
+.cube3 {
+    height: 55px;
+    background: colors.$dark-red;
+    order: 3;
+
+    &::after {
+        background-color: game-colors.$red;
+    }
+}
+
+
+
+.circle {
+    border-color: colors.$light-grey;
+    border-style: solid;
+    background-color: colors.$grey;
+    display: block;
+    box-sizing: border-box;
+
+    & > img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.circleSingle {
+    width: 168px;
+    height: 168px;
+    border-width: 11px;
+    border-radius: 84px;
+
+    @media (min-width: breakpoints.$desktop) {
+        width: 358px;
+        height: 358px;
+        border-width: 23px;
+        border-radius: 179px;
+    }
+}
+
+.circleMulti {
+    width: 68px;
+    height: 68px;
+    border-width: 0;
+    border-radius: 34px;
+
+    @media (min-width: breakpoints.$desktop) {
+        width: 188px;
+        height: 188px;
+        border-radius: 94px;
+    }
+}
+
+.listHeader {
+    align-self: baseline;
+    padding-left: 1em;
+    padding-top: 1em;
+}
+
+.exitButtonContainer {
+    bottom: 1em !important;
+}
