@@ -25,7 +25,7 @@ const FinalSingle: React.FC = () => {
     const navigate = useNavigate();
 
     const exit = () => {
-        dispatch(resetGame());
+        setTimeout(() => dispatch(resetGame()), 500);
         navigate(constantsUrls.Main.startLessons);
     }
 

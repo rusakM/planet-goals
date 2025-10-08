@@ -32,7 +32,7 @@ const ChoosePlayerRole: React.FC = () => {
     const isGameCreatedByCurrentUser = useSelector(selectIsGameCreatedByCurrentUser);
 
     const handleBack = () => {
-        dispatch(resetGame());
+        setTimeout(() => dispatch(resetGame()), 500);
         navigate(constantsUrls.Main.startLessons);
     }
 
@@ -64,12 +64,14 @@ const ChoosePlayerRole: React.FC = () => {
                                 <img src={justObservingImg} alt="Just watch" className={cardsStyles.cardImg} />
                             </div>
                             <div className={cardsStyles.cardData}>
-                                <p className={`${commonStyles.basicHeader5} ${commonStyles.darkText}`}>
-                                    {t("lesson.mode.teacher.JustObserving.header")}
-                                </p>
-                                <p>
-                                    {t("lesson.mode.teacher.JustObserving.info")}
-                                </p>
+                                <div>
+                                    <p className={`${commonStyles.basicHeader5} ${commonStyles.darkText}`}>
+                                        {t("lesson.mode.teacher.JustObserving.header")}
+                                    </p>
+                                    <p>
+                                        {t("lesson.mode.teacher.JustObserving.info")}
+                                    </p>
+                                </div>
                                 <div>
                                     <PrimaryButton color="orange" size="desktopSmall" onClick={() => join("spectator")}>
                                         {t("lesson.StartLesson.button")}
@@ -84,12 +86,14 @@ const ChoosePlayerRole: React.FC = () => {
                                 <img src={competeImg} alt="Compete with others" className={cardsStyles.cardImg} />
                             </div>
                             <div className={cardsStyles.cardData}>
-                                <p className={`${commonStyles.basicHeader5} ${commonStyles.darkText}`}>
-                                    {t("lesson.mode.teacher.CompeteWithOthers.header")}
-                                </p>
-                                <p>
-                                    {t("lesson.mode.teacher.CompeteWithOthers.info")}
-                                </p>
+                                <div>
+                                    <p className={`${commonStyles.basicHeader5} ${commonStyles.darkText}`}>
+                                        {t("lesson.mode.teacher.CompeteWithOthers.header")}
+                                    </p>
+                                    <p>
+                                        {t("lesson.mode.teacher.CompeteWithOthers.info")}
+                                    </p>
+                                </div>
                                 <div>
                                     <PrimaryButton color="orange" size="desktopSmall" onClick={() => join("player")}>
                                         {t("lesson.StartLesson.button")}

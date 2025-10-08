@@ -37,11 +37,6 @@ const Wait: React.FC = () => {
         navigate(constantsUrls.Main.game);
     }, [dispatch, isGameCreatedByCurrentUser, playerRole, currentGame, navigate]);
 
-    // const back = useCallback(() => {
-    //     dispatch(resetGame());
-    //     navigate(constantsUrls.Main.startLessons);
-    // }, [dispatch, navigate]);
-
     useEffect(() => {
         if (remainedSeconds > 0) {
             setTimeout(() => setRemainedSeconds(remainedSeconds - 1), 1000);

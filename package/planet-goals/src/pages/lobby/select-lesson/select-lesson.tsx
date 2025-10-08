@@ -51,7 +51,7 @@ const SelectLesson: React.FC = () => {
         if (currentUser?.role === "TEACHER") {
             dispatch(setGameStage("selectGameMode"));
         } else {
-            dispatch(resetGame());
+            setTimeout(() => dispatch(resetGame()), 500);
             navigate(constantsUrls.Main.startLessons);
         }
     }

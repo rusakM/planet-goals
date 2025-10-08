@@ -1,6 +1,6 @@
-import React from "react";
-import { useSelector, /* useDispatch */} from "react-redux";
-//import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import Join from "./join/join";
 import ChoosePlayerRole from "./choose-player-role/choose-player-role";
@@ -9,11 +9,15 @@ import SelectLesson from "./select-lesson/select-lesson";
 import Wait from "./wait/wait";
 
 import { selectGameStage } from "../../redux/game/game.selectors";
+import { constantsUrls } from "../../helpers/constants";
 
 const Lobby: React.FC = () => {
-    // const dispatch = useDispatch();
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const gameStage = useSelector(selectGameStage);
+
+    useEffect(() => {
+        if (!gameStage) navigate(constantsUrls.Main.startLessons);
+    }, [navigate, gameStage]);
 
     switch(gameStage) {
         case "join":

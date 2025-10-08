@@ -357,6 +357,7 @@ class GameManagerService {
         game.subquestionTimer = setTimeout(async () => {
             // Po zakończeniu czasu przechodzimy do następnego pytania
             let nextQuestionIndex = game.currentQuestionIndex + 1;
+            if (game?.singlePlayerMode && game.questions?.[nextQuestionIndex]?.type === ConstantsGame.Question.TYPES_ENUM.LEADERBOARD) nextQuestionIndex++;
             if (nextQuestionIndex >= game.questions.length) {
                 // Jeśli to było ostatnie pytanie, kończymy grę
                 await this.endGame(gameId);
@@ -387,7 +388,7 @@ class GameManagerService {
      * Przechodzi do kolejnego subquestion w lekcji. Jeśli skończone → kończy grę i rozsyła leaderboard.
      */
     async nextSubquestion(gameId: string) {
-        const game = this.games.get(gameId);
+        const game = await this.getGame(gameId);
         if (!game) return;
         // Najpierw przyznaj 0 punktów wszystkim którzy nie odpowiedzieli
         const players = game.players;
@@ -406,6 +407,7 @@ class GameManagerService {
             // Next question
             nq++;
             ns = 0;
+            if (game.singlePlayerMode && game.questions?.[nq]?.type === ConstantsGame.Question.TYPES_ENUM.LEADERBOARD) nq++;
         }
         if (nq >= game.questions.length) {
             // End game

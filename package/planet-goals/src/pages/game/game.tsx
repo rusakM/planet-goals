@@ -61,7 +61,7 @@ const Game: React.FC = () => {
         if (!currentGame) {
             return;
         } else if (!currentGame?.lesson) {
-            dispatch(resetGame());
+            setTimeout(() => dispatch(resetGame()), 500);
             navigate(constantsUrls.Main.startLessons);
         }
 

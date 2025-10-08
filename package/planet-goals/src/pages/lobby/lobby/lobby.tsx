@@ -54,7 +54,7 @@ const LobbyComponent: React.FC = () => {
     const leaveLobbyCancel = () => setIsLeaving(false);
 
     const leaveLobbyConfirm = () => {
-        dispatch(resetGame());
+        setTimeout(() => dispatch(resetGame()), 500);
         navigate(constantsUrls.Main.startLessons);
     }  
     

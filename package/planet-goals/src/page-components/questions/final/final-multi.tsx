@@ -46,7 +46,7 @@ const FinalMulti: React.FC = () => {
     const { t } = useTranslate();
 
     const exit = () => {
-        dispatch(resetGame());
+        setTimeout(() => dispatch(resetGame()) , 500);
         navigate(constantsUrls.Main.startLessons);
     }
     

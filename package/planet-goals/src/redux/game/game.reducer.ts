@@ -1,3 +1,6 @@
+import { PersistConfig, persistReducer } from "redux-persist";
+import sessionStorage from "redux-persist/lib/storage/session";
+
 import { GameActionTypes, IGameState } from "./game.types";
 import { SocketActionTypes } from "../sockets/socket.types";
 
@@ -113,4 +116,11 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
     }
 };
 
-export default gameReducer;
+const gamePersistConfig: PersistConfig<object> = {
+    key: "game",
+    storage: sessionStorage,
+};
+
+const persistedGameReducer = persistReducer(gamePersistConfig, gameReducer);
+
+export default persistedGameReducer;

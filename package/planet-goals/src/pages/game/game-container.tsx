@@ -125,7 +125,7 @@ const GameContainer: React.FC<IGameContainer> = ({ children, currentQuestionInde
                 <p className={`${commonStyles.centeredText} ${commonStyles.smallHorizontalPadding}`}>{t("game.leave.exit.question")}</p>
                 <PrimaryContainer additionalClassess={`${commonStyles.inheritBackground} ${commonStyles.basicGap} ${commonStyles.padding1em}`}>
                     <PrimaryButton color="red" size="small" onClick={() => {
-                        dispatch(resetGame());
+                        setTimeout(() => dispatch(resetGame()), 500);
                         navigate(constantsUrls.Main.startLessons);
                     }}>
                         {t("lesson.confirm.button")}
