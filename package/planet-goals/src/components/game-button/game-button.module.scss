@@ -40,6 +40,7 @@
         border-radius: 10px;
         padding: 0 26px;
         height: 138px;
+        border-radius: 10px;
     }
 }
 
@@ -135,4 +136,40 @@
     background-color: game-colors.$white;
     border-color: game-colors.$white;
     color: game-colors.$dark-blue;
+}
+
+.feedbackcorrect {
+    background-color: game-colors.$feedback-correct;
+    border-color: game-colors.$feedback-correct-dark;
+    color: colors.$light-grey;
+    @include mixins.buttonShadow(game-colors.$feedback-correct-dark);
+    animation: blink 2.5s ease-in-out;
+
+    &:not(.unchangable):hover {
+        background-color: game-colors.$feedback-correct-dark;
+    }
+}
+
+.feedbackincorrect {
+    background-color: game-colors.$feedback-incorrect;
+    border-color: game-colors.$feedback-incorrect-dark;
+    color: colors.$light-grey;
+    animation: bgFadeIn 500ms ease-in;
+    @include mixins.buttonShadow(game-colors.$feedback-incorrect-dark);
+    
+    &:not(.unchangable):hover {
+        background-color: game-colors.$feedback-incorrect-dark;
+        color: colors.$light-grey;
+    }
+}
+
+@keyframes blink {
+	0%, 100% { background-color: game-colors.$feedback-correct; }
+	20%, 80% { background-color: game-colors.$feedback-correct-dark; }
+	40% { background-color: game-colors.$feedback-correct; }
+}
+
+@keyframes bgFadeIn {
+	from { opacity: 0 }
+	to { opacity: 1 }
 }

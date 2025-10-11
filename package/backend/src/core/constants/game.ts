@@ -19,6 +19,7 @@ export namespace Game {
         QUICK_CONTENT = 'QUICK_CONTENT',
     }
 
+    export const GAME_FEEDBACK_TIME_MS = 1000 * 4 + 200;
     export const GAME_START_WAITING_TIME_MS = 1000 * 10;
 }
 

@@ -10,6 +10,14 @@ export function getFeedback<T extends boolean | number = boolean | number>(showA
     return "none";
 }
 
+export function getFeedback2<T extends boolean | number = boolean | number>(showCorrectAnswers: boolean, showIncorrectAnswers: boolean, index: T, check: (index: T) => boolean): TFeedbackMode {
+    console.log(showCorrectAnswers, showIncorrectAnswers, index);
+    if (!showCorrectAnswers && !showIncorrectAnswers) return "none";
+    if (showCorrectAnswers && check(index)) return "correct";
+    if (showIncorrectAnswers && !check(index)) return "incorrect";
+    return "none";
+}
+
 export function calculateTimeUntil(subquestion: ISubquestion, timeUntil?: number): number {
     if (!timeUntil) return (Date.now() + subquestion?.timeInSek * 1000) - 800;
     const calculatedTimeUntil = subquestion.timeInSek ? Date.now() + subquestion.timeInSek * 1000 : timeUntil;

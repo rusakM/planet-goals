@@ -313,7 +313,7 @@ class GameManagerService {
      */
     calculateSubquestionTimeUntil(subquestion: lessonService.Model.ISubquestion): number {
         const timeUntil = addSeconds(new Date(), subquestion?.timeInSek || ConstantsGame.Game.GAME_START_WAITING_TIME_MS).getTime();
-        if (subquestion?.answers?.length) return timeUntil + 1000;
+        if (subquestion?.answers?.length) return timeUntil + ConstantsGame.Game.GAME_FEEDBACK_TIME_MS;
         return timeUntil;
     }
 

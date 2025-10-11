@@ -1,2 +1,5 @@
 export const FEEDBACK_TIME = 1200;
+
+export const FEEDBACK_INCORRECT_TIME = 1000;
+
 export const DEFAULT_WAITING_TIME_FOR_START_GAME_SEK = 10;
