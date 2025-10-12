@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ISubquestionComponent } from "../questions.types";
-import { getFeedback } from "../../../helpers/game";
+import { getFeedback2 } from "../../../helpers/game";
 
 import styles from "../questions.module.scss";
 
@@ -23,6 +23,7 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
     const [currentPair, setCurrentPair] = useState(0);
     const [lastClickedIndex, setLastClickedIndex] = useState(-1);
     const correctAnswers: Array<Array<number>> = JSON.parse(questionData.correctAnswer);
+    const [showFeedbackCorrect, setShowFeedbackCorrect] = useState(false);
 
     useEffect(() => {
         if (!questionData) return;
@@ -31,7 +32,21 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
         setCurrentAnswer(0);
         setCurrentPair(0);
         setLastClickedIndex(-1);
+        setShowFeedbackCorrect(false);
     }, [questionData]);
+
+    useEffect(() => {
+        if (!showAnswers) {
+            setShowFeedbackCorrect(false); 
+            return;
+        }
+        if (showFeedbackCorrect) return;
+        const timer = setTimeout(() => {
+            setShowFeedbackCorrect(true);
+        }, 1000);
+        return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showAnswers]);
 
     const checkPair = (pair: Array<number>) => {
         return correctAnswers.some(correctPair => correctPair.includes(pair[0]) && correctPair.includes(pair[1]));
@@ -42,7 +57,7 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
     const markTile = (index: number) => {
         if (spectatorMode || (currentPair >= answers.length || currentAnswer >= questionData.answers.length)) return;
         if (results[index] !== 0) return;
-        const tempAnswers = structuredClone(answers);
+        const tempAnswers = JSON.parse(JSON.stringify(answers));
         const tempResults = structuredClone(results);
         const mod = currentAnswer % 2;
         let tempCurrentPair = currentPair;
@@ -74,7 +89,7 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
             {
                 questionData.answers?.map((ans, index) => 
                     <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback(showAnswers, results[index] !== 0, index, check)}> 
+                        <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback2(showFeedbackCorrect, showAnswers, index, check)}> 
                             {`${ans}`}
                         </GameButton>
                     </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
-import { getFeedback } from "../../../helpers/game";
+import { getFeedback2 } from "../../../helpers/game";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 import { ISubquestionComponent } from "../questions.types";
@@ -13,6 +13,7 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
     const [currentAnswer, setCurrentAnswer] = useState(0);
     const [description, setDescription] = useState(questionData.question);
     const [finalAnswer, setFinalAnswer] = useState("");
+    const [showFeedbackCorrect, setShowFeedbackCorrect] = useState(false);
     
     useEffect(() => {
         if (!questionData) return;
@@ -21,8 +22,21 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
         setDescription(questionData.question);
         setFinalAnswer("");
     }, [questionData]);
+
+    useEffect(() => {
+        if (!showAnswers) {
+            setShowFeedbackCorrect(false); 
+            return;
+        }
+        if (showFeedbackCorrect) return;
+        const timer = setTimeout(() => {
+            setShowFeedbackCorrect(true);
+        }, 1000);
+        return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showAnswers]);
     
-    const check = (index: number) => answers[index].toString() === questionData.correctAnswer[index];
+    const check = (index: number) => (answers[index] - 1).toString() === questionData.correctAnswer[index];
     
     const markTile = (index: number) => {
         if (finalAnswer.length >= answers.length || spectatorMode) return;
@@ -57,7 +71,7 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
                     if (showAnswers) tileIndex = `${Number(questionData.correctAnswer[index])}. `;
                     return (
                         <div className={styles.buttonContainer} key={index}>
-                            <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback(showAnswers, !!answers[index], index, check)}> 
+                            <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback2(showFeedbackCorrect, showAnswers, index, check)}> 
                                 {`${tileIndex}${ans}`}
                             </GameButton>
                         </div>

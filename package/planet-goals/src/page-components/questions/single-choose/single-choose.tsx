@@ -17,25 +17,22 @@ const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswer
         if (!questionData) return;
         setAnswer(-1);
         setButtonsDisabled(new Array<boolean>(questionData.answers.length).fill(false));
+        setShowFeedbackCorrect(false);
     }, [questionData]);
 
 
     useEffect(() => {
-    if (!showAnswers) {
-        setShowFeedbackCorrect(false); 
-        return;
-    }
-    if (showFeedbackCorrect) {
-        return;
-    }
-    const timer = setTimeout(() => {
-        setShowFeedbackCorrect(true);
-    }, 1000);
-    return () => clearTimeout(timer);
-// eslint-disable-next-line react-hooks/exhaustive-deps
-}, [showAnswers]);
-
-// ... rest of code ...
+        if (!showAnswers) {
+            setShowFeedbackCorrect(false); 
+            return;
+        }
+        if (showFeedbackCorrect) return;
+        const timer = setTimeout(() => {
+            setShowFeedbackCorrect(true);
+        }, 1000);
+        return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showAnswers]);
 
     const check = (index: number) => index === questionData.correctAnswerIndex;
 
@@ -57,7 +54,7 @@ const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswer
                     const feedback = getFeedback2(showFeedbackCorrect ,showAnswers, index, check);
                     if (showAnswers) color = check(index) ? colors[index % 4] : "white";
                     return <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={color} size="thin" additionalClasses={commonStyles.leftSideText} disabled={spectatorMode || (buttonsDisabled[index] && showAnswers)} onClick={() => onSelect(index)} feedback={feedback}> 
+                        <GameButton color={color} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => onSelect(index)} feedback={feedback}> 
                             {`${String.fromCharCode(65 + index)}. ${ans}`}
                         </GameButton>
                     </div>

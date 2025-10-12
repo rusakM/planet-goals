@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslate } from "@tolgee/react";
 import { ISubquestionComponent } from "../questions.types";
-import { getFeedback } from "../../../helpers/game";
+import { getFeedback2 } from "../../../helpers/game";
 
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
@@ -14,14 +14,27 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAct
     const { t } = useTranslate();
     const [ answer, setAnswer ] = useState(false);
     const [ answered, setAnswered ] = useState(false);
-    const [ answerCorrect, setAnswerCorrect ] = useState(false);
+    const [ showFeedbackCorrect, setShowFeedbackCorrect ] = useState(false);
 
     useEffect(() => {
         if (!questionData) return;
         //setAnswer(false);
         setAnswered(false);
-        setAnswerCorrect(false);
+        setShowFeedbackCorrect(false);
     }, [questionData]);
+
+    useEffect(() => {
+        if (!showAnswers) {
+            setShowFeedbackCorrect(false); 
+            return;
+        }
+        if (showFeedbackCorrect) return;
+        const timer = setTimeout(() => {
+            setShowFeedbackCorrect(true);
+        }, 1000);
+        return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showAnswers]);
 
     const check = (state: boolean) => state === Boolean(questionData.correctAnswerIndex);
 
@@ -29,7 +42,6 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAct
         if (answered || spectatorMode) return;
         setAnswer(state);
         setAnswered(true);
-        setAnswerCorrect(check(state));
         sendAnswerAction(Number(state).toString());
     }
 
@@ -46,12 +58,12 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAct
         <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
         <div className={`${styles.buttonsContainer}`}>
             <div className={styles.buttonContainer}>
-                <GameButton color={getCurrentColor(true)} onClick={() => mark(true)} disabled={spectatorMode || (answered && answerCorrect)} feedback={getFeedback(showAnswers, answer === true, true, check)}> 
+                <GameButton color={getCurrentColor(true)} onClick={() => mark(true)} feedback={getFeedback2(showFeedbackCorrect, showAnswers,  true, check)}> 
                     {t("main.buttons.booleans.true")}
                 </GameButton>
             </div>
             <div className={styles.buttonContainer}>
-                <GameButton color={getCurrentColor(false)} onClick={() => mark(false)} disabled={spectatorMode || (answered && answerCorrect)} feedback={getFeedback(showAnswers, answer === false, false, check)}> 
+                <GameButton color={getCurrentColor(false)} onClick={() => mark(false)} feedback={getFeedback2(showFeedbackCorrect, showAnswers, false, check)}> 
                     {t("main.buttons.booleans.false")}
                 </GameButton>
             </div>

@@ -5,7 +5,7 @@ import styles from "../questions.module.scss";
 import stylesLeftRight from "./left-right.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
-import { getFeedback } from "../../../helpers/game";
+import { getFeedback2 } from "../../../helpers/game";
 
 const colors: TButtonColor[] = ["orange", "blue"];
 
@@ -19,6 +19,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
     const [answer, setAnswer] = useState(-1);
     const [dragOffset, setDragOffset] = useState(0);
     const [currentPosition, setCurrentPosition] = useState(1); // 0 = left/top, 1 = center, 2 = right/bottom
+    const [showFeedbackCorrect, setShowFeedbackCorrect] = useState(false);
     const { isMobile } = useDeviceType();
 
     useEffect(() => {
@@ -26,7 +27,21 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
         setAnswer(-1);
         setDragOffset(0);
         setCurrentPosition(1);
+        setShowFeedbackCorrect(false);
     }, [questionData]);
+
+    useEffect(() => {
+        if (!showAnswers) {
+            setShowFeedbackCorrect(false); 
+            return;
+        }
+        if (showFeedbackCorrect) return;
+        const timer = setTimeout(() => {
+            setShowFeedbackCorrect(true);
+        }, 1000);
+        return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showAnswers]);
 
     const onAnswer = (index: number) => {
         if (answer > -1) return;
@@ -142,7 +157,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                         size="thin" 
                         additionalClasses={`${commonStyles.leftSideText}`}
                         unchangable={true}
-                        feedback={getFeedback(showAnswers, answer === 0, 0, check)}
+                        feedback={getFeedback2(showFeedbackCorrect, showAnswers, 0, check)}
                     >
                         {questionData.answers[0]}
                     </GameButton>
@@ -206,7 +221,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                         noBoxShadow={true}
                         additionalClasses={`${commonStyles.leftSideText}`}
                         unchangable={true}
-                        feedback={getFeedback(showAnswers, answer === 1, 1, check)}
+                        feedback={getFeedback2(showFeedbackCorrect, showAnswers, 1, check)}
                     >
                         {questionData.answers[1]}
                     </GameButton>
