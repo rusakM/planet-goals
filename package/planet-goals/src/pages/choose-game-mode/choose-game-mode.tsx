@@ -34,9 +34,11 @@ const ChooseGameMode: React.FC = () => {
     }
 
     const join = () => {
+        dispatch(setGameMode("multi"))
         if (currentUser.role === "TEACHER") {
             dispatch(setGameStage("selectGameMode"));
         } else {
+            dispatch(setPlayerRole("player"));
             dispatch(setGameStage("join"));
         }
         navigate(constantsUrls.Main.lobby);

@@ -1,3 +1,5 @@
+@use "@styles/colors.scss";
+
 .SpinnerOverlay {
     height: 60vh;
     width: 100%;
@@ -20,13 +22,18 @@
     animation: spin 1s ease-in-out infinite;
     -webkit-animation: spin 1s ease-in-out infinite;
     @keyframes spin {
-      to {
-        -webkit-transform: rotate(360deg);
-      }
+        to {
+            -webkit-transform: rotate(360deg);
+        }
     }
     @-webkit-keyframes spin {
-      to {
-        -webkit-transform: rotate(360deg);
-      }
+        to {
+            -webkit-transform: rotate(360deg);
+        }
     }
+}
+
+.orange {
+    border: white;
+    border-top-color: colors.$orange;
 }

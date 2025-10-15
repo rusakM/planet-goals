@@ -6,6 +6,7 @@ import { ISubquestionComponent } from "../questions.types";
 import { getFeedback2 } from "../../../helpers/game";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
+import { constantsGame } from "../../../helpers/constants";
 
 const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers, spectatorMode }) => {
     const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
@@ -33,7 +34,7 @@ const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswer
         if (showFeedbackCorrect) return;
         const timer = setTimeout(() => {
             setShowFeedbackCorrect(true);
-        }, 1000);
+        }, constantsGame.FEEDBACK_INCORRECT_TIME);
 
         return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps

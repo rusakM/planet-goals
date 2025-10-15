@@ -8,6 +8,7 @@ const INITIAL_STATE: IGameState = {
     currentGame: null,
     currentLesson: null,
     currentQuestion: [0, 0],
+    currentQuestionSetAt: 0,
     currentLeaderboard: [],
     gameError: "",
     gameMode: null,
@@ -85,6 +86,7 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
             return {
                 ...state,
                 currentQuestion: action.payload,
+                currentQuestionSetAt: Date.now(),
                 waitingForPlayers: false,
             }
         case SocketActionTypes.GAME_LEADERBOARD:

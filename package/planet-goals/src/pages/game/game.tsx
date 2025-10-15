@@ -7,9 +7,9 @@ import ContentInstruction from "../../page-components/questions/content-instruct
 import { convertTimeUntilToRemainedSeconds } from "../../helpers/shared.functions";
 
 import { QUESTION_TYPES_ENUM } from "../../types/lesson";
-import { selectCurrentGame, selectCurrentLesson, selectCurrentQuestion, selectWaitingTimeUntil, selectPlayerRole, selectGameMode } from "../../redux/game/game.selectors";
+import { selectCurrentGame, selectCurrentLesson, selectCurrentQuestion, selectWaitingTimeUntil, selectPlayerRole, selectGameMode, selectWaitingForPlayers, selectCurrentQuestionSetAt } from "../../redux/game/game.selectors";
 import { constantsGame, constantsUrls } from "../../helpers/constants";
-import { fetchLessonStart, resetGame, sendAnswerStart, setCurrentQuestion } from "../../redux/game/game.actions";
+import { fetchLessonStart, resetGame, sendAnswerStart, setCurrentQuestion, setWaitingForPlayers } from "../../redux/game/game.actions";
 import useGame from "../../hooks/useGame";
 import { getNextSubquestionIndex } from "../../hooks/useLesson";
 import ContentTitle from "../../page-components/questions/content-title/content-title";
@@ -25,6 +25,7 @@ import FitTiles from "../../page-components/questions/fit-tiles/fit-tiles";
 import Final from "../../page-components/questions/final/final";
 import LeftRight from "../../page-components/questions/left-right/left-right";
 import Leaderboard from "../../page-components/questions/leaderboard/leaderboard";
+import WaitingForPlayers from "../../page-components/questions/waiting-for-players/waiting-for-players";
 import { gameTypes } from "../../types";
 import ContentIntroduction from "../../page-components/questions/content-introduction/content-introduction";
 
@@ -36,6 +37,7 @@ const calculateTimeUntil = (stateTimeUntil: number, questionTimeSek: number): nu
 }
 
 const Game: React.FC = () => {
+    let questionScreen: React.ReactNode;
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const questionLockRef = useRef(false);
@@ -43,18 +45,21 @@ const Game: React.FC = () => {
     const currentGame = useSelector(selectCurrentGame);
     const currentLesson = useSelector(selectCurrentLesson);
     const currentQuestionIndex = useSelector(selectCurrentQuestion);
-    const playerRole = useSelector(selectPlayerRole);
+    const currentQuestionSetAt = useSelector(selectCurrentQuestionSetAt);
     const gameMode = useSelector(selectGameMode);
-    const nextQuestionIndex = getNextSubquestionIndex(currentLesson?.questions, currentQuestionIndex);
+    const isWaitingForPlayers = useSelector(selectWaitingForPlayers);
+    const playerRole = useSelector(selectPlayerRole);
     const timeUntil = useSelector(selectWaitingTimeUntil);
+
     const currentQuestion = currentLesson?.questions?.[currentQuestionIndex[0]];
     const currentSubquestion = currentQuestion?.subquestions?.[currentQuestionIndex[1]];
-    let questionScreen: React.ReactNode;
+    const nextQuestionIndex = getNextSubquestionIndex(currentLesson?.questions, currentQuestionIndex);
     const [remainedTime, setRemainedTime] = useState(
         convertTimeUntilToRemainedSeconds(
             calculateTimeUntil(timeUntil, currentSubquestion?.timeInSek)
         )
     );
+    const [cmpAnswersVisible, setCmpAnswersVisible] = useState(false);
     const [questionIndexTemp, setQuestionIndexTemp] = useState(currentQuestionIndex.toString());
     
     useEffect(() => {
@@ -94,15 +99,22 @@ const Game: React.FC = () => {
         )
     }, [timeUntil, currentSubquestion]);
 
+    useEffect(() => {
+        if (cmpAnswersVisible) setCmpAnswersVisible(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentQuestion])
+
     const sendAnswerAction = (answer: string) => {
         dispatch(sendAnswerStart({
             gameId: currentGame._id,
             questionNumber: currentQuestionIndex[0],
             subquestionNumber: currentQuestionIndex[1],
+            responseTime: Date.now() - currentQuestionSetAt,
             answer
         }));
 
-        if (currentQuestion.gameStage === gameTypes.GAME_PLAY_STAGE_ENUM.COMPETITION) {
+        if (gameTypes.COMPETITION_STAGES.includes(currentQuestion.gameStage)) {
+            if (gameMode === 'multi') setCmpAnswersVisible(true);
             if (currentQuestionIndex[1] < currentQuestion.subquestions.length - 1) {
                 const remainedTime = Math.abs(timeUntil - Date.now());
                 const timeout = remainedTime <= constantsGame.FEEDBACK_TIME ? remainedTime : constantsGame.FEEDBACK_TIME;
@@ -111,12 +123,21 @@ const Game: React.FC = () => {
                     timeout
                 );
                 return;
+            } else {
+                if (gameMode === 'multi') {
+                    if (Date.now() + constantsGame.FEEDBACK_TIME + constantsGame.FEEDBACK_FALLBACK < timeUntil) {
+                        setTimeout(() => {
+                            dispatch(setWaitingForPlayers(true)) 
+                        }, constantsGame.FEEDBACK_TIME);
+                    }
+                }
             }
         }
     }
 
     const shouldAnswersBeVisible = () => {
         if (playerRole === 'spectator' && gameMode === 'multi') return true;
+        if (cmpAnswersVisible) return true;
         return remainedTime === 0;
     }
     
@@ -170,6 +191,8 @@ const Game: React.FC = () => {
             questionScreen = <>default screen</>;
             break;
     }
+
+    if (isWaitingForPlayers) questionScreen = <WaitingForPlayers />;
 
     return <GameContainer 
         currentQuestionIndex={currentQuestionIndex} 

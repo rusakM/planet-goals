@@ -6,6 +6,7 @@ import { getFeedback2 } from "../../../helpers/game";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 import { ISubquestionComponent } from "../questions.types";
+import { constantsGame } from "../../../helpers/constants";
 
 const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
 const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAnswers, sendAnswerAction, spectatorMode}) => {
@@ -31,7 +32,7 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
         if (showFeedbackCorrect) return;
         const timer = setTimeout(() => {
             setShowFeedbackCorrect(true);
-        }, 1000);
+        }, constantsGame.FEEDBACK_INCORRECT_TIME);
         return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showAnswers]);

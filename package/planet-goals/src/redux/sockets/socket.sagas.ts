@@ -11,7 +11,7 @@ import * as gameActions from '../game/game.actions';
 import { IStore } from '../store.types';
 import { STATUS_ENUM } from '../../types/game';
 import { ERRORS_ENUM as GAME_ERRORS_ENUM} from '../../api/game.api';
-import { calculateTimeUntil } from '../../helpers/game';
+import { calculateFeedbackTime, calculateTimeUntil } from '../../helpers/game';
 import { constantsGame } from '../../helpers/constants';
 
 const getCurrentGameState = (state: IStore) => state.game;
@@ -26,8 +26,9 @@ function* gameSubquestion({payload}: { payload: IGameSubquestion }) {
     try {
         const { question, subquestion, timeUntil } = payload;
         const currentGameState: IStore['game'] = yield select(getCurrentGameState);
-        const currentSubquestion = currentGameState.currentLesson?.questions?.[question]?.subquestions?.[subquestion];
-        yield put(gameActions.setWaitingTimeUntil(calculateTimeUntil(currentSubquestion, timeUntil) - 800));
+        const currentQuestion = currentGameState.currentLesson?.questions?.[question];
+        const currentSubquestion = currentQuestion?.subquestions?.[subquestion];
+        yield put(gameActions.setWaitingTimeUntil(calculateTimeUntil(currentSubquestion, timeUntil) - calculateFeedbackTime(currentQuestion)));
         if (JSON.stringify(currentGameState.currentQuestion) === JSON.stringify([question, subquestion])) return;
         if (currentGameState?.isGameStarted) yield put(gameActions.setCurrentQuestion([question, subquestion]));
     } catch (error) {

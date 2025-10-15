@@ -31,6 +31,7 @@ export interface IGamePlayerGame extends IBasicGameSocketType {
 }
 
 export interface IGameSubquestion extends IBasicGameSocketType {
+	isQuestionTime: boolean;
 	question: number;
 	subquestion: number;
 	timeUntil?: number;

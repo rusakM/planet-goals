@@ -19,10 +19,12 @@ const basicQuestionChecker = (answer: string, correctAnswer: string) => answer =
 
 const checkAnswersFunctions: { [key in ConstantsGame.Question.TYPES_ENUM]: (answer: string, correctAnswer: string) => boolean } = {
     [ConstantsGame.Question.TYPES_ENUM.CONTENT_INSTRUCTION]: contentQuestionChecker,
+    [ConstantsGame.Question.TYPES_ENUM.CONTENT_INTRODUCTION]: contentQuestionChecker,
     [ConstantsGame.Question.TYPES_ENUM.CONTENT_QUESTION]: contentQuestionChecker,
     [ConstantsGame.Question.TYPES_ENUM.CONTENT_TEXT]: contentQuestionChecker,
     [ConstantsGame.Question.TYPES_ENUM.CONTENT_TITLE]: contentQuestionChecker,
     [ConstantsGame.Question.TYPES_ENUM.FILL_IN_CORRECT_ORDER]: basicQuestionChecker,
+    [ConstantsGame.Question.TYPES_ENUM.FINAL]: contentQuestionChecker,
     [ConstantsGame.Question.TYPES_ENUM.FIT_TILES]: (answer: string, correctAnswer: string) => {
         if (answer?.length !== correctAnswer?.length) return false;
         const ansArr = JSON.parse(answer) as Array<Array<number>>;

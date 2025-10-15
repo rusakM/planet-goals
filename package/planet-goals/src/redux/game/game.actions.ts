@@ -40,7 +40,7 @@ export const setSelectedLesson = (lesson: number) => ({
     payload: lesson
 });
 
-export const SET_WAITING_FOR_PLAYERS = (payload: boolean) => ({
+export const setWaitingForPlayers = (payload: boolean) => ({
     type: GameActionTypes.SET_WAITING_FOR_PLAYERS,
     payload
 });

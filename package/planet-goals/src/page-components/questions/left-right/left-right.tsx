@@ -6,6 +6,7 @@ import stylesLeftRight from "./left-right.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 import { getFeedback2 } from "../../../helpers/game";
+import { constantsGame } from "../../../helpers/constants";
 
 const colors: TButtonColor[] = ["orange", "blue"];
 
@@ -38,7 +39,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
         if (showFeedbackCorrect) return;
         const timer = setTimeout(() => {
             setShowFeedbackCorrect(true);
-        }, 1000);
+        }, constantsGame.FEEDBACK_INCORRECT_TIME);
         return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showAnswers]);

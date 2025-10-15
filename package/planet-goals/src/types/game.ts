@@ -12,6 +12,16 @@ export enum GAME_PLAY_STAGE_ENUM {
     QUICK_CONTENT = 'QUICK_CONTENT',
 }
 
+export const COMPETITION_STAGES = [
+    GAME_PLAY_STAGE_ENUM.COMPETITION,
+    GAME_PLAY_STAGE_ENUM.QUICK_CONTENT
+];
+
+export const MAX_POINTS_STAGES = [
+    GAME_PLAY_STAGE_ENUM.KNOWLEDGE,
+    GAME_PLAY_STAGE_ENUM.QUICK_CONTENT
+];
+
 export enum STATUS_ENUM {
     CREATED = 'CREATED',
     STARTED = 'STARTED',
@@ -84,6 +94,7 @@ export interface ISendAnswer {
     answer: string;
     gameId: string;
     questionNumber: number;
+    responseTime: number;
     subquestionNumber: number;
 }
 

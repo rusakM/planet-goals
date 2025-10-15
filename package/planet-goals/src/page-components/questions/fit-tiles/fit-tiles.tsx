@@ -5,6 +5,7 @@ import { getFeedback2 } from "../../../helpers/game";
 import styles from "../questions.module.scss";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
+import { constantsGame } from "../../../helpers/constants";
 
 const colorsMap: { [key: number]: TButtonColor } = {
     "-1": "red",
@@ -43,7 +44,7 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
         if (showFeedbackCorrect) return;
         const timer = setTimeout(() => {
             setShowFeedbackCorrect(true);
-        }, 1000);
+        }, constantsGame.FEEDBACK_INCORRECT_TIME);
         return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showAnswers]);

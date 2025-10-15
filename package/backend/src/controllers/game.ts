@@ -10,9 +10,10 @@ import { validateAnswer } from '../middlewares/validators/game';
 import { useRequestTime } from '../middlewares/requestTime';
 
 interface IAnswerRequest {
-    questionNumber: number;
-    subquestionNumber: number;
     answer: string;
+    questionNumber: number;
+    responseTime: number;
+    subquestionNumber: number;
 }
 
 async function createGame(req: Request, res: Response) {
@@ -167,9 +168,9 @@ async function sendAnswer(req: Request, res: Response) {
     };
 
     if (currentPlayerGame.playerRole !== ConstantsGame.Game.PLAYER_ROLE.spectator) {
-        const { answer, questionNumber, subquestionNumber } = answerData;
+        const { answer, questionNumber, responseTime, subquestionNumber } = answerData;
 
-        processedAnswer = await gameManagerService.gameManager.processAnswer(gameId, userId, answer, questionNumber, subquestionNumber, new Date(requestTime).getTime());
+        processedAnswer = await gameManagerService.gameManager.processAnswer(gameId, userId, answer, questionNumber, subquestionNumber, responseTime, new Date(requestTime).getTime());
         const newQuestionScore: playerGameService.Model.IQuestionScore = {
             question: questionNumber,
             subquestion: subquestionNumber,

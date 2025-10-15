@@ -27,6 +27,7 @@ export interface IGameStart extends IGameEmittedSocket {
 
 export interface IGameSubquestion extends IGameEmittedSocket {
     gameId: string;
+    isQuestionTime?: boolean;
     question: number;
     subquestion: number;
     timeUntil?: number;
