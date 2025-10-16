@@ -99,11 +99,6 @@ const Game: React.FC = () => {
         )
     }, [timeUntil, currentSubquestion]);
 
-    useEffect(() => {
-        if (cmpAnswersVisible) setCmpAnswersVisible(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentQuestion])
-
     const sendAnswerAction = (answer: string) => {
         dispatch(sendAnswerStart({
             gameId: currentGame._id,
@@ -118,15 +113,16 @@ const Game: React.FC = () => {
             if (currentQuestionIndex[1] < currentQuestion.subquestions.length - 1) {
                 const remainedTime = Math.abs(timeUntil - Date.now());
                 const timeout = remainedTime <= constantsGame.FEEDBACK_TIME ? remainedTime : constantsGame.FEEDBACK_TIME;
-                setTimeout(() => 
-                    dispatch(setCurrentQuestion([currentQuestionIndex[0], currentQuestionIndex[1] + 1])),
-                    timeout
-                );
+                setTimeout(() => {
+                    setCmpAnswersVisible(false);
+                    dispatch(setCurrentQuestion([currentQuestionIndex[0], currentQuestionIndex[1] + 1]))
+                }, timeout);
                 return;
             } else {
                 if (gameMode === 'multi') {
                     if (Date.now() + constantsGame.FEEDBACK_TIME + constantsGame.FEEDBACK_FALLBACK < timeUntil) {
                         setTimeout(() => {
+                            setCmpAnswersVisible(false);
                             dispatch(setWaitingForPlayers(true)) 
                         }, constantsGame.FEEDBACK_TIME);
                     }

@@ -8,6 +8,10 @@
 
 .finalSingleContainer {
     padding-top: 25%;
+
+    @media (min-width: breakpoints.$desktop) {
+        padding-top: 5%;
+    }
 }
 
 .finalMultiContainer, .finalSingleContainer {
@@ -109,6 +113,8 @@
     border-radius: 84px;
 
     @media (min-width: breakpoints.$desktop) {
+        max-width: 15vw;
+        max-height: 15vw;
         width: 358px;
         height: 358px;
         border-width: 23px;
@@ -133,6 +139,12 @@
     align-self: baseline;
     padding-left: 1em;
     padding-top: 1em;
+}
+
+.paragraphPadding {
+    @media (min-width: breakpoints.$desktop) {
+        padding: 0.25em;
+    }
 }
 
 .exitButtonContainer {

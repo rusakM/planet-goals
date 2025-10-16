@@ -22,8 +22,9 @@ export function getFeedback2<T extends boolean | number = boolean | number>(show
 export function calculateTimeUntil(subquestion: ISubquestion, timeUntil?: number): number {
     console.log(new Date(timeUntil), new Date());
     if (!timeUntil) return (Date.now() + subquestion?.timeInSek * 1000) - (constantsGame.FEEDBACK_TIME - constantsGame.FEEDBACK_SERVER_FALLBACK);
-    const calculatedTimeUntil = subquestion.timeInSek ? (Date.now() + subquestion.timeInSek * 1000) + constantsGame.FEEDBACK_TIME : timeUntil;
-    let selectedTimeUntil = calculatedTimeUntil > timeUntil ? timeUntil : calculatedTimeUntil;
+    //const calculatedTimeUntil = subquestion.timeInSek ? (Date.now() + subquestion.timeInSek * 1000) + constantsGame.FEEDBACK_TIME : timeUntil;
+    let selectedTimeUntil = timeUntil;
+
     if (subquestion?.answers?.length) selectedTimeUntil -= constantsGame.FEEDBACK_SERVER_FALLBACK;
     return selectedTimeUntil;
 }

@@ -34,9 +34,9 @@ const FinalSingle: React.FC = () => {
             <div className={`${finalStyles.circle} ${finalStyles.circleSingle}`}>
                 <img src={avatarsList[avatarIndex]}/>
             </div>
-            <p className={`${commonStyles.basicHeader}`}>{`${currentUser?.firstName} ${currentUser?.lastName}`}</p>
-            <p className={`${commonStyles.basicHeader6} ${commonStyles.orangeText}`}>{playerLeaderboard?.playerPoints || 0}</p>
-        </PrimaryContainer> 
+            <p className={`${commonStyles.basicHeader} ${finalStyles.paragraphPadding}`}>{`${currentUser?.firstName} ${currentUser?.lastName}`}</p>
+            <p className={`${commonStyles.basicHeader6} ${commonStyles.orangeText} ${finalStyles.paragraphPadding}`}>{playerLeaderboard?.playerPoints || 0}</p>
+        </PrimaryContainer>
         <PrimaryContainer direction="column" additionalClassess={`${finalStyles.exitButtonContainer} ${commonStyles.bottom} ${commonStyles.inheritBackground}`}>
             <PrimaryButton color="white" onClick={exit}>
                 {t("game.leave.exit.button")}

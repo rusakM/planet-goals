@@ -56,7 +56,7 @@ const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, send
     }
 
     const getCurrentColor = (index: number) => {
-        if (!currentAnswer || showAnswers || (currentAnswer > 0 && answers[index] > 0 && !showAnswers)) return colors[index % 4];
+        if (finalAnswer.includes(index.toString())) return colors[index % 4];
         return "white"; 
     }
 

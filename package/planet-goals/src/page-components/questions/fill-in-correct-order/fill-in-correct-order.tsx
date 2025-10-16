@@ -59,7 +59,7 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
     }
 
     const getCurrentColor = (index: number) => {
-        if (!currentAnswer || showAnswers || (currentAnswer > 0 && answers[index] > 0 && !showAnswers)) return colors[index % 4];
+        if (finalAnswer.includes(index.toString())) return colors[index % 4];
         return "white"; 
     }
 
@@ -69,7 +69,7 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
             {
                 questionData.answers?.map((ans, index) => {
                     let tileIndex = answers[index] ? `${answers[index]}. ` : "";
-                    if (showAnswers) tileIndex = `${Number(questionData.correctAnswer[index])}. `;
+                    if (showAnswers) tileIndex = `${Number(questionData.correctAnswer[index]) + 1}. `;
                     return (
                         <div className={styles.buttonContainer} key={index}>
                             <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback2(showFeedbackCorrect, showAnswers, index, check)}> 

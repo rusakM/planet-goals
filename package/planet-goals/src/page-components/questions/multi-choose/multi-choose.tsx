@@ -58,14 +58,14 @@ const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswer
         setAnswersResults(tempAnswersResults);
 
         if (tempAnswerNo >= correctAnswersParsed.length) sendAnswerAction(JSON.stringify(tempAnswers.filter(ans => ans != -1)));
-    }    
+    }   
 
     return <div>
         <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
         <div className={`${styles.buttonsContainer}`}>
             {
                 questionData.answers?.map((ans, index) => {
-                    let color: TButtonColor = (answerNo > 0 && !answers.includes(index)) ? "white" : colors[index % 4];
+                    let color: TButtonColor = (!answers.includes(index)) ? "white" : colors[index % 4];
                     const feedback = getFeedback2(showFeedbackCorrect, showAnswers, index, check);
                     if (showAnswers) color = check(index) ? colors[index % 4] : "white";
                     return <div className={styles.buttonContainer} key={index}>
