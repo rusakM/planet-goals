@@ -23,20 +23,32 @@ import SignUp from "./pages/sign-up/sign-up";
 
 import { checkCurrentUser } from "./helpers/events.functions";
 import { socketConnect } from "./redux/sockets/socket.actions";
+import { verifyTokenExpiration } from "./helpers/shared.functions";
+import { refreshTokenStart, signOut } from "./redux/user/user.actions";
 
 function App() {
     const currentUser = useSelector(selectCurrentUser);
     const tolgee = useTolgee(["language"]);
     const dispatch = useDispatch();
 
-useEffect(() => {
-    console.log('🎯 useEffect called, currentUser:', currentUser?._id, 'timestamp:', Date.now());
-    const token = localStorage.getItem("token");
-    if (!token || !currentUser) return;
-    
-    console.log('🎯 Dispatching socketConnect');
-    dispatch(socketConnect(constantsUrls.Socket.url, constantsUrls.Socket.namespace));
-}, [currentUser, dispatch]);
+    useEffect(() => {
+        console.log('🎯 useEffect called, currentUser:', currentUser?._id, 'timestamp:', Date.now());
+        const token = localStorage.getItem("token");
+        if (!token || !currentUser) return;
+        
+        console.log('🎯 Dispatching socketConnect');
+        dispatch(socketConnect(constantsUrls.Socket.url, constantsUrls.Socket.namespace));
+    }, [currentUser, dispatch]);
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token && currentUser && !verifyTokenExpiration(token)) {
+            dispatch(refreshTokenStart());
+        } else if (!token && currentUser) {
+            dispatch(signOut());
+        }
+    }, [currentUser, dispatch])
+
     return (
         <div lang={tolgee.getLanguage()}>
             <RootContainer>

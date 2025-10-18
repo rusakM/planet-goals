@@ -49,5 +49,6 @@ export const User = {
     confirm: "/api/user/auth/confirm",
     edit: "/api/user/auth/edit",
     me: "/api/user/auth/me",
+    refreshToken: "/api/user/auth/refresh-token",
     signUp: "/api/user/auth/register",
 };

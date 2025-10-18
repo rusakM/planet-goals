@@ -39,3 +39,7 @@ export interface IUserRegistration {
     email: IUser['email'];
     userInterfaceLanguage?: IUser['userInterfaceLanguage'];
 }
+
+export interface IRefreshTokenResponse {
+    token: string;
+}

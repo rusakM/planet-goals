@@ -17,12 +17,17 @@ import {
     userEditSuccess,
     disableUserSuccess,
     disableUserFailure,
+    refreshTokenError,
+    refreshTokenSuccess,
+    signOut,
 } from "./user.actions";
-import { IUser } from "../../types/user";
+import { socketConnect } from "../sockets/socket.actions";
+import { IUser, IRefreshTokenResponse } from "../../types/user";
 
 //actionsDefinitions
 const checkEmailStart = createAction(UserActionTypes.CHECK_EMAIL_START);
 const disableUserStart = createAction(UserActionTypes.DISABLE_USER_START);
+const refreshTokenStart = createAction(UserActionTypes.REFRESH_TOKEN_START);
 const signUpStart = createAction(UserActionTypes.SIGN_UP_START);
 const userEditStart = createAction(UserActionTypes.USER_EDIT_START);
 const verifyCodeStart = createAction(UserActionTypes.VERIFY_CODE_START);
@@ -48,6 +53,21 @@ function* disableUser() {
         yield put(disableUserSuccess());
     } catch (error) {
         yield put(disableUserFailure(error.name));
+    }
+}
+
+function* refreshToken() {
+    try {
+        const res = yield call(Api.sendData<IRefreshTokenResponse>, constantsUrls.User.refreshToken, {}, "POST");
+        if (res?.token) {
+            localStorage.setItem("token", res.token);
+            yield put(refreshTokenSuccess(res.token));
+            yield put(socketConnect(constantsUrls.Socket.url, constantsUrls.Socket.namespace));
+        } else {
+            yield put(signOut());
+        }
+    } catch (error) {
+        yield put(refreshTokenError(error));
     }
 }
 
@@ -88,6 +108,10 @@ function* onDisableUserStart(): Generator {
     yield takeLatest(disableUserStart, disableUser);
 }
 
+function* onRefreshTokenStart(): Generator {
+    yield takeLatest(refreshTokenStart, refreshToken);
+}
+
 function* onSignUpStart(): Generator {
     yield takeLatest(signUpStart, signUp);
 }
@@ -104,6 +128,7 @@ export function* userSagas() {
     yield all([
         call(onCheckEmailStart),
         call(onDisableUserStart),
+        call(onRefreshTokenStart),
         call(onSignUpStart),
         call(onUserEditStart),
         call(onVerifyCodeStart),

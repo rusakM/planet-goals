@@ -33,6 +33,20 @@ export const disableUserFailure = (error) => ({
     payload: error
 });
 
+export const refreshTokenStart = () => ({
+    type: UserActionTypes.REFRESH_TOKEN_START
+});
+
+export const refreshTokenSuccess = (payload: string) => ({
+    type: UserActionTypes.REFRESH_TOKEN_SUCCESS,
+    payload
+});
+
+export const refreshTokenError = (error) => ({
+    type: UserActionTypes.REFRESH_TOKEN_FAILURE,
+    payload: error
+});
+
 export const setCurrentUser = (user: IUser) => ({
     type: UserActionTypes.SET_CURRENT_USER,
     payload: user,
