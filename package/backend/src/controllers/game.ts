@@ -190,6 +190,7 @@ async function sendAnswer(req: Request, res: Response) {
 
         await playerGameService.DB.update(currentPlayerGame._id, {
             questionScores,
+            score: currentPlayerGame.score + newQuestionScore.points,
         });
     }
 

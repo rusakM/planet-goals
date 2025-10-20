@@ -274,34 +274,32 @@ class GameManagerService {
 
         if (!game.answers[userId]) game.answers[userId] = {};
         if (!game.answers[userId][game.currentQuestionIndex]) game.answers[userId][game.currentQuestionIndex] = {};
-        if (game.answers[userId][game.currentQuestionIndex][game.currentSubquestionIndex]) {
-            // Already replied
-            return { points: 0, correct: false, done: false, error: 'ALREADY_ANSWERED' };
-        }
+        // if (game.answers[userId][game.currentQuestionIndex][game.currentSubquestionIndex]) {
+        //     // Already replied
+        //     return { points: 0, correct: false, done: false, error: 'ALREADY_ANSWERED' };
+        // }
 
         // Scoring
         let correct = false;
         let points = 0;
-        if (game.stage === ConstantsGame.Game.STAGE_ENUM.QUICK_CONTENT) {
-            points = 0;
-            correct = true;
-        } else {
-            correct = gameService.checkAnswer(sq, answer);
-            const subsLen = q.subquestions?.length || 1;
-            const sqMaxPoints = Number(((q.maxPoints || 0) / subsLen).toFixed());
-            if (ConstantsGame.Game.MAX_POINTS_STAGES.includes(game.stage) || game.singlePlayerMode) {
-                points = correct ? sqMaxPoints : 0;
-            } else if (game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION && !game.singlePlayerMode) {
-                if (correct) {
-                    // timeRatio = (answerTime - questionStartTime) / totalQuestionTime
-                    const timeRatio = responseTime / (sq.timeInSek * 1000);
-                    // punkty = maxPoints × (1 - timeRatio)²
-                    points = Number((sqMaxPoints * Math.pow(1 - timeRatio, 2)).toFixed(2));
-                } else {
-                    points = 0;
-                }
+
+        correct = gameService.checkAnswer(sq, answer);
+        const subsLen = q.subquestions?.length || 1;
+        const sqMaxPoints = Number(((q.maxPoints || 0) / subsLen).toFixed());
+        if (ConstantsGame.Game.MAX_POINTS_STAGES.includes(game.stage) || game.singlePlayerMode) {
+            points = correct ? sqMaxPoints : 0;
+        } else if (game.stage === ConstantsGame.Game.STAGE_ENUM.COMPETITION && !game.singlePlayerMode) {
+            if (correct) {
+                // timeRatio = (answerTime - questionStartTime) / totalQuestionTime
+                const timeRatio = responseTime / (sq.timeInSek * 1000);
+                // punkty = maxPoints × (1 - timeRatio)²
+                points = Number((sqMaxPoints * Math.pow(1 - timeRatio, 2)).toFixed(2));
+            } else {
+                points = 0;
             }
         }
+
+        const playerInGameId = game.players.findIndex((player) => player.userId === userId);
         game.answers[userId][game.currentQuestionIndex][game.currentSubquestionIndex] = { answer, points, responseTime: responseAt };
         await this.redis.save(gameId, game);
         return { points, correct, done: true };
@@ -536,19 +534,29 @@ class GameManagerService {
 
     async endGame(gameId: string) {
         const game = await this.getGame(gameId);
+        console.log(`Game ${gameId} finished`);
         if (!game) return;
         await this.stopSubquestionTimer(gameId);
-        const winnerFromLeaderboard = (await this.getLeaderboard(gameId))?.[0];
-        if (winnerFromLeaderboard) {
-            const gameDb = await gameService.DB.Find.byId(gameId);
-            const winner = gameDb.players.find(({ _id }) => _id === winnerFromLeaderboard.playerId);
+        const leaderboard = await this.getLeaderboard(gameId);
+        const gameDb = await gameService.DB.Find.byId(gameId);
+        const winnerFromLeaderboard = leaderboard?.[0];
+        const winner = gameDb.players.find(({ _id }) => _id === winnerFromLeaderboard.playerId);
 
-            await gameService.DB.update(gameId, {
-                endedAt: new Date().toISOString(),
-                status: ConstantsGame.Game.STATUS_ENUM.FINISHED,
-                winnerPoints: winnerFromLeaderboard?.playerPoints || 0,
-                winner,
-            });
+        await gameService.DB.update(gameId, {
+            endedAt: new Date().toISOString(),
+            status: ConstantsGame.Game.STATUS_ENUM.FINISHED,
+            winnerPoints: winnerFromLeaderboard?.playerPoints || 0,
+            winner,
+        });
+
+        for (const player of game.players) {
+            const playerLeaderboard = leaderboard.find((item) => item.playerId === player.userId);
+            if (player.playerGame) {
+                playerGameService.DB.update(player.playerGame._id, {
+                    isFinished: true,
+                    position: playerLeaderboard.playerPosition,
+                });
+            }
         }
 
         this.sendLeaderboard(gameId);
