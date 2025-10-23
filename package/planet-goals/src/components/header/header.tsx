@@ -213,7 +213,7 @@ const Header: React.FC<MainPropsT> = ({
                 currentUser &&
                 <DropdownMenu
                     isOpen={!isHeaderMenuHidden}
-                    items={menuItems.map(([key, value]) => [key, value])}
+                    items={menuItems.filter(([,,, role]) => (role === 'ALL' || role === currentUser?.role)).map(([key, value]) => [key, value])}
                     onItemSelect={selectMenuAction}
                     reference={headerMenuRef}
                 />

@@ -1,8 +1,7 @@
 import React from "react";
 import { useTranslate } from "@tolgee/react";
 import { useNavigate } from "react-router-dom";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useSelector } from "react-redux";
 // styles
 import styles from "./landing-page.module.scss";
 import partnersStyles from "./landing-page.partners.module.scss";
@@ -24,7 +23,7 @@ import * as InstructionSteps from "./landing-page-instruction-steps";
 import { constantsUrls } from "../../helpers/constants";
 import { formatNewLines } from "../../translations/utils";
 import { redirect } from "../../helpers/events.functions";
-import { IUser, UserRoleEnum } from "../../types/user";
+import { UserRoleEnum } from "../../types/user";
 import { useDeviceType } from "../../helpers/responsiveContainers";
 
 //redux
@@ -46,12 +45,9 @@ import MduImg from "../../assets/landing-page/partners/MDU.svg";
 import NovaReckonImg from "../../assets/landing-page/partners/Novareckon.svg";
 import StowarzyszenieImg from "../../assets/landing-page/partners/Eurolider.svg";
 
-interface ILandingPage {
-    currentUser?: IUser
-}
-
-const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
+const LandingPage: React.FC = () => {
     const navigate = useNavigate();
+    const currentUser = useSelector(selectCurrentUser);
     const { isMobile } = useDeviceType();
     const buttonsType: TButtonType = isMobile ? "default" : "action";
     const { t } = useTranslate();
@@ -108,8 +104,8 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
                             color="white"
                             onClick={() => navigate(currentUser 
                                 ? currentUser?.role === UserRoleEnum.TEACHER 
-                                    ? constantsUrls.Main.myProgress
-                                    : constantsUrls.Main.materials
+                                    ? constantsUrls.Main.materials
+                                    : constantsUrls.Main.myProgress
                                 : constantsUrls.LandingPage.signUp
                             )}
                             type={buttonsType}
@@ -278,8 +274,4 @@ const LandingPage: React.FC<ILandingPage> = ({ currentUser }) => {
     );
 };
 
-const mapStateToProps = createStructuredSelector({
-    currentUser: selectCurrentUser
-})
-
-export default connect(mapStateToProps, null)(LandingPage);
+export default LandingPage;
