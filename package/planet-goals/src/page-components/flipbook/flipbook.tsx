@@ -112,6 +112,10 @@ const Flipbook: React.FC<IFlipbook> = ({ pdfUrl, onClose }) => {
 		setCurrentPage(e.data);
 	};
 
+	const touchBlock = (e: any) => {
+		e.stopPropagation();
+	}
+
 	return (
 		<div className={styles.flipbook}>
 			<div className={styles.flipbookPages}>
@@ -135,15 +139,9 @@ const Flipbook: React.FC<IFlipbook> = ({ pdfUrl, onClose }) => {
                             startPage={0} 
                             className={styles.flipBook}
                             drawShadow={true} 
-                            // flippingTime={0} 
                             usePortrait={isMobile} 
-                            // startZIndex={0} 
+                            startZIndex={0} 
                             autoSize={true} 
-                            // clickEventForward={false} 
-                            // useMouseEvents={false} 
-                            // swipeDistance={0} 
-                            // showPageCorners={false} 
-                            // disableFlipByClick={false}	
                         >
 						{pageImages.map((image, index) => (
 							<Page key={index} number={index}>
@@ -182,6 +180,21 @@ const Flipbook: React.FC<IFlipbook> = ({ pdfUrl, onClose }) => {
 					Close
 				</PrimaryButton>
 			</div>
+			{
+				isMobile && 
+				<aside 
+					className={styles.swipeBlocker} 
+					onMouseDown={touchBlock}
+					onMouseEnter={touchBlock}
+					onMouseLeave={touchBlock}
+					onMouseOut={touchBlock}
+					onMouseUp={touchBlock}
+					onTouchCancel={touchBlock}
+					onTouchMove={touchBlock}
+					onTouchStart={touchBlock}
+					onMouseOver={touchBlock}
+				></aside>
+			}
 		</div>
 	);
 };
