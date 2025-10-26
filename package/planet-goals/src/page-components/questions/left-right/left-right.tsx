@@ -5,7 +5,7 @@ import styles from "../questions.module.scss";
 import stylesLeftRight from "./left-right.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
-import { getFeedback2 } from "../../../helpers/game";
+import { getFeedback } from "../../../helpers/game";
 import { constantsGame } from "../../../helpers/constants";
 
 const colors: TButtonColor[] = ["orange", "blue"];
@@ -158,7 +158,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                         size="thin" 
                         additionalClasses={`${commonStyles.leftSideText}`}
                         unchangable={true}
-                        feedback={getFeedback2(showFeedbackCorrect, showAnswers, 0, check)}
+                        feedback={getFeedback(showFeedbackCorrect, showAnswers, 0, check)}
                     >
                         {questionData.answers[0]}
                     </GameButton>
@@ -222,7 +222,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                         noBoxShadow={true}
                         additionalClasses={`${commonStyles.leftSideText}`}
                         unchangable={true}
-                        feedback={getFeedback2(showFeedbackCorrect, showAnswers, 1, check)}
+                        feedback={getFeedback(showFeedbackCorrect, showAnswers, 1, check)}
                     >
                         {questionData.answers[1]}
                     </GameButton>

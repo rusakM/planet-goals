@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ISubquestionComponent } from "../questions.types";
-import { getFeedback2 } from "../../../helpers/game";
+import { getFeedback } from "../../../helpers/game";
 
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
@@ -60,7 +60,7 @@ const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, se
             {
                 questionData.answers?.map((ans, index) => 
                     <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={getCurrentColor(index)} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => mark(index)} feedback={getFeedback2(showFeedbackCorrect, showAnswers, index, check)}> 
+                        <GameButton color={getCurrentColor(index)} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => mark(index)} feedback={getFeedback(showFeedbackCorrect, showAnswers, index, check)}> 
                             {ans}
                         </GameButton>
                     </div>

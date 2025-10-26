@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslate } from "@tolgee/react";
 import { ISubquestionComponent } from "../questions.types";
-import { getFeedback2 } from "../../../helpers/game";
+import { getFeedback } from "../../../helpers/game";
 
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
@@ -59,12 +59,12 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAct
         <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
         <div className={`${styles.buttonsContainer}`}>
             <div className={styles.buttonContainer}>
-                <GameButton color={getCurrentColor(true)} onClick={() => mark(true)} feedback={getFeedback2(showFeedbackCorrect, showAnswers,  true, check)}> 
+                <GameButton color={getCurrentColor(true)} onClick={() => mark(true)} feedback={getFeedback(showFeedbackCorrect, showAnswers,  true, check)}> 
                     {t("main.buttons.booleans.true")}
                 </GameButton>
             </div>
             <div className={styles.buttonContainer}>
-                <GameButton color={getCurrentColor(false)} onClick={() => mark(false)} feedback={getFeedback2(showFeedbackCorrect, showAnswers, false, check)}> 
+                <GameButton color={getCurrentColor(false)} onClick={() => mark(false)} feedback={getFeedback(showFeedbackCorrect, showAnswers, false, check)}> 
                     {t("main.buttons.booleans.false")}
                 </GameButton>
             </div>

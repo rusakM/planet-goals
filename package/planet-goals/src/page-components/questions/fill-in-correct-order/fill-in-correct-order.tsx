@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
-import { getFeedback2 } from "../../../helpers/game";
+import { getFeedback } from "../../../helpers/game";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 import { ISubquestionComponent } from "../questions.types";
@@ -72,7 +72,7 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
                     if (showAnswers) tileIndex = `${Number(questionData.correctAnswer[index]) + 1}. `;
                     return (
                         <div className={styles.buttonContainer} key={index}>
-                            <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback2(showFeedbackCorrect, showAnswers, index, check)}> 
+                            <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback(showFeedbackCorrect, showAnswers, index, check)}> 
                                 {`${tileIndex}${ans}`}
                             </GameButton>
                         </div>

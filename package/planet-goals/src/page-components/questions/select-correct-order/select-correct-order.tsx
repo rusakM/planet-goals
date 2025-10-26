@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ISubquestionComponent } from "../questions.types";
-import { getFeedback2 } from "../../../helpers/game";
+import { getFeedback } from "../../../helpers/game";
 
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
@@ -69,7 +69,7 @@ const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, send
                     if (showAnswers) tileIndex = `${Number(questionData.correctAnswer[index]) + 1}. `;
 
                     return <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback2(showFeedbackCorrect, showAnswers, index, check)}> 
+                        <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback(showFeedbackCorrect, showAnswers, index, check)}> 
                             {`${tileIndex}${ans}`}
                         </GameButton>
                     </div>

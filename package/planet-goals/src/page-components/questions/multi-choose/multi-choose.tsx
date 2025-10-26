@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 import { ISubquestionComponent } from "../questions.types";
-import { getFeedback2 } from "../../../helpers/game";
+import { getFeedback } from "../../../helpers/game";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 import { constantsGame } from "../../../helpers/constants";
@@ -66,7 +66,7 @@ const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswer
             {
                 questionData.answers?.map((ans, index) => {
                     let color: TButtonColor = (!answers.includes(index)) ? "white" : colors[index % 4];
-                    const feedback = getFeedback2(showFeedbackCorrect, showAnswers, index, check);
+                    const feedback = getFeedback(showFeedbackCorrect, showAnswers, index, check);
                     if (showAnswers) color = check(index) ? colors[index % 4] : "white";
                     return <div className={styles.buttonContainer} key={index}>
                         <GameButton color={color} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => mark(index)} feedback={feedback}> 

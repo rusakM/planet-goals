@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ISubquestionComponent } from "../questions.types";
-import { getFeedback2 } from "../../../helpers/game";
+import { getFeedback } from "../../../helpers/game";
 
 import styles from "../questions.module.scss";
 
-import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
+import GameButton, { TButtonColor, TFeedbackMode } from "../../../components/game-button/game-button";
 import { constantsGame } from "../../../helpers/constants";
 
 const colorsMap: { [key: number]: TButtonColor } = {
@@ -85,12 +85,19 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
         return colors[correctAnswers.findIndex((pair) => pair.includes(index))];
     }
 
+    const calculateFeedback = (showCorrectAnswers: boolean, showIncorrectAnswers: boolean, index: number): TFeedbackMode => {
+        if (results[index] === 1) return "correct";
+        else if (results[index] === -1) return "incorrect"
+        return getFeedback(showCorrectAnswers, showIncorrectAnswers, index, check);
+    }
+
+
     return <div>
         <div className={`${styles.buttonsContainer}`}>
             {
                 questionData.answers?.map((ans, index) => 
                     <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback2(showFeedbackCorrect, showAnswers, index, check)}> 
+                        <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={calculateFeedback(showFeedbackCorrect, showAnswers, index)}> 
                             {`${ans}`}
                         </GameButton>
                     </div>
