@@ -111,7 +111,7 @@ async function startGame(req: Request, res: Response) {
     let playerGames: playerGameService.Model.IPlayerGame[] = game.players.map((player) => playerGameService.Helpers.createPlayerGameByGameAndLesson(game, lesson, player._id));
 
     playerGames = await playerGameService.DB.createMany(playerGames);
-    if (!game.singlePlayerMode) await gameManagerService.gameManager.startGame(gameId);
+    await gameManagerService.gameManager.startGame(gameId, game.singlePlayerMode);
 
     appResponse.prepareJsonResponse(res, game);
 }

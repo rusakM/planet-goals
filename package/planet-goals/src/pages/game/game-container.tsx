@@ -104,7 +104,7 @@ const GameContainer: React.FC<IGameContainer> = ({ children, currentQuestionInde
 
     return <div className={styles.gameContainer}>
         <div className={styles.header}>
-            <p className={styles.timer} onClick={nextSLide}>{secondsToMinutes(timeInSek)}</p>
+            <p className={styles.timer}>{secondsToMinutes(timeInSek)}</p>
         </div>
         <div className={`${styles.questionContainer} ${commonStyles.centerFlex}`}
             style={{

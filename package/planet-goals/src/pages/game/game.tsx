@@ -99,6 +99,11 @@ const Game: React.FC = () => {
         )
     }, [timeUntil, currentSubquestion]);
 
+    useEffect(() => {
+        if (gameMode === "single") setCmpAnswersVisible(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentSubquestion]);
+
     const sendAnswerAction = (answer: string) => {
         dispatch(sendAnswerStart({
             gameId: currentGame._id,
@@ -108,8 +113,8 @@ const Game: React.FC = () => {
             answer
         }));
 
-        if (gameTypes.COMPETITION_STAGES.includes(currentQuestion.gameStage)) {
-            if (gameMode === 'multi') setCmpAnswersVisible(true);
+        if (gameMode === "single" || gameTypes.COMPETITION_STAGES.includes(currentQuestion.gameStage)) {
+            setCmpAnswersVisible(true);
             if (currentQuestionIndex[1] < currentQuestion.subquestions.length - 1) {
                 const remainedTime = Math.abs(timeUntil - Date.now());
                 const timeout = remainedTime <= constantsGame.FEEDBACK_TIME ? remainedTime : constantsGame.FEEDBACK_TIME;

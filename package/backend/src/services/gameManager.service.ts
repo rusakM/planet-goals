@@ -125,7 +125,7 @@ class GameManagerService {
         await this.redis.save(game._id, state);
     }
 
-    async startGame(gameId: string) {
+    async startGame(gameId: string, startNow?: boolean) {
         const game = await this.getGame(gameId);
         if (!game) {
             console.log(`No game with id: ${gameId}`);
@@ -158,11 +158,11 @@ class GameManagerService {
             const subq = currentInfo?.subquestion;
             const subqTimeUntil = this.calculateSubquestionTimeUntil(subq);
             await this.broadcastSubquestion(gameId, subqTimeUntil);
-            if (subq?.timeInSek && !game.singlePlayerMode) {
+            if (subq?.timeInSek) {
                 await this.startSubquestionTimer(gameId, subqTimeUntil);
             }
             await this.redis.save(gameId, this.games.get(gameId)!);
-        }, ConstantsGame.Game.GAME_START_WAITING_TIME_MS);
+        }, startNow ? 0 : ConstantsGame.Game.GAME_START_WAITING_TIME_MS);
 
         return game;
     }
@@ -316,7 +316,7 @@ class GameManagerService {
     }
 
     async startSubquestionTimer(gameId: string, timeUntil: number) {
-        const game = this.games.get(gameId);
+        const game = await this.getGame(gameId);
         if (!game) return;
         await this.stopSubquestionTimer(gameId);
         game.subquestionEndTime = timeUntil;
@@ -326,7 +326,7 @@ class GameManagerService {
     }
 
     async stopSubquestionTimer(gameId: string) {
-        const game = this.games.get(gameId);
+        const game = await this.getGame(gameId);
         if (game?.subquestionTimer) {
             clearTimeout(game.subquestionTimer);
             game.subquestionTimer = undefined;
@@ -444,8 +444,8 @@ class GameManagerService {
         const game = await this.getGame(gameId);
         if (!game || !game.started || !game.singlePlayerMode) return;
         if (game.currentQuestionIndex === game.questions.length - 1 && game.currentSubquestionIndex === game.questions?.[game.currentQuestionIndex]?.subquestions?.length - 1) return;
-
-        await this.nextSubquestion(gameId);
+        await this.stopSubquestionTimer(gameId);
+        setTimeout(async () => await this.nextSubquestion(gameId), ConstantsGame.Game.GAME_FEEDBACK_TIME_MS);
     }
 
     /**
