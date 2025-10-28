@@ -11,7 +11,7 @@ interface ISpinner {
 const Spinner: React.FC<ISpinner> = ({ description, color = "none" }) => (
   <div className={`${styles.SpinnerOverlay}`}>
     {description && <p>{description}</p>}
-    <div className={`${styles.SpinnerContainer}${color !== "none" ? styles[color] : ""}`} />
+    <div className={`${styles.SpinnerContainer}${color !== "none" ? ` ${styles[color]}` : ""}`} />
   </div>
 );
 

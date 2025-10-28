@@ -74,3 +74,11 @@
         background-color: colors.$light-orange;
     }
 }
+
+.waitingSpinner {
+    width: 82px;
+    height: 82px;
+    border-width: 8px;
+    margin-top: 2em;
+    animation-duration: 1.5s;
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslate } from "@tolgee/react";
 import PrimaryContainer from "../../../components/primary-container/primary-container";
-import Spinner from "../../../components/spinner/spinner.component";
+import SpinnerStyles from "../../../components/spinner/spinner.module.scss";
 
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
@@ -16,7 +16,7 @@ const WaitingForPlayers: React.FC = () => {
             </p>
         </PrimaryContainer> 
         <PrimaryContainer direction="column" additionalClassess={`${commonStyles.inheritBackground}`}>
-            <Spinner color="orange" />
+            <div className={`${SpinnerStyles.SpinnerContainer} ${SpinnerStyles.orange} ${styles.waitingSpinner}`} />
         </PrimaryContainer>
     </PrimaryContainer>
 }
