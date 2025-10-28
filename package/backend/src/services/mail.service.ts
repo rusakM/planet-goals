@@ -1,5 +1,5 @@
 import { createTransport, TransportOptions, SendMailOptions } from 'nodemailer';
-import { accountService } from '.';
+import { accountService, templateService } from '.';
 import { ConstantsEnv } from '../core/constants';
 
 export class Email {
@@ -32,17 +32,18 @@ export class Email {
         } as TransportOptions);
     }
 
-    async send(data: string, subject: string) {
+    async send(htmlData: string, subject: string) {
         const options: SendMailOptions = {
             from: this.from,
             to: this.to,
             subject,
-            text: data,
+            html: htmlData
         };
         await this.newTransport().sendMail(options);
     }
 
     async sendVerificationCode(verificationCode: string) {
-        await this.send(verificationCode, 'Planet Goals - Verification code');
+        const template = await templateService.Login.renderLogin('en', verificationCode);
+        await this.send(template, 'Your PlanetGoals login code');
     }
 }
