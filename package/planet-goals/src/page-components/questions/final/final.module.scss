@@ -4,6 +4,10 @@
 
 .finalMultiContainer {
     padding-top: 15%;
+
+    @media (min-width: breakpoints.$desktop) {
+        padding-top: 20px;
+    }
 }
 
 .finalSingleContainer {
@@ -91,6 +95,36 @@
     }
 }
 
+@media (min-width: breakpoints.$desktop) {
+    .cube {
+        width: 200px;
+        margin-top: 40px;
+        
+        &::after {
+            height: 50px;
+        }
+        
+        .rank {
+            font-size: 60px;
+        }
+        
+        .score {
+            font-size: 40px;
+        }
+    }
+
+    .cube1 {
+        height: 250px;
+    }
+
+    .cube2 {
+        height: 200px;
+    }
+
+    .cube3 {
+        height: 120px;
+    }
+}
 
 
 .circle {
@@ -141,6 +175,10 @@
     padding-top: 1em;
 }
 
+.listContainer {
+    padding: 0.5em 0 !important;
+}
+
 .paragraphPadding {
     @media (min-width: breakpoints.$desktop) {
         padding: 0.25em;
@@ -149,4 +187,10 @@
 
 .exitButtonContainer {
     bottom: 1em !important;
+    left: 0;
+
+    @media (min-width: breakpoints.$desktop) {
+        padding-top: 20px;
+        position: relative;
+    }
 }

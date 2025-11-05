@@ -50,7 +50,7 @@ const FinalMulti: React.FC = () => {
         navigate(constantsUrls.Main.startLessons);
     }
     
-    return <div className={`${finalStyles.finalContainer} ${styles.leaderboardContainer}`}>
+    return <div className={`${finalStyles.finalMultiContainer} ${styles.leaderboardContainer}`}>
         <PrimaryContainer direction="row" additionalClassess={`${finalStyles.podium} ${commonStyles.inheritBackground}`}>
             {
                 currentLeaderboard?.sort((a, b) => a.playerPosition - b.playerPosition)?.map((elem, index) => {
@@ -81,7 +81,7 @@ const FinalMulti: React.FC = () => {
                 <Separator noPadding={true} noMargin={true} width={isMobile ? 250 : 350}/>
             {
                 currentLeaderboard?.length &&
-                <div className={lobbyStyles.lobbyItemsContainer}>
+                <div className={`${lobbyStyles.lobbyItemsContainer} ${finalStyles.listContainer}`}>
                     {
                         currentLeaderboard?.map(({ playerName, playerLastName, playerPoints, playerPosition }) => (
                             <LobbyListItem
@@ -95,11 +95,11 @@ const FinalMulti: React.FC = () => {
                         }
                 </div>
             }
-            <PrimaryContainer additionalClassess={`${finalStyles.exitButtonContainer} ${commonStyles.inheritBackground} ${commonStyles.bottom}`}>
-                <PrimaryButton color="white" onClick={exit}>
-                    {t("game.leave.exit.button")}
-                </PrimaryButton>
-            </PrimaryContainer>
+        </PrimaryContainer>
+        <PrimaryContainer additionalClassess={`${finalStyles.exitButtonContainer} ${commonStyles.inheritBackground} ${commonStyles.bottom}`}>
+            <PrimaryButton color="white" onClick={exit}>
+                {t("game.leave.exit.button")}
+            </PrimaryButton>
         </PrimaryContainer>
     </div>
 }

@@ -153,16 +153,19 @@ class GameManagerService {
             waitingTimeUntil: game.startTime + ConstantsGame.Game.GAME_START_WAITING_TIME_MS,
         });
 
-        setTimeout(async () => {
-            const currentInfo = this.getCurrentSubquestion(gameId);
-            const subq = currentInfo?.subquestion;
-            const subqTimeUntil = this.calculateSubquestionTimeUntil(subq);
-            await this.broadcastSubquestion(gameId, subqTimeUntil);
-            if (subq?.timeInSek) {
-                await this.startSubquestionTimer(gameId, subqTimeUntil);
-            }
-            await this.redis.save(gameId, this.games.get(gameId)!);
-        }, startNow ? 0 : ConstantsGame.Game.GAME_START_WAITING_TIME_MS);
+        setTimeout(
+            async () => {
+                const currentInfo = this.getCurrentSubquestion(gameId);
+                const subq = currentInfo?.subquestion;
+                const subqTimeUntil = this.calculateSubquestionTimeUntil(subq);
+                await this.broadcastSubquestion(gameId, subqTimeUntil);
+                if (subq?.timeInSek) {
+                    await this.startSubquestionTimer(gameId, subqTimeUntil);
+                }
+                await this.redis.save(gameId, this.games.get(gameId)!);
+            },
+            startNow ? 0 : ConstantsGame.Game.GAME_START_WAITING_TIME_MS
+        );
 
         return game;
     }
@@ -316,7 +319,8 @@ class GameManagerService {
     }
 
     async startSubquestionTimer(gameId: string, timeUntil: number) {
-        const game = await this.getGame(gameId);
+        const game = this.games.get(gameId);
+        if (!game) console.log('no game in startSubquestionTimer');
         if (!game) return;
         await this.stopSubquestionTimer(gameId);
         game.subquestionEndTime = timeUntil;
@@ -326,7 +330,8 @@ class GameManagerService {
     }
 
     async stopSubquestionTimer(gameId: string) {
-        const game = await this.getGame(gameId);
+        const game = this.games.get(gameId);
+        if (!game) console.log('no game in stopSubquestionTimer');
         if (game?.subquestionTimer) {
             clearTimeout(game.subquestionTimer);
             game.subquestionTimer = undefined;
