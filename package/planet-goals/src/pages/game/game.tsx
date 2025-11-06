@@ -113,18 +113,18 @@ const Game: React.FC = () => {
             answer
         }));
 
-        if (gameMode === "single" || gameTypes.COMPETITION_STAGES.includes(currentQuestion.gameStage)) {
+        if (gameMode === 'single' || gameTypes.COMPETITION_STAGES.includes(currentQuestion.gameStage)) {
             setCmpAnswersVisible(true);
-            if (currentQuestionIndex[1] < currentQuestion.subquestions.length - 1) {
-                const remainedTime = Math.abs(timeUntil - Date.now());
-                const timeout = remainedTime <= constantsGame.FEEDBACK_TIME ? remainedTime : constantsGame.FEEDBACK_TIME;
-                setTimeout(() => {
-                    setCmpAnswersVisible(false);
-                    dispatch(setCurrentQuestion([currentQuestionIndex[0], currentQuestionIndex[1] + 1]))
-                }, timeout);
-                return;
-            } else {
-                if (gameMode === 'multi') {
+            if (gameMode === 'multi') {
+                if (currentQuestionIndex[1] < currentQuestion.subquestions.length - 1) {
+                    const remainedTime = Math.abs(timeUntil - Date.now());
+                    const timeout = remainedTime <= constantsGame.FEEDBACK_TIME ? remainedTime : constantsGame.FEEDBACK_TIME;
+                    setTimeout(() => {
+                        setCmpAnswersVisible(false);
+                        dispatch(setCurrentQuestion([currentQuestionIndex[0], currentQuestionIndex[1] + 1]))
+                    }, timeout);
+                    return;
+                } else {
                     if (Date.now() + constantsGame.FEEDBACK_TIME + constantsGame.FEEDBACK_FALLBACK < timeUntil) {
                         setTimeout(() => {
                             setCmpAnswersVisible(false);
@@ -189,7 +189,7 @@ const Game: React.FC = () => {
             questionScreen = <TrueFalse { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
             break;
         default: 
-            questionScreen = <>default screen</>;
+            questionScreen = <></>;
             break;
     }
 
