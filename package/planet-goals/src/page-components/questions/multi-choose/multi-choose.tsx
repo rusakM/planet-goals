@@ -60,7 +60,7 @@ const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswer
         if (tempAnswerNo >= correctAnswersParsed.length) sendAnswerAction(JSON.stringify(tempAnswers.filter(ans => ans != -1)));
     }   
 
-    return <div>
+    return <div className={styles.questionContainer}>
         <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
         <div className={`${styles.buttonsContainer}`}>
             {

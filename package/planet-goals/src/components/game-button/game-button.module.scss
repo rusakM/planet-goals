@@ -6,8 +6,8 @@
 
 .button {
     border-radius: 4px;
-    font-size: 32px;
-    padding: 39px 20px;
+    font-size: clamp(18px, 24px, 24px);
+    padding: 39px 16px;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     border-width: 3px;
@@ -36,7 +36,7 @@
     }
 
     @media (min-width: breakpoints.$desktop) {
-        font-size: 38px;
+        font-size: clamp(26px, 34px, 34px);
         border-radius: 10px;
         padding: 0 26px;
         height: 138px;

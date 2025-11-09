@@ -92,7 +92,7 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
     }
 
 
-    return <div>
+    return <div className={styles.questionContainer}>
         <div className={`${styles.buttonsContainer}`}>
             {
                 questionData.answers?.map((ans, index) => 

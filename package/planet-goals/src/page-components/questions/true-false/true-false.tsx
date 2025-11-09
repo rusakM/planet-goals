@@ -55,7 +55,7 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAct
         return color;
     }
 
-    return <div>
+    return <div className={styles.questionContainer}>
         <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
         <div className={`${styles.buttonsContainer}`}>
             <div className={styles.buttonContainer}>

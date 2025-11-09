@@ -60,7 +60,7 @@ const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, send
         return "white"; 
     }
 
-    return <div>
+    return <div className={styles.questionContainer}>
         <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
         <div className={`${styles.buttonsContainer}`}>
             {

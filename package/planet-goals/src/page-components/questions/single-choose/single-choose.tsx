@@ -46,7 +46,7 @@ const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswer
         sendAnswerAction(questionData.answers[index]);
     }
 
-    return <div>
+    return <div className={styles.questionContainer}>
         <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
         <div className={`${styles.buttonsContainer}`}>
             {

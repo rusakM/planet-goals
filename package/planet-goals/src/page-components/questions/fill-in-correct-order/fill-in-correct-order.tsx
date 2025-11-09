@@ -63,8 +63,8 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
         return "white"; 
     }
 
-    return <div>
-        <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{description}</p>
+    return <div className={styles.questionContainer}>
+        <p className={`${commonStyles.basicHeader3} ${commonStyles.justifiedText}`}>{description}</p>
         <div className={`${styles.buttonsContainer}`}>
             {
                 questionData.answers?.map((ans, index) => {
