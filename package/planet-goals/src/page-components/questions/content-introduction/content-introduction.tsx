@@ -16,7 +16,7 @@ const ContentIntroduction: React.FC<IContentIntroduction> = ({ questionData, sub
     const { t } = useTranslate();
     const emojis = (subquestionNumber >= 0 && subquestionNumber < 4) ? emojisMap[subquestionNumber] : null; 
     const descriptionsList = questionData.description.split("|");
-    return <div>
+    return <div className={styles.questionContainer}>
         {
             questionData?.question && <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{t(questionData?.question)}</p>
         }

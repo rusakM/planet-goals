@@ -7,8 +7,10 @@ import commonStyles from "../../../styles/common.module.scss";
 
 const ContentQuestion: React.FC<ISubquestion> = (questionData) => {
     const { t } = useTranslate();
-    return <div>
-        <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{t(questionData.question)}</p>
+    return <div className={styles.questionContainer}>
+        <div>
+            <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{t(questionData.question)}</p>
+        </div>
     </div>
 }
 
