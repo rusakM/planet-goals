@@ -20,16 +20,18 @@ const MaterialsCard: React.FC<IMaterialsCard> = ({ description, downloadAction, 
     return (
         <div className={`${styles.cardContainer}`}>
             <div className={`${styles.card}`}>
-                <div className={`${styles.cardImageContainer}${!picture ? ` ${styles.noImage}` : ''}`}>
-                    <img src={picture || DocumentIconImg} alt="document" className={`${!picture ? styles.defaultCardImage : ''}`} />
-                </div>
-                <div className={`${styles.contentContainer}`}>
-                    <p className={`${commonStyles.basicHeader4}`}>
-                        {header || ""}
-                    </p>
-                    <p className={`${commonStyles.darkText}`}>
-                        {description || ""}
-                    </p>
+                <div>
+                    <div className={`${styles.cardImageContainer}${!picture ? ` ${styles.noImage}` : ''}`}>
+                        <img src={picture || DocumentIconImg} alt="document" className={`${!picture ? styles.defaultCardImage : ''}`} />
+                    </div>
+                    <div className={`${styles.contentContainer}`}>
+                        <p className={`${commonStyles.basicHeader4}`}>
+                            {header || ""}
+                        </p>
+                        <p className={`${commonStyles.darkText}`}>
+                            {description || ""}
+                        </p>
+                    </div>
                 </div>
                 <div className={`${styles.cardButtonsContainer}`}>
                     <PrimaryButton color="orange" size="small" onClick={downloadAction} additionalClasses={commonStyles.width100}>

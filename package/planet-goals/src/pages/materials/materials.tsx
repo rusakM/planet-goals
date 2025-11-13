@@ -71,9 +71,9 @@ const Materials: React.FC<IMaterials> = () => {
             </PrimaryContainer>
             <PrimaryContainer direction="column" additionalClassess={`${containersStyles.pagePadding}${isMobile ? '' : ` ${containersStyles.restrictedFlexibleContainer2} ${containersStyles.centerFlexibleContainer2} ${containersStyles.alignFlexStart}`}`}>
                 <p className={`${commonStyles.basicHeader3}`}>{t("manuals.header")}</p>
-                <PrimaryContainer direction="row" additionalClassess={`${containersStyles.justifyFlexStart}`}>
+                <PrimaryContainer direction="row" additionalClassess={`${containersStyles.justifyFlexStart} ${styles.cardsContainer}`}>
                     {
-                        documentsList.map(document => <MaterialsCard { ...document }  />)
+                        documentsList.map((document, index) => <MaterialsCard key={index} { ...document }  />)
                     }
                 </PrimaryContainer>
             </PrimaryContainer>
