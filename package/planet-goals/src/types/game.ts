@@ -53,6 +53,16 @@ export interface IPlayerGame extends globalTypes.IDBObject {
     singlePlayerMode?: boolean;
 }
 
+export interface IPlayerGameStat {
+    _id?: string;
+    lastGame?: IPlayerGame;
+}
+
+export interface ILessonStat {
+    _id?: string;
+    maxPoints?: number;
+}
+
 // Game
 export interface IGamePlayer extends Pick<userTypes.IUser, '_id' | 'email' | 'firstName' | 'lastName' | 'role'> {
     joinedAt?: string;
@@ -96,6 +106,11 @@ export interface ISendAnswer {
     questionNumber: number;
     responseTime: number;
     subquestionNumber: number;
+}
+
+export interface IStatsResponse {
+    lessonsStats: ILessonStat[];
+    playerStats: IPlayerGameStat[];
 }
 
 export type TCreateGame = Pick<IGame, 'hostRole' | 'lesson' | 'singlePlayerMode'>;

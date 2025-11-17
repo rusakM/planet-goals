@@ -25,6 +25,7 @@ import { checkCurrentUser } from "./helpers/events.functions";
 import { socketConnect } from "./redux/sockets/socket.actions";
 import { verifyTokenExpiration } from "./helpers/shared.functions";
 import { refreshTokenStart, signOut } from "./redux/user/user.actions";
+import UserProgress from "./pages/user-progress/user-progress";
 
 function App() {
     const currentUser = useSelector(selectCurrentUser);
@@ -86,6 +87,11 @@ function App() {
                         ? <Game />
                         : <Navigate to={constantsUrls.LandingPage.signIn} replace={true} />}
                         path={constantsUrls.Main.game}
+                    />
+                    <Route element={checkCurrentUser(currentUser)
+                        ? <UserProgress />
+                        : <Navigate to={constantsUrls.LandingPage.signIn} replace={true} />}
+                        path={constantsUrls.Main.myProgress}
                     />
                 </Routes>
             </RootContainer>

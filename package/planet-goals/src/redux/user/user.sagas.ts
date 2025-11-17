@@ -20,13 +20,17 @@ import {
     refreshTokenError,
     refreshTokenSuccess,
     signOut,
+    getPlayerStatsFailure,
+    getPlayerStatsSuccess,
 } from "./user.actions";
 import { socketConnect } from "../sockets/socket.actions";
 import { IUser, IRefreshTokenResponse } from "../../types/user";
+import { IStatsResponse } from "../../types/game";
 
 //actionsDefinitions
 const checkEmailStart = createAction(UserActionTypes.CHECK_EMAIL_START);
 const disableUserStart = createAction(UserActionTypes.DISABLE_USER_START);
+const getPlayerStatsStart = createAction(UserActionTypes.GET_PLAYER_STATS_START);
 const refreshTokenStart = createAction(UserActionTypes.REFRESH_TOKEN_START);
 const signUpStart = createAction(UserActionTypes.SIGN_UP_START);
 const userEditStart = createAction(UserActionTypes.USER_EDIT_START);
@@ -53,6 +57,15 @@ function* disableUser() {
         yield put(disableUserSuccess());
     } catch (error) {
         yield put(disableUserFailure(error.name));
+    }
+}
+
+function* getPlayerStats() {
+    try {
+        const res = yield call(Api.getData<IStatsResponse>, constantsUrls.User.stats);
+        yield put(getPlayerStatsSuccess(res));
+    } catch (error) {
+        yield put(getPlayerStatsFailure(error.name));
     }
 }
 
@@ -108,6 +121,10 @@ function* onDisableUserStart(): Generator {
     yield takeLatest(disableUserStart, disableUser);
 }
 
+function* onGetPlayerStatsStart(): Generator {
+    yield takeLatest(getPlayerStatsStart, getPlayerStats);
+}
+
 function* onRefreshTokenStart(): Generator {
     yield takeLatest(refreshTokenStart, refreshToken);
 }
@@ -128,6 +145,7 @@ export function* userSagas() {
     yield all([
         call(onCheckEmailStart),
         call(onDisableUserStart),
+        call(onGetPlayerStatsStart),
         call(onRefreshTokenStart),
         call(onSignUpStart),
         call(onUserEditStart),

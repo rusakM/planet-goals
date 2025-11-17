@@ -1,0 +1,60 @@
+@use "@styles/breakpoints.scss";
+@use "@styles/colors.scss";
+
+.cardContainer {
+    width: 130px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+
+.card {
+    width: 100%;
+    min-height: 170px;
+    box-sizing: border-box;
+    border-width: 4px;
+    border-radius: 10px;
+    border-bottom-width: 8px;
+    border-style: solid;
+    color: colors.$white !important;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    padding-top: 0.5em;
+
+    & > p {
+        padding: 0.25em;
+    }
+}
+
+.orange {
+    background-color: colors.$orange;
+    border-color: colors.$border-orange;
+}
+
+.blue {
+    background-color: colors.$lightest-blue;
+    border-color: colors.$border-blue;
+}
+
+.red {
+    background-color: colors.$light-red;
+    border-color: colors.$red;
+}
+
+@media (min-width: breakpoints.$desktop) {
+    .cardContainer {
+        width: 224px;
+    }
+
+    .card {
+        min-height: 290px;
+
+        & > p {
+            padding: 0.4em;
+        }
+    }
+}

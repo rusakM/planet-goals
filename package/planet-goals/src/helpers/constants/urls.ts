@@ -51,4 +51,5 @@ export const User = {
     me: "/api/user/auth/me",
     refreshToken: "/api/user/auth/refresh-token",
     signUp: "/api/user/auth/register",
+    stats: "/api/user/stats",
 };

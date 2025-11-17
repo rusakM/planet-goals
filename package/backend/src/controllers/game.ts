@@ -1,5 +1,4 @@
 import { Request, Response, Router } from 'express';
-import { NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { appResponse, appRoute } from '../shared/route';
 import { security } from '../shared/security';

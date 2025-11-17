@@ -5,3 +5,13 @@ export const FEEDBACK_FALLBACK = 1000;
 export const FEEDBACK_SERVER_FALLBACK = 200;
 
 export const DEFAULT_WAITING_TIME_FOR_START_GAME_SEK = 10;
+
+export const LESSONS_IDS = [
+    '6828addbd6da31b9e245207b',
+    '507f1f77bcf86cd799439011',
+    '68cc2a36f2516e1b47b74a8a',
+    '6828addbd6da31b9e245207b',
+    '6828addbd6da31b9e245207b',
+    '6828addbd6da31b9e245207b',
+    '6828addbd6da31b9e245207b',
+];

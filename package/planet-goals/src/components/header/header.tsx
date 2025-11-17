@@ -142,6 +142,9 @@ const Header: React.FC<MainPropsT> = ({
             case MENU_ACTIONS.ME:
                 navigate(constantsUrls.Main.myProfile);
                 break;
+            case MENU_ACTIONS.MY_PROGRESS:
+                navigate(constantsUrls.Main.myProgress);
+                break;
             case MENU_ACTIONS.START_LESSONS:
                 navigate(constantsUrls.Main.startLessons);
                 break;

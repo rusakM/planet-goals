@@ -1,4 +1,5 @@
 import { IUser } from "../../types/user";
+import { IStatsResponse } from "../../types/game";
 
 export const UserActionTypes = {
     CHECK_EMAIL_FAILURE: "CHECK_EMAIL_FAILURE",
@@ -8,6 +9,9 @@ export const UserActionTypes = {
     DISABLE_USER_START: "DISABLE_USER_START",
     DISABLE_USER_SUCCESS: "DISABLE_USER_SUCCESS",
     DISABLE_USER_FAILURE: "DISABLE_USER_FAILURE",
+    GET_PLAYER_STATS_START: "GET_PLAYER_STATS_START",
+    GET_PLAYER_STATS_SUCCESS: "GET_PLAYER_STATS_SUCCESS",
+    GET_PLAYER_STATS_FAILURE: "GET_PLAYER_STATS_FAILURE",
     REFRESH_TOKEN_START: "REFRESH_TOKEN_START",
     REFRESH_TOKEN_SUCCESS: "REFRESH_TOKEN_SUCCESS",
     REFRESH_TOKEN_FAILURE: "REFRESH_TOKEN_FAILURE", 
@@ -30,4 +34,5 @@ export interface IUserState {
     isFetching: boolean;
     signInEmail: string;
     userError: string;
+    userStats: IStatsResponse;
 }

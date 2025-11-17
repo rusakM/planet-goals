@@ -49,6 +49,9 @@ export namespace appRoute {
                     refresh: `${servicesPrefix.api}/user/auth/refresh-token`,
                     register: `${servicesPrefix.api}/user/auth/register`,
                 },
+                stats: {
+                    get: `${servicesPrefix.api}/user/stats`,
+                },
             },
 
             game: {

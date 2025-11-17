@@ -1,0 +1,58 @@
+@use "@styles/breakpoints.scss";
+@use "@styles/colors.scss";
+
+.img {
+    padding-bottom: 0;
+}
+
+.headerText {
+    padding-top: 0;
+    margin-bottom: 0;
+}
+
+.headerDescription {
+    font-size: 14px;
+}
+
+.headerContainer {
+    background-color: transparent;
+}
+
+.cardListHeader {
+    width: 100%;
+    text-align: left;
+}
+
+.cardListContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 32px;
+}
+
+@media (min-width: breakpoints.$desktop) {
+    .img {
+        padding-right: 0;
+    }
+
+    .cardListContainer {
+        gap: 36px;
+    }
+
+    .headerContainer {
+        align-self: flex-end;
+        margin-bottom: -2.5em;
+        margin-left: -150px;
+    }
+
+    .headerText {
+        max-width: 670px;
+        text-align: right;
+        width: 100%;
+        padding-right: 20px;
+    }
+
+    .headerDescription {
+        font-size: 18px;
+    }
+}

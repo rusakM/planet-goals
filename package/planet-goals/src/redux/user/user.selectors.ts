@@ -22,3 +22,8 @@ export const selectLoginEmail = createSelector(
     [selectUser],
     (user) => user.signInEmail
 );
+
+export const selectUserStats = createSelector(
+    [selectUser],
+    (user) => user.userStats
+);

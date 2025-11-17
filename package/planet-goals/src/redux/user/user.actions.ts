@@ -1,5 +1,6 @@
 import { UserActionTypes } from "./user.types";
 import { IUser, IUserEdit, IUserLogin, IUserRegistration } from "../../types/user";
+import { IStatsResponse } from "../../types/game";
 
 export const checkEmailFailure = (error) => ({
     type: UserActionTypes.CHECK_EMAIL_FAILURE,
@@ -30,6 +31,20 @@ export const disableUserSuccess = () => ({
 
 export const disableUserFailure = (error) => ({
     type: UserActionTypes.DISABLE_USER_FAILURE,
+    payload: error
+});
+
+export const getPlayerStatsStart = () => ({
+    type: UserActionTypes.GET_PLAYER_STATS_START,
+});
+
+export const getPlayerStatsSuccess = (payload: IStatsResponse) => ({
+    type: UserActionTypes.GET_PLAYER_STATS_SUCCESS,
+    payload
+});
+
+export const getPlayerStatsFailure = (error) => ({
+    type: UserActionTypes.GET_PLAYER_STATS_FAILURE,
     payload: error
 });
 

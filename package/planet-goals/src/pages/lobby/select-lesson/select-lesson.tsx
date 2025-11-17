@@ -11,7 +11,7 @@ import SelectLessonButtonHeader from "./select-lesson-button-header";
 
 import { TCreateGame, TGameStage } from "../../../types/game";
 import { useDeviceType } from "../../../helpers/responsiveContainers";
-import { constantsUrls } from "../../../helpers/constants";
+import { constantsGame, constantsUrls } from "../../../helpers/constants";
 import { createGameStart, resetGame, setGameStage, setSelectedLesson } from "../../../redux/game/game.actions";
 import { selectCurrentUser } from "../../../redux/user/user.selectors";
 import { selectGameMode, selectPlayerRole } from "../../../redux/game/game.selectors";
@@ -31,16 +31,6 @@ const SelectLesson: React.FC = () => {
     const playerRole = useSelector(selectPlayerRole);
     const currentUser = useSelector(selectCurrentUser);
 
-    const lessonsIds = [
-        '6828addbd6da31b9e245207b',
-        '507f1f77bcf86cd799439011',
-        '68cc2a36f2516e1b47b74a8a',
-        '6828addbd6da31b9e245207b',
-        '6828addbd6da31b9e245207b',
-        '6828addbd6da31b9e245207b',
-        '6828addbd6da31b9e245207b',
-    ];
-
     const toggleCard = (index: number) => {
         const newOpenedCards = Array(7).fill(false);
         newOpenedCards[index] = !openedCards[index];
@@ -59,7 +49,7 @@ const SelectLesson: React.FC = () => {
     const openLesson = (index: number) => {
         const createGame: TCreateGame = {
             hostRole: playerRole || "player",
-            lesson: lessonsIds[index],
+            lesson: constantsGame.LESSONS_IDS[index],
             singlePlayerMode: false
         };
         let gameStage: TGameStage = "lobby";

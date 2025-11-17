@@ -5,6 +5,7 @@ const INITIAL_STATE: IUserState = {
     isFetching: false,
     signInEmail: "",
     userError: "",
+    userStats: null,
 };
 
 const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
@@ -14,6 +15,7 @@ const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
         case UserActionTypes.USER_EDIT_START:
         case UserActionTypes.VERIFY_CODE_START:
         case UserActionTypes.DISABLE_USER_START:
+        case UserActionTypes.GET_PLAYER_STATS_START:
             return {
                 ...state,
                 isFetching: true,
@@ -40,6 +42,7 @@ const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
         case UserActionTypes.USER_EDIT_FAILURE:
         case UserActionTypes.VERIFY_CODE_FAILURE:
         case UserActionTypes.DISABLE_USER_FAILURE:
+        case UserActionTypes.GET_PLAYER_STATS_FAILURE:
             return {
                 ...state,
                 isFetching: false,
@@ -54,6 +57,13 @@ const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
         case UserActionTypes.SIGN_OUT:
         case UserActionTypes.DISABLE_USER_SUCCESS:
             return INITIAL_STATE;
+        case UserActionTypes.GET_PLAYER_STATS_SUCCESS:
+            return {
+                ...state,
+                userError: "",
+                isFetching: false,
+                userStats: action.payload
+            }
         default:
             return state;
     }
