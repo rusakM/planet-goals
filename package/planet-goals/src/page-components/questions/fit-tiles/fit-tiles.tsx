@@ -25,6 +25,7 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
     const [lastClickedIndex, setLastClickedIndex] = useState(-1);
     const correctAnswers: Array<Array<number>> = JSON.parse(questionData.correctAnswer);
     const [showFeedbackCorrect, setShowFeedbackCorrect] = useState(false);
+    const [smallFontInButtons, setSmallFontInButtons] = useState(false);
 
     useEffect(() => {
         if (!questionData) return;
@@ -34,6 +35,7 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
         setCurrentPair(0);
         setLastClickedIndex(-1);
         setShowFeedbackCorrect(false);
+        setSmallFontInButtons(false);
     }, [questionData]);
 
     useEffect(() => {
@@ -97,7 +99,16 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
             {
                 questionData.answers?.map((ans, index) => 
                     <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={calculateFeedback(showFeedbackCorrect, showAnswers, index)}> 
+                        <GameButton 
+                            color={getCurrentColor(index)} 
+                            size="thin" 
+                            onClick={() => markTile(index)} 
+                            feedback={calculateFeedback(showFeedbackCorrect, showAnswers, index)}
+                            font={{
+                                isSmallFont: smallFontInButtons,
+                                setIsSmallFont: setSmallFontInButtons
+                            }}
+                        > 
                             {`${ans}`}
                         </GameButton>
                     </div>

@@ -16,6 +16,7 @@ const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswer
     const [ answersResults, setAnswersResults ] = useState(new Array<number>(questionData.answers.length).fill(-1));
     const [answerNo, setAnswerNo] = useState(0);
     const [showFeedbackCorrect, setShowFeedbackCorrect] = useState(false);
+    const [smallFontInButtons, setSmallFontInButtons] = useState(false);
 
     useEffect(() => {
         if (!questionData) return;
@@ -24,6 +25,7 @@ const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswer
         setAnswersResults(new Array<number>(questionData.answers.length).fill(-1));
         setAnswerNo(0);
         setShowFeedbackCorrect(false);
+        setSmallFontInButtons(false);
     }, [questionData]);
 
     useEffect(() => {
@@ -69,7 +71,16 @@ const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswer
                     const feedback = getFeedback(showFeedbackCorrect, showAnswers, index, check);
                     if (showAnswers) color = check(index) ? colors[index % 4] : "white";
                     return <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={color} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => mark(index)} feedback={feedback}> 
+                        <GameButton 
+                            color={color} 
+                            size="thin" 
+                            additionalClasses={commonStyles.leftSideText} 
+                            onClick={() => mark(index)} feedback={feedback}
+                            font={{
+                                isSmallFont: smallFontInButtons,
+                                setIsSmallFont: setSmallFontInButtons
+                            }}
+                        > 
                             {`${String.fromCharCode(65 + index)}. ${ans}`}
                         </GameButton>
                     </div>

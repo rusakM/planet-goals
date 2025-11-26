@@ -30,6 +30,10 @@ interface GameButtonProps {
     color?: TButtonColor;
     disabled?: boolean;
     feedback?: TFeedbackMode;
+    font?: {
+        isSmallFont?: boolean;
+        setIsSmallFont?: React.Dispatch<React.SetStateAction<boolean>>;
+    };
     onClick?: (event?: MouseEvent<HTMLButtonElement>) => void;
     noBoxShadow?: boolean;
     size?: TButtonSize;
@@ -43,6 +47,7 @@ const GameButton: React.FC<GameButtonProps> = ({
     color = "white",
     disabled = false,
     feedback = "none",
+    font,
     noBoxShadow = false,
     onClick,
     size = "default",
@@ -68,7 +73,11 @@ const GameButton: React.FC<GameButtonProps> = ({
     useEffect(() => {
 		const checkLines = () => {
 			if (!buttonRef.current) return;
-			setMultiLines(!checkHeight());
+            const multiLined = !checkHeight() || font?.isSmallFont;
+			setMultiLines(multiLined);
+            if (multiLined && !font?.isSmallFont && font?.setIsSmallFont) {
+                font.setIsSmallFont(true);
+            }
 		};
 		checkLines();
 		window.addEventListener('resize', checkLines);

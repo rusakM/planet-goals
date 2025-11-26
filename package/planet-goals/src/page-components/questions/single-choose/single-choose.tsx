@@ -13,12 +13,14 @@ const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswer
     const [answer, setAnswer] = useState(-1);
     const [buttonsDisabled, setButtonsDisabled] = useState(new Array<boolean>(questionData.answers.length).fill(false));
     const [showFeedbackCorrect, setShowFeedbackCorrect] = useState(false);
+    const [smallFontInButtons, setSmallFontInButtons] = useState(false);
 
     useEffect(() => {
         if (!questionData) return;
         setAnswer(-1);
         setButtonsDisabled(new Array<boolean>(questionData.answers.length).fill(false));
         setShowFeedbackCorrect(false);
+        setSmallFontInButtons(false);
     }, [questionData]);
 
 
@@ -55,13 +57,20 @@ const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswer
                     const feedback = getFeedback(showFeedbackCorrect ,showAnswers, index, check);
                     if (showAnswers) color = check(index) ? colors[index % 4] : "white";
                     return <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={color} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => onSelect(index)} feedback={feedback}> 
+                        <GameButton 
+                            color={color}
+                            size="thin" 
+                            additionalClasses={commonStyles.leftSideText}
+                            onClick={() => onSelect(index)} feedback={feedback}
+                            font={{
+                                isSmallFont: smallFontInButtons,
+                                setIsSmallFont: setSmallFontInButtons
+                            }}    
+                        > 
                             {`${String.fromCharCode(65 + index)}. ${ans}`}
                         </GameButton>
                     </div>
-                }
-                    
-                )
+                })
             }
         </div>
     </div>

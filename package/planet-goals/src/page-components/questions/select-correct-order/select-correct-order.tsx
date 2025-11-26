@@ -14,12 +14,15 @@ const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, send
     const [currentAnswer, setCurrentAnswer] = useState(0);
     const [finalAnswer, setFinalAnswer] = useState("");
     const [showFeedbackCorrect, setShowFeedbackCorrect] = useState(false);
+    const [smallFontInButtons, setSmallFontInButtons] = useState(false);
     
     useEffect(() => {
         if (!questionData) return;
         setAnswers(new Array(questionData.answers.length).fill(0));
         setCurrentAnswer(0);
         setFinalAnswer("");
+        setShowFeedbackCorrect(false);
+        setSmallFontInButtons(false);
     }, [questionData]);
 
     useEffect(() => {
@@ -69,7 +72,16 @@ const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, send
                     if (showAnswers) tileIndex = `${Number(questionData.correctAnswer[index]) + 1}. `;
 
                     return <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback(showFeedbackCorrect, showAnswers, index, check)}> 
+                        <GameButton 
+                            color={getCurrentColor(index)}
+                            size="thin"
+                            onClick={() => markTile(index)}
+                            feedback={getFeedback(showFeedbackCorrect, showAnswers, index, check)}
+                            font={{
+                                isSmallFont: smallFontInButtons,
+                                setIsSmallFont: setSmallFontInButtons
+                            }}
+                        > 
                             {`${tileIndex}${ans}`}
                         </GameButton>
                     </div>

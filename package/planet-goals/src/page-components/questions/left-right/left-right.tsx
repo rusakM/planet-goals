@@ -21,6 +21,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
     const [dragOffset, setDragOffset] = useState(0);
     const [currentPosition, setCurrentPosition] = useState(1); // 0 = left/top, 1 = center, 2 = right/bottom
     const [showFeedbackCorrect, setShowFeedbackCorrect] = useState(false);
+    const [smallFontInButtons, setSmallFontInButtons] = useState(false);
     const { isMobile } = useDeviceType();
 
     useEffect(() => {
@@ -29,6 +30,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
         setDragOffset(0);
         setCurrentPosition(1);
         setShowFeedbackCorrect(false);
+        setSmallFontInButtons(false);
     }, [questionData]);
 
     useEffect(() => {
@@ -159,6 +161,10 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                         additionalClasses={`${commonStyles.leftSideText}`}
                         unchangable={true}
                         feedback={getFeedback(showFeedbackCorrect, showAnswers, 0, check)}
+                        font={{
+                            isSmallFont: smallFontInButtons,
+                            setIsSmallFont: setSmallFontInButtons
+                        }}
                     >
                         {questionData.answers[0]}
                     </GameButton>
@@ -210,6 +216,10 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                         additionalClasses={`${commonStyles.leftSideText}`}
                         noBoxShadow={true}
                         unchangable={true}
+                        font={{
+                            isSmallFont: smallFontInButtons,
+                            setIsSmallFont: setSmallFontInButtons
+                        }}
                     >
                         {getCurrentContent()}
                     </GameButton>
@@ -223,6 +233,10 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                         additionalClasses={`${commonStyles.leftSideText}`}
                         unchangable={true}
                         feedback={getFeedback(showFeedbackCorrect, showAnswers, 1, check)}
+                        font={{
+                            isSmallFont: smallFontInButtons,
+                            setIsSmallFont: setSmallFontInButtons
+                        }}
                     >
                         {questionData.answers[1]}
                     </GameButton>

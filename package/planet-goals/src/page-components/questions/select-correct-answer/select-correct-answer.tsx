@@ -15,12 +15,14 @@ const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, se
     const [answer, setAnswer] = useState(-1);
     const [answered, setAnswered] = useState(false);
     const [showFeedbackCorrect, setShowFeedbackCorrect] = useState(false);
+    const [smallFontInButtons, setSmallFontInButtons] = useState(false);
 
     useEffect(() => {
         if (!questionData) return;
         setAnswer(-1);
         setAnswered(false);
         setShowFeedbackCorrect(false);
+        setSmallFontInButtons(false);
     }, [questionData]);
 
     useEffect(() => {
@@ -60,7 +62,17 @@ const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, se
             {
                 questionData.answers?.map((ans, index) => 
                     <div className={styles.buttonContainer} key={index}>
-                        <GameButton color={getCurrentColor(index)} size="thin" additionalClasses={commonStyles.leftSideText} onClick={() => mark(index)} feedback={getFeedback(showFeedbackCorrect, showAnswers, index, check)}> 
+                        <GameButton 
+                            color={getCurrentColor(index)} 
+                            size="thin"
+                            additionalClasses={commonStyles.leftSideText}
+                            onClick={() => mark(index)}
+                            feedback={getFeedback(showFeedbackCorrect, showAnswers, index, check)}
+                            font={{
+                                isSmallFont: smallFontInButtons,
+                                setIsSmallFont: setSmallFontInButtons
+                            }}
+                        > 
                             {ans}
                         </GameButton>
                     </div>

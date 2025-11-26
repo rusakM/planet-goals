@@ -15,6 +15,7 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
     const [description, setDescription] = useState(questionData.question);
     const [finalAnswer, setFinalAnswer] = useState("");
     const [showFeedbackCorrect, setShowFeedbackCorrect] = useState(false);
+    const [smallFontInButtons, setSmallFontInButtons] = useState(false);
     
     useEffect(() => {
         if (!questionData) return;
@@ -22,6 +23,8 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
         setCurrentAnswer(0);
         setDescription(questionData.question);
         setFinalAnswer("");
+        setShowFeedbackCorrect(false);
+        setSmallFontInButtons(false);
     }, [questionData]);
 
     useEffect(() => {
@@ -72,7 +75,16 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
                     if (showAnswers) tileIndex = `${Number(questionData.correctAnswer[index]) + 1}. `;
                     return (
                         <div className={styles.buttonContainer} key={index}>
-                            <GameButton color={getCurrentColor(index)} size="thin" onClick={() => markTile(index)} feedback={getFeedback(showFeedbackCorrect, showAnswers, index, check)}> 
+                            <GameButton 
+                                color={getCurrentColor(index)} 
+                                size="thin" 
+                                onClick={() => markTile(index)} 
+                                feedback={getFeedback(showFeedbackCorrect, showAnswers, index, check)}
+                                font={{
+                                    isSmallFont: smallFontInButtons,
+                                    setIsSmallFont: setSmallFontInButtons
+                                }}
+                                > 
                                 {`${tileIndex}${ans}`}
                             </GameButton>
                         </div>
