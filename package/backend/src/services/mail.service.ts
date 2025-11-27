@@ -32,18 +32,19 @@ export class Email {
         } as TransportOptions);
     }
 
-    async send(htmlData: string, subject: string) {
+    async send(html: string, subject: string, text?: string) {
         const options: SendMailOptions = {
             from: this.from,
             to: this.to,
             subject,
-            html: htmlData
+            html,
+            text,
         };
         await this.newTransport().sendMail(options);
     }
 
     async sendVerificationCode(verificationCode: string) {
-        const template = await templateService.Login.renderLogin('en', verificationCode);
-        await this.send(template, 'Your PlanetGoals login code');
+        const [template, text] = await templateService.Login.renderLogin('en', verificationCode);
+        await this.send(template, 'Your PlanetGoals login code', text);
     }
 }
