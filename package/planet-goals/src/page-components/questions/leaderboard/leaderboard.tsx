@@ -13,11 +13,13 @@ import commonStyles from "../../../styles/common.module.scss";
 import { selectCurrentLeaderboard } from "../../../redux/game/game.selectors";
 import { selectCurrentUser } from "../../../redux/user/user.selectors";
 import PrimaryContainer from "../../../components/primary-container/primary-container";
+import filterLeaderboard from "./filter-leaderboard";
 
 const Leaderboard: React.FC = () => {
     const currentLeaderboard = useSelector(selectCurrentLeaderboard);
     const currentUser = useSelector(selectCurrentUser);
-    const playerLeaderboard = currentLeaderboard?.find((position) => position.playerId === currentUser._id);
+    const playerLeaderboard = currentLeaderboard?.find((position) => position.playerId === currentUser._id && position.playerRole === "player") ?? null;
+    const filteredLeaderboard = filterLeaderboard(currentLeaderboard);
     const { isMobile } = useDeviceType();
     const { t } = useTranslate();
     return <div className={styles.leaderboardContainer}>
@@ -34,12 +36,15 @@ const Leaderboard: React.FC = () => {
                     />
                 </div>
             }
-            <Separator noPadding={true} width={isMobile ? 250 : 350}/>
             {
-                currentLeaderboard?.length && 
+                playerLeaderboard &&
+                <Separator noPadding={true} width={isMobile ? 250 : 350}/>
+            }
+            {
+                filteredLeaderboard?.length && 
                 <div className={lobbyStyles.lobbyItemsContainer}>
                     {
-                        currentLeaderboard?.map(({ playerName, playerLastName, playerPoints, playerPosition }) => (
+                        filteredLeaderboard?.map(({ playerName, playerLastName, playerPoints, playerPosition }) => (
                             <LobbyListItem
                                 index={playerPosition}
                                 nickname={`${playerName} ${playerLastName}`}

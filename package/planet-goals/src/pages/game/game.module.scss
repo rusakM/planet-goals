@@ -4,7 +4,7 @@
 
 .gameContainer {
     width: 100vw;
-    height: 100vh;
+    height: breakpoints.$max-height;
     position: absolute;
     top: 0;
     left: 0;
@@ -36,7 +36,7 @@
         padding-left: 16px;
         padding-right: 16px;
         overflow-y: auto;
-        height: calc(100vh - 40px - 46px);
+        height: calc(breakpoints.$max-height - 40px - 46px);
     }
     
     .footer {
@@ -71,7 +71,7 @@
         .questionContainer {
             padding-left: 136px;
             padding-right: 136px;
-            height: calc(100vh - 98px - 82px);
+            height: calc(breakpoints.$max-height - 98px - 82px);
         }
 
         .footer {

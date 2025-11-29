@@ -1,7 +1,9 @@
+@use "@styles/breakpoints.scss";
+
 .container {
     display: flex;
     flex-direction: row;
-    min-height: 100vh;
+    min-height: breakpoints.$max-height;
 }
 
 .viewer {

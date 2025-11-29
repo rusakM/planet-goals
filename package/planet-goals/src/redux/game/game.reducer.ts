@@ -34,6 +34,7 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
         case GameActionTypes.SET_GAME_STAGE:
             return {
                 ...state,
+                gameError: "",
                 gameStage: action.payload
             };
         case GameActionTypes.SET_IS_GAME_CREATED_BY_CURRENT_USER:
@@ -57,12 +58,14 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
         case GameActionTypes.REMOVE_PLAYER_SUCCESS:
             return {
                 ...state,
-                currentGame: action.payload
+                currentGame: action.payload,
+                gameError: ""
             }
         case GameActionTypes.START_GAME_SUCCESS:
             return {
                 ...state,
                 currentGame: action.payload,
+                gameError: "",
                 isGameStarted: true
             };
         case GameActionTypes.CREATE_GAME_FAILURE:
@@ -75,7 +78,8 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
         case GameActionTypes.FETCH_LESSON_SUCCESS:
             return {
                 ...state,
-                currentLesson: action.payload
+                currentLesson: action.payload,
+                gameError: ""
             };
         case GameActionTypes.FETCH_LESSON_FAILURE:
             return {
@@ -87,6 +91,7 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
                 ...state,
                 currentQuestion: action.payload,
                 currentQuestionSetAt: Date.now(),
+                gameError: "",
                 waitingForPlayers: false,
             }
         case SocketActionTypes.GAME_LEADERBOARD:

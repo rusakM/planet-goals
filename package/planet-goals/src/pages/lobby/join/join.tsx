@@ -10,7 +10,7 @@ import CodeInput from "../../../components/code-input/code-input";
 import { useDeviceType } from "../../../helpers/responsiveContainers";
 
 import { joinGameStart, setGameStage } from "../../../redux/game/game.actions";
-import { selectCurrentGame } from "../../../redux/game/game.selectors";
+import { selectCurrentGame, selectGameError } from "../../../redux/game/game.selectors";
 //import { selectCurrentUser } from "../../../redux/user/user.selectors";
 
 import styles from "./join.module.scss";
@@ -36,7 +36,7 @@ const Join: React.FC = () => {
 
     const [code, setCode] = useState<string[]>(["", "", "", "", ""]);
     const [activeIndex, setActiveIndex] = useState<number>(0);
-    const validationError = false;
+    const validationError = useSelector(selectGameError);
 
     useEffect(() => {
         if (currentGame && currentGame?.invitationCode === code.join("")) {
@@ -97,7 +97,7 @@ const Join: React.FC = () => {
                             <CodeInput 
                                 value={code?.[index] || ""} 
                                 isActive={index === activeIndex} 
-                                error={validationError} name={`input-${index}`}
+                                error={validationError?.length > 0} name={`input-${index}`}
                                 handleChange={handleChange}
                                 handleClick={() => handleClick(index) }
                                 handleKeyDown={(event: KeyboardEvent<HTMLInputElement>) => handleKeyDown(event, index)}
@@ -106,6 +106,10 @@ const Join: React.FC = () => {
                             />)
                     }
                 </div>
+                {
+                    validationError?.length > 0 && 
+                    <p className={`${commonStyles.redText} ${commonStyles.basicText} ${commonStyles.smallHorizontalPadding}`}>{t("lesson.code.invalid")}</p>
+                }
             </PrimaryContainer>
             <PrimaryContainer additionalClassess={isMobile 
                     ? `${containerStyles.buttonsContainer} ${commonStyles.bottom} ${signInStyles.bottomButtons} ${lobbyStyles.navButtons}`

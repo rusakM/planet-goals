@@ -18,6 +18,7 @@ import { selectCurrentLeaderboard } from "../../../redux/game/game.selectors";
 import { selectCurrentUser } from "../../../redux/user/user.selectors";
 import { resetGame } from "../../../redux/game/game.actions";
 import { constantsUrls } from "../../../helpers/constants";
+import filterLeaderboard from "../leaderboard/filter-leaderboard";
 
 const get3Randoms = () => {
     const indices: number[] = [];
@@ -40,7 +41,8 @@ const FinalMulti: React.FC = () => {
     const currentUser = useSelector(selectCurrentUser);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const playerLeaderboard = currentLeaderboard?.find((position) => position.playerId === currentUser._id);
+    const playerLeaderboard = currentLeaderboard?.find((position) => position.playerId === currentUser._id && position.playerRole === "player");
+    const filteredLeaderboard = filterLeaderboard(currentLeaderboard);
     const [avatarsIndices] = useState(get3Randoms());
     const { isMobile } = useDeviceType();
     const { t } = useTranslate();
@@ -53,7 +55,7 @@ const FinalMulti: React.FC = () => {
     return <div className={`${finalStyles.finalMultiContainer} ${styles.leaderboardContainer}`}>
         <PrimaryContainer direction="row" additionalClassess={`${finalStyles.podium} ${commonStyles.inheritBackground}`}>
             {
-                currentLeaderboard?.sort((a, b) => a.playerPosition - b.playerPosition)?.map((elem, index) => {
+                filteredLeaderboard?.map((elem, index) => {
                     if (index > 2) return null;
                     return <FinalPodiumPosition 
                         nickname={`${elem?.playerName} ${elem?.playerLastName}`}
@@ -61,11 +63,11 @@ const FinalMulti: React.FC = () => {
                         position={index + 1}
                         avatar={avatarsIndices?.[index] || avatarsIndices[0]}
                     />
-                }).filter(elem => elem != null)
+                }).filter(Boolean)
             }
         </PrimaryContainer>
         <PrimaryContainer additionalClassess={`${commonStyles.inheritBackground}`} direction="column">
-            <p className={`${commonStyles.basicHeader5} ${finalStyles.listHeader}`}>{t("lesson.lobby.PlayerList")} {currentLeaderboard?.length || 0}/99</p>
+            <p className={`${commonStyles.basicHeader5} ${finalStyles.listHeader}`}>{t("lesson.lobby.PlayerList")} {filteredLeaderboard?.length || 0}/99</p>
             {
                 playerLeaderboard &&
                 <div className={lobbyStyles.lobbyItemsContainer}>
@@ -78,12 +80,15 @@ const FinalMulti: React.FC = () => {
                     />
                 </div>
             }
-                <Separator noPadding={true} noMargin={true} width={isMobile ? 250 : 350}/>
             {
-                currentLeaderboard?.length &&
+                playerLeaderboard &&
+                <Separator noPadding={true} noMargin={true} width={isMobile ? 250 : 350}/>
+            }
+            {
+                filteredLeaderboard?.length &&
                 <div className={`${lobbyStyles.lobbyItemsContainer} ${finalStyles.listContainer}`}>
                     {
-                        currentLeaderboard?.map(({ playerName, playerLastName, playerPoints, playerPosition }) => (
+                        filteredLeaderboard?.map(({ playerName, playerLastName, playerPoints, playerPosition }) => (
                             <LobbyListItem
                                 index={playerPosition}
                                 nickname={`${playerName} ${playerLastName}`}

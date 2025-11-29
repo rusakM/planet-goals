@@ -13,7 +13,7 @@ class SocketService {
                     token: `Bearer ${token}`
                 },
                 //path: namespace,
-                transports: ['websocket', 'polling'],
+                transports: ['polling'],
             });
             this.socket.connect();
             console.log('socket connected', this.socket.connected);

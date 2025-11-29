@@ -1,5 +1,5 @@
-@use "@styles/colors.scss";
 @use "@styles/breakpoints.scss";
+@use "@styles/colors.scss";
 
 .sectionWrapper {
     position: relative;
@@ -14,7 +14,7 @@
   .stickyContainer {
     position: sticky;
     top: 0;
-    height: 100vh;
+    height: breakpoints.$max-height;
     display: flex;
     flex-direction: column;
     justify-content: center;

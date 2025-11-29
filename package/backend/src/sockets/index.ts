@@ -26,6 +26,8 @@ export const initializeSocketServer = (server: http.Server): Server => {
             origin: '*', // configure as needed
             credentials: true,
         },
+        transports: ['polling']
+
     });
 
     // Redis adapter setup
