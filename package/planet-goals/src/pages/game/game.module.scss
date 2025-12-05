@@ -11,6 +11,7 @@
     margin: 0;
     padding: 0;
     background-color: colors.$white;
+    overscroll-behavior-y: contain;
 
     .header {
         height: 40px;

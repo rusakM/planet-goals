@@ -87,3 +87,7 @@
         padding-top: 5em !important;
     }
 }
+
+.overscrollBlocked {
+    overscroll-behavior-y: contain;
+}

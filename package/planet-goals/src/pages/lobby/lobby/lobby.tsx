@@ -65,7 +65,7 @@ const LobbyComponent: React.FC = () => {
     }
 
     return (
-        <PageContainer>
+        <PageContainer additionalClassess={containersStyles.overscrollBlocked}>
             <PrimaryContainer direction="column" additionalClassess={containersStyles.pagePadding2}>
                 <PrimaryContainer direction="column">
                     <p className={commonStyles.basicHeader}>

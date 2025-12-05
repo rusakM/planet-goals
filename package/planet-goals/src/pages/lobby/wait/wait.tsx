@@ -15,11 +15,13 @@ import commonStyles from "../../../styles/common.module.scss";
 
 import smileImg from "../../../assets/login-page/smiling_earth.svg";
 import { convertTimeUntilToRemainedSeconds, secondsToMinutes } from "../../../helpers/shared.functions";
+import useRefreshPrevention from "../../../hooks/useRefreshPrevention";
 
 const Wait: React.FC = () => {
     const { t } = useTranslate();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    useRefreshPrevention();
     const waitingTimeUntil = useSelector(selectWaitingTimeUntil);
     const remainedSecondsAtStart = waitingTimeUntil ? convertTimeUntilToRemainedSeconds(waitingTimeUntil) || 10: 10;
     console.log('remained seconds:', remainedSecondsAtStart)

@@ -18,6 +18,8 @@
     padding: 5% 0.5em;
     background-color: colors.$light-grey;
     margin: -4% 0;
+    touch-action: manipulation;
+    
 
     @media (min-width: breakpoints.$desktop) {
         margin: 0 -2em;

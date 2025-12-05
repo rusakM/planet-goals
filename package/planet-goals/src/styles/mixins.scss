@@ -20,3 +20,9 @@
 @mixin buttonShadow($color) {
   box-shadow: 0 4px 0 $color;
 }
+
+@mixin desktop-hover {
+    @media (hover: hover) and (pointer: fine) {
+        @content;
+    }
+}

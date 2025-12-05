@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import GameContainer from "./game-container";
 import ContentInstruction from "../../page-components/questions/content-instruction/content-instruction";
 import { convertTimeUntilToRemainedSeconds } from "../../helpers/shared.functions";
+import useRefreshPrevention from "../../hooks/useRefreshPrevention";
 
 import { QUESTION_TYPES_ENUM } from "../../types/lesson";
 import { selectCurrentGame, selectCurrentLesson, selectCurrentQuestion, selectWaitingTimeUntil, selectPlayerRole, selectGameMode, selectWaitingForPlayers, selectCurrentQuestionSetAt } from "../../redux/game/game.selectors";
@@ -61,6 +62,7 @@ const Game: React.FC = () => {
     );
     const [cmpAnswersVisible, setCmpAnswersVisible] = useState(false);
     const [questionIndexTemp, setQuestionIndexTemp] = useState(currentQuestionIndex.toString());
+    useRefreshPrevention();
     
     useEffect(() => {
         if (!currentGame) {
