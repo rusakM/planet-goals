@@ -8,9 +8,11 @@ import stylesCircle from "../../pages/lobby/select-lesson/select-lesson.module.s
 import commonStyles from "../../styles/common.module.scss";
 
 export type TCardColor = "blue" | "orange" | "red";
+export type TCircleColor = TCardColor | "darkBlue";
 
 interface IProgressCard {
     color: TCardColor;
+    colorCircle?: TCircleColor;
     id: string;
     lessonNumber: number;
     maxPoints: number;
@@ -19,13 +21,13 @@ interface IProgressCard {
     title: string;
 }
 
-const ProgressCard: React.FC<IProgressCard> = ({color = "orange", id, lessonNumber, maxPoints, open, points = 0, title}) => {
+const ProgressCard: React.FC<IProgressCard> = ({color = "orange", colorCircle, id, lessonNumber, maxPoints, open, points = 0, title}) => {
     const { t } = useTranslate();
     const { isMobile } = useDeviceType();
     return (
         <PrimaryContainer additionalClassess={`${styles.cardContainer}`}>
             <div className={`${styles.card} ${styles[color]}`}>
-                <div className={`${stylesCircle.circle} ${stylesCircle[color]}`}>{lessonNumber}</div>
+                <div className={`${stylesCircle.circle} ${stylesCircle[colorCircle ?? color]}`}>{lessonNumber}</div>
                 <p className={`${commonStyles.whiteText} ${commonStyles.basicHeader4}`}>{title.toUpperCase()}</p>
                 <p className={`${commonStyles.whiteText} ${commonStyles.basicHeader}`}>{points}/{maxPoints}</p>
             </div>

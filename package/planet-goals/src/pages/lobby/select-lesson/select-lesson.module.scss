@@ -1,5 +1,6 @@
 @use "@styles/breakpoints.scss";
 @use "@styles/colors.scss";
+@use "@styles/game-colors.scss";
 @use "@styles/fonts.scss";
 
 .bottomButtons {
@@ -41,6 +42,10 @@
 
 .blue {
     color: colors.$blue;
+}
+
+.darkBlue {
+    color: game-colors.$dark-blue;
 }
 
 .orange {

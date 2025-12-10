@@ -12,8 +12,15 @@ class SocketService {
                 auth: {
                     token: `Bearer ${token}`
                 },
-                //path: namespace,
-                transports: ['polling'],
+                randomizationFactor: 0.5,
+                reconnection: true,
+                reconnectionAttempts: Infinity,
+                reconnectionDelay: 1e3,
+                reconnectionDelayMax: 5e3,
+                rememberUpgrade: true,
+                timeout: 2e4,
+                transports: ['websocket', 'polling'],
+                upgrade: true,
             });
             this.socket.connect();
             console.log('socket connected', this.socket.connected);

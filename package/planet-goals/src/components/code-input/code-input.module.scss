@@ -6,11 +6,13 @@
     font-size: 40px;
     color: colors.$orange;
     font-family: fonts.$rubik-one, sans-serif;
-    width: 42px;
+    width: 100%;
     height: 66px;
     border: 2px solid colors.$grey;
     border-radius: 4px;
     text-align: center;
+    letter-spacing: 28px;
+    text-indent: 28px;
 
     &:focus {
         outline: none;
@@ -18,11 +20,13 @@
     }
 
     @media (min-width: breakpoints.$desktop) {
-        width: 118px;
         height: 184px;
         font-size: 80px;
         border-width: 4px;
         border-radius: 8px;
+        letter-spacing: 80px;
+        max-width: 850px;
+        text-indent: 80px;
     }
 }
 

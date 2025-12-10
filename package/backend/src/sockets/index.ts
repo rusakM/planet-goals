@@ -26,8 +26,9 @@ export const initializeSocketServer = (server: http.Server): Server => {
             origin: '*', // configure as needed
             credentials: true,
         },
-        transports: ['polling']
-
+        transports: ['websocket', 'polling'],
+        pingTimeout: 60000,
+        pingInterval: 25000,
     });
 
     // Redis adapter setup

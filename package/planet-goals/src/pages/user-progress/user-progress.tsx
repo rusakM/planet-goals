@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import PageContainer from '../../page-components/page-container/page-container';
 import PrimaryContainer from '../../components/primary-container/primary-container';
-import ProgressCard, { TCardColor } from '../../components/progress-card/progress-card';
+import ProgressCard, { TCardColor, TCircleColor } from '../../components/progress-card/progress-card';
 
 import { useDeviceType } from '../../helpers/responsiveContainers';
 import { getPlayerStatsStart } from '../../redux/user/user.actions';
@@ -58,7 +58,7 @@ const UserProgress: React.FC = () => {
                 <p className={`${commonStyles.darkText} ${styles.headerText} ${styles.headerDescription} ${commonStyles.noMargin}`}>{t("player.stats.description")}</p>
             </PrimaryContainer>
         </PrimaryContainer>
-        <PrimaryContainer direction="column" additionalClassess={`${containersStyles.pagePadding}${isMobile ? '' : ` ${containersStyles.restrictedFlexibleContainer2} ${containersStyles.centerFlexibleContainer2} ${containersStyles.alignFlexStart}`}`}>
+        <PrimaryContainer direction="column" additionalClassess={`${commonStyles.transparentBackground} ${containersStyles.pagePadding}${isMobile ? '' : ` ${styles.listContainer} ${containersStyles.restrictedFlexibleContainer2} ${containersStyles.centerFlexibleContainer2} ${containersStyles.alignFlexStart}`}`}>
             <p className={`${commonStyles.basicHeader3} ${commonStyles.darkText} ${styles.cardListHeader}`}>{t("player.stats.lessons.list.header")}</p>
             {
                 isLoading || !playerStats ? <Spinner /> :
@@ -67,14 +67,18 @@ const UserProgress: React.FC = () => {
                         constantsGame.LESSONS_IDS.map((id, index) => {
                             const gameStat = playerStats?.find(({ _id }) => _id === id);
                             const lessonStat = lessonsStats?.find(({ _id }) => _id === id);
+                            const color = cardColorsList[index % 3];
+                            const colorCircle: TCircleColor = color === "blue" ? "darkBlue" : color;
                             return (<ProgressCard 
-                                color={cardColorsList[index % 3]}
+                                color={color}
+                                colorCircle={colorCircle}
                                 id={id}
                                 lessonNumber={index + 1}
                                 maxPoints={lessonStat?.maxPoints || 50}
                                 points={gameStat?.lastGame?.score}
                                 title={t(`lesson.choice.0${index + 1}.header`)}
                                 open={startLesson}
+                                key={index}
                             />);
                         })
                     }

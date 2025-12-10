@@ -1,5 +1,6 @@
 @use "@styles/breakpoints.scss";
 @use "@styles/colors.scss";
+@use "@styles/game-colors.scss";
 
 .cardContainer {
     width: 130px;
@@ -37,7 +38,7 @@
 
 .blue {
     background-color: colors.$lightest-blue;
-    border-color: colors.$border-blue;
+    border-color: game-colors.$dark-blue;
 }
 
 .red {

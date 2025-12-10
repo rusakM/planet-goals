@@ -62,6 +62,7 @@ const FinalMulti: React.FC = () => {
                         points={Number(elem?.playerPoints?.toFixed(2))}
                         position={index + 1}
                         avatar={avatarsIndices?.[index] || avatarsIndices[0]}
+                        key={index}
                     />
                 }).filter(Boolean)
             }

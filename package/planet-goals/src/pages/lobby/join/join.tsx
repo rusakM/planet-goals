@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEvent, useState, useRef, useEffect } from "react";
+import React, { ChangeEvent, useState, useRef, useEffect } from "react";
 import { useTranslate } from "@tolgee/react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,16 +11,14 @@ import { useDeviceType } from "../../../helpers/responsiveContainers";
 
 import { joinGameStart, setGameStage } from "../../../redux/game/game.actions";
 import { selectCurrentGame, selectGameError } from "../../../redux/game/game.selectors";
-//import { selectCurrentUser } from "../../../redux/user/user.selectors";
+import { selectCurrentUser } from "../../../redux/user/user.selectors";
 
 import styles from "./join.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 import containerStyles from "../../../styles/containers.module.scss";
 import signInStyles from "../../sign-in/sign-in.module.scss";
 import lobbyStyles from "../lobby/lobby.module.scss";
-
 import { constantsUrls } from "../../../helpers/constants";
-
 
 const Join: React.FC = () => {
     const { t } = useTranslate();
@@ -29,59 +27,34 @@ const Join: React.FC = () => {
     const { isMobile } = useDeviceType();
     const buttonsSize: TButtonSize = isMobile ? "desktopSmall" : "regular";
     const buttonsType: TButtonType = isMobile ? "default" : "action";
-    //const currentUser = useSelector(selectCurrentUser);
+    const currentUser = useSelector(selectCurrentUser);
     const currentGame = useSelector(selectCurrentGame);
     const validator = new RegExp("[A-Z0-9]", "g");
-    const inputs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
-
-    const [code, setCode] = useState<string[]>(["", "", "", "", ""]);
-    const [activeIndex, setActiveIndex] = useState<number>(0);
+    const inputRef = useRef<HTMLInputElement>(null);
+    
+    const [code, setCode] = useState<string>("");
     const validationError = useSelector(selectGameError);
 
     useEffect(() => {
-        if (currentGame && currentGame?.invitationCode === code.join("")) {
+        if (currentGame && currentGame?.invitationCode === code) {
             dispatch(setGameStage("lobby"));
         }
     }, [currentGame, code, dispatch]);
 
+    useEffect(() => {
+        if (!currentUser) navigate(constantsUrls.LandingPage.signIn);
+    }, [currentUser, navigate]);
+
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         const val = event.target.value.toUpperCase();
-        const codeCopy = [...code];
-        let newIndex = activeIndex + 1;
-        console.log(val);
-        if (!validator.test(val) && val !== "") return;
-
-        if (val !== "") {
-            if (activeIndex > 4) return;
-            codeCopy[activeIndex] = val[val.length - 1];
-            newIndex = activeIndex < 4 ? activeIndex + 1 : activeIndex;
-        } else {
-            codeCopy[activeIndex] = "";
-            newIndex = (activeIndex > 0) ? activeIndex - 1 : activeIndex;
-        }
-        
-        setCode(codeCopy);
-        //setLastChar(val);
-        setActiveIndex(newIndex);
-        inputs[newIndex].current.focus();
-    }
-
-    const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>, index: number) => {
-        if (index === 0) return;
-        const newIndex = index - 1;
-        if (event.key === "Backspace" && inputs[index].current.value === "") {
-            inputs[newIndex].current.focus();
-        }
-    }
-
-    const handleClick = (index: number) => {
-        setActiveIndex(index);
+        if (val.length > 5 || (!validator.test(val) && val !== "")) return;
+        setCode(val);
     }
 
     const joinGame = () => {
         dispatch(joinGameStart({
-            invitationCode: code.join('')
+            invitationCode: code
         }));
     }
 
@@ -92,19 +65,13 @@ const Join: React.FC = () => {
                     {t("lesson.code.header")}
                 </p>
                 <div className={styles.inputsContainer}>
-                    {
-                        [0, 1, 2, 3, 4].map(index => 
-                            <CodeInput 
-                                value={code?.[index] || ""} 
-                                isActive={index === activeIndex} 
-                                error={validationError?.length > 0} name={`input-${index}`}
-                                handleChange={handleChange}
-                                handleClick={() => handleClick(index) }
-                                handleKeyDown={(event: KeyboardEvent<HTMLInputElement>) => handleKeyDown(event, index)}
-                                ref={inputs[index]}
-                                key={index}
-                            />)
-                    }
+                    <CodeInput 
+                        value={code || ""} 
+                        error={validationError?.length > 0} 
+                        name={'input-code'}
+                        handleChange={handleChange}
+                        ref={inputRef}
+                    />
                 </div>
                 {
                     validationError?.length > 0 && 
@@ -115,7 +82,7 @@ const Join: React.FC = () => {
                     ? `${containerStyles.buttonsContainer} ${commonStyles.bottom} ${signInStyles.bottomButtons} ${lobbyStyles.navButtons}`
                     : signInStyles.bottomButtons
                 }>
-                <PrimaryButton color="orange" disabled={code.join("").length !== 5} onClick={joinGame} type={buttonsType} size={buttonsSize}>
+                <PrimaryButton color="orange" disabled={code.length !== 5} onClick={joinGame} type={buttonsType} size={buttonsSize}>
                     {t("main.confirm")}
                 </PrimaryButton>
                 <PrimaryButton onClick={() => navigate(constantsUrls.Main.startLessons)} type={buttonsType} size={buttonsSize}>

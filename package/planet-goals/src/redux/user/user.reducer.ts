@@ -5,7 +5,10 @@ const INITIAL_STATE: IUserState = {
     isFetching: false,
     signInEmail: "",
     userError: "",
-    userStats: null,
+    userStats: {
+        lessonsStats: null,
+        playerStats: null
+    },
 };
 
 const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {

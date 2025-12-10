@@ -6,11 +6,11 @@
 
 .inputsContainer {
     display: flex;
-    gap: 1em;
     padding-top: 1em;
-
+    width: 90%;
+    justify-content: center;
+    align-items: center;
     @media (min-width: breakpoints.$desktop) {
-        gap: 2em;
         padding-top: 2em;
     }
 
