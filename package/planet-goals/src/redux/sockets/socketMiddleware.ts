@@ -44,8 +44,6 @@ export const socketMiddleware: Middleware = store => next =>
 				});
 
 				socketService.on(socketTypes.SocketActionTypes.GAME_PLAYER_JOIN, (payload: socketTypes.IPlayerJoin) => {
-					console.log('game player join', payload);
-					
 					useValidateGameId(store, socketActions.playerJoinGame, payload);
 				});
 
@@ -57,7 +55,6 @@ export const socketMiddleware: Middleware = store => next =>
 			}
 			case socketTypes.SocketActionTypes.SOCKET_EMIT: {
 				const { eventName, data } = action.payload;
-				console.log('socket emit', action.payload);
 				socketService.emit(eventName, data);
 				break;
 			}

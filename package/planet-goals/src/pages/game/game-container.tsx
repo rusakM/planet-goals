@@ -94,7 +94,6 @@ const GameContainer: React.FC<IGameContainer> = ({ children, currentQuestionInde
         const currentQuestion = currentLesson.questions[currentQuestionIndex[0]];
         if (currentQuestion?.gameStage !== GAME_PLAY_STAGE_ENUM.COMPETITION || currentQuestion?.subquestions?.length <= 1) return;
         const secondsElapsed = Math.ceil((Date.now() - currentQuestionSetAt) / 1000);
-        console.log('spectator seconds elapsed:', secondsElapsed, 'expected:', currentQuestion?.subquestions?.[currentQuestionIndex[1]]?.timeInSek);
         if (currentQuestion?.subquestions?.[currentQuestionIndex[1]]?.timeInSek > 0 && secondsElapsed > currentQuestion?.subquestions?.[currentQuestionIndex[1]]?.timeInSek) nextSLide();
     }, [playerRole, gameMode, currentLesson, currentQuestionIndex, currentQuestionSetAt, nextSLide]);
 

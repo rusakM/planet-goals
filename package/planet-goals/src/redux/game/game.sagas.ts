@@ -19,7 +19,7 @@ import {
     startGameFailure,
     startGameSuccess,
 } from "./game.actions";
-import { IGame, IRemovePlayer, ISendAnswer } from "../../types/game";
+import { IGame, IRemovePlayer, ISendAnswer, TPlayerRole } from "../../types/game";
 import { ILesson } from "../../types/lesson";
 import { gameTypes } from "../../types";
 import { IStore } from "../store.types";
@@ -33,6 +33,7 @@ const removePlayerStart = createAction(GameActionTypes.REMOVE_PLAYER_START);
 const sendAnswerStart = createAction(GameActionTypes.SEND_ANSWER_START);
 const startGameStart = createAction(GameActionTypes.START_GAME_START);
 const getCurrentUserState = (state: IStore) => state.user;
+const getPlayerRoleState = (state: IStore) => state.game.playerRole;
 
 function* createGame({ payload }) {
     try {
@@ -65,11 +66,13 @@ function* joinGame({ payload }: { payload: gameTypes.TJoinGame }) {
             "POST"
         );
         const user: IStore['user'] = yield select(getCurrentUserState);
+        const playerRole: TPlayerRole = yield select(getPlayerRoleState);
         sessionStorage.setItem("invitationCode", payload.invitationCode);
         yield put(socketEmit(SocketActionTypes.PLAYER_JOIN_GAME,
             {
                 gameId: game._id,
                 playerId: user.currentUser._id,
+                playerRole
             }
         ));
         yield put(joinGameSuccess(game));

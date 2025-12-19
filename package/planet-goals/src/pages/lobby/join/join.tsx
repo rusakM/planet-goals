@@ -10,7 +10,7 @@ import CodeInput from "../../../components/code-input/code-input";
 import { useDeviceType } from "../../../helpers/responsiveContainers";
 
 import { joinGameStart, setGameStage } from "../../../redux/game/game.actions";
-import { selectCurrentGame, selectGameError } from "../../../redux/game/game.selectors";
+import { selectCurrentGame, selectGameError, selectPlayerRole } from "../../../redux/game/game.selectors";
 import { selectCurrentUser } from "../../../redux/user/user.selectors";
 
 import styles from "./join.module.scss";
@@ -29,6 +29,7 @@ const Join: React.FC = () => {
     const buttonsType: TButtonType = isMobile ? "default" : "action";
     const currentUser = useSelector(selectCurrentUser);
     const currentGame = useSelector(selectCurrentGame);
+    const playerRole = useSelector(selectPlayerRole);
     const validator = new RegExp("[A-Z0-9]", "g");
     const inputRef = useRef<HTMLInputElement>(null);
     
@@ -54,7 +55,8 @@ const Join: React.FC = () => {
 
     const joinGame = () => {
         dispatch(joinGameStart({
-            invitationCode: code
+            invitationCode: code,
+            playerRole
         }));
     }
 

@@ -114,5 +114,8 @@ export interface IStatsResponse {
 }
 
 export type TCreateGame = Pick<IGame, 'hostRole' | 'lesson' | 'singlePlayerMode'>;
-export type TJoinGame = Pick<IGame, 'invitationCode'>;
+export type TJoinGame = {
+    invitationCode: IGame['invitationCode'];
+    playerRole?: TPlayerRole;
+}
 

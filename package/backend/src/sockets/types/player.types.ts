@@ -50,4 +50,5 @@ export interface IPlayerJoin extends IGameEmittedSocket {
 export interface IJoinGame {
     gameId: string;
     playerId: string;
+    playerRole: ConstantsGame.Game.PLAYER_ROLE;
 }

@@ -76,12 +76,9 @@ const Confirm: React.FC<IConfirm> = ({
         event.preventDefault();
         try {
             setLoginStarted(true);
-            console.log(loginEmail);
-            await verifyCode({email: loginEmail, verificationCode});
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            verifyCode({email: loginEmail, verificationCode});
         } catch (error) {
-            console.log("here err");
-            //console.error(error);
+            console.error(error);
         }
     };
 

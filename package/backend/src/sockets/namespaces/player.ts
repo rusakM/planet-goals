@@ -54,24 +54,24 @@ export const registerPlayerNamespace = (io: Server) => {
         socket.join(socket.data.decoded_token.id);
         gameManagerService.gameManager.setUserAvailable(socket.data.decoded_token.id);
 
-        socket.on('joinGame', async ({ gameId, playerId }: playerTypes.IJoinGame) => {
+        socket.on('joinGame', async ({ gameId, playerId, playerRole }: playerTypes.IJoinGame) => {
             console.log(`Join player ${playerId} to game ${gameId}`);
             if (!playerId || !gameId) {
                 return;
             }
             let playerGame = gameManagerService.gameManager.getPlayerGame(gameId, playerId);
             const player = await accountService.DB.Find.byId(playerId);
-            if (!playerGame) playerGame = (await playerGameService.DB.Find.byMultipleKeys({ gameId, playerId }))?.[0];
-
+            if (!playerGame) playerGame = (await playerGameService.DB.Find.byIndex('gameId', gameId))?.find((game) => game.playerId === playerId);
             const playerGameData: gameManagerService.IActivePlayer = {
                 playerGame,
-                playerRole: playerGame?.playerRole ?? ConstantsGame.Game.PLAYER_ROLE.player,
+                playerRole: playerRole ?? ConstantsGame.Game.PLAYER_ROLE.player,
                 userId: playerId,
                 disconnected: false,
                 firstName: player.firstName,
                 lastName: player.lastName,
                 email: player.email,
             };
+            console.log('player role:', playerRole);
             socket.data = { playerId, gameId };
             await gameManagerService.gameManager.joinPlayer(player, gameId, playerGameData);
             console.log('Join player success');

@@ -19,7 +19,7 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAct
 
     useEffect(() => {
         if (!questionData) return;
-        //setAnswer(false);
+        setAnswer(false);
         setAnswered(false);
         setShowFeedbackCorrect(false);
     }, [questionData]);
@@ -29,13 +29,13 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAct
             setShowFeedbackCorrect(false); 
             return;
         }
-        if (showFeedbackCorrect) return;
+        if (showFeedbackCorrect && !spectatorMode) return;
         const timer = setTimeout(() => {
             setShowFeedbackCorrect(true);
         }, constantsGame.FEEDBACK_INCORRECT_TIME);
         return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [showAnswers]);
+    }, [showAnswers, questionData]);
 
     const check = (state: boolean) => state === Boolean(questionData.correctAnswerIndex);
 

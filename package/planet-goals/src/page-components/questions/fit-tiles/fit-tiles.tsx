@@ -43,13 +43,13 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
             setShowFeedbackCorrect(false); 
             return;
         }
-        if (showFeedbackCorrect) return;
+        if (showFeedbackCorrect && !spectatorMode) return;
         const timer = setTimeout(() => {
             setShowFeedbackCorrect(true);
         }, constantsGame.FEEDBACK_INCORRECT_TIME);
         return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [showAnswers]);
+    }, [showAnswers, questionData]);
 
     const checkPair = (pair: Array<number>) => {
         return correctAnswers.some(correctPair => correctPair.includes(pair[0]) && correctPair.includes(pair[1]));
@@ -82,12 +82,18 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
         if (tempCurrentPair >= answers.length) sendAnswerAction(JSON.stringify(tempAnswers));
     }
 
+    const findPairNumber = (index: number) => {
+        return correctAnswers.findIndex((pair) => pair.includes(index));
+    }
+
     const getCurrentColor = (index: number) => {
+        if (spectatorMode) return colors[findPairNumber(index)];
         if (!showAnswers) return colorsMap[results[index]];
         return colors[correctAnswers.findIndex((pair) => pair.includes(index))];
     }
 
     const calculateFeedback = (showCorrectAnswers: boolean, showIncorrectAnswers: boolean, index: number): TFeedbackMode => {
+        if (spectatorMode) return "none";
         if (results[index] === 1) return "correct";
         else if (results[index] === -1) return "incorrect"
         return getFeedback(showCorrectAnswers, showIncorrectAnswers, index, check);

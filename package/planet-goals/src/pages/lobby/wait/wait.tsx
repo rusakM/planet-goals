@@ -24,14 +24,12 @@ const Wait: React.FC = () => {
     useRefreshPrevention();
     const waitingTimeUntil = useSelector(selectWaitingTimeUntil);
     const remainedSecondsAtStart = waitingTimeUntil ? convertTimeUntilToRemainedSeconds(waitingTimeUntil) || 10: 10;
-    console.log('remained seconds:', remainedSecondsAtStart)
     const [ remainedSeconds, setRemainedSeconds ] = useState<number>(remainedSecondsAtStart);
     const isGameCreatedByCurrentUser = useSelector(selectIsGameCreatedByCurrentUser);
     const currentGame = useSelector(selectCurrentGame);
     const playerRole = useSelector(selectPlayerRole);
     
     const startGame = useCallback(() => {
-        console.log(isGameCreatedByCurrentUser && playerRole === "player" && currentGame.singlePlayerMode);
         if (isGameCreatedByCurrentUser && playerRole === "player" && currentGame.singlePlayerMode) {
             dispatch(startGameStart(currentGame._id));
             dispatch(setCurrentQuestion([0, 0]));

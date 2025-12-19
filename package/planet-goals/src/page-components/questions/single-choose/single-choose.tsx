@@ -29,13 +29,13 @@ const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswer
             setShowFeedbackCorrect(false); 
             return;
         }
-        if (showFeedbackCorrect) return;
+        if (showFeedbackCorrect && !spectatorMode) return;
         const timer = setTimeout(() => {
             setShowFeedbackCorrect(true);
         }, constantsGame.FEEDBACK_INCORRECT_TIME);
         return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [showAnswers]);
+    }, [showAnswers, questionData]);
 
     const check = (index: number) => index === questionData.correctAnswerIndex;
 

@@ -74,7 +74,6 @@ const Header: React.FC<MainPropsT> = ({
     const handleClickOutsideMenu = useCallback((event: MouseEvent) => {
         const target = event.target as HTMLElement;
         const isHeaderButton = headerButtonRef?.current?.contains(target as Node) || languagesButtonRef?.current?.contains(target as Node);
-        console.log('isHeaderbutton', isHeaderButton);
         if (!headerMenuRef?.current?.contains(target as Node) 
             && !languagesMenuRef?.current?.contains(target as Node) 
             && !isHeaderButton

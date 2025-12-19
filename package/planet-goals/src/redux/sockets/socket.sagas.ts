@@ -82,6 +82,7 @@ function* playerJoin({ payload }: { payload: IPlayerJoin }) {
         }
         const currentGameState: IStore["game"] = yield select(getCurrentGameState);
         if (!currentGameState.currentGame) throw GAME_ERRORS_ENUM.GAME_NOT_FOUND;
+        if (currentGameState.currentGame?.players?.find(player => player._id === _id)) return;
         yield put(gameActions.joinPlayerSuccess({
             ...currentGameState.currentGame,
             players: [

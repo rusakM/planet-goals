@@ -62,6 +62,7 @@ const Game: React.FC = () => {
     );
     const [cmpAnswersVisible, setCmpAnswersVisible] = useState(false);
     const [questionIndexTemp, setQuestionIndexTemp] = useState(currentQuestionIndex.toString());
+    const spectatorMode = playerRole === 'spectator';
     useRefreshPrevention();
     
     useEffect(() => {
@@ -161,10 +162,10 @@ const Game: React.FC = () => {
             questionScreen = <ContentTitle { ...currentSubquestion } />;
             break;
         case QUESTION_TYPES_ENUM.FILL_IN_CORRECT_ORDER:
-            questionScreen = <FillCorrectOrder {...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
+            questionScreen = <FillCorrectOrder {...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction, spectatorMode }} />;
             break;
         case QUESTION_TYPES_ENUM.FIT_TILES:
-            questionScreen = <FitTiles {...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
+            questionScreen = <FitTiles {...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction, spectatorMode }} />;
             break;
         case QUESTION_TYPES_ENUM.FINAL:
             questionScreen = <Final />
@@ -173,22 +174,22 @@ const Game: React.FC = () => {
             questionScreen = <Leaderboard />;
             break;
         case QUESTION_TYPES_ENUM.LEFT_RIGHT:
-            questionScreen = <LeftRight { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
+            questionScreen = <LeftRight { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction, spectatorMode }} />;
             break;
         case QUESTION_TYPES_ENUM.MULTI_CHOOSE:
-            questionScreen = <MultiChoose { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
+            questionScreen = <MultiChoose { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction, spectatorMode }} />;
             break;
         case QUESTION_TYPES_ENUM.SELECT_CORRECT_ANSWER:
-            questionScreen = <SelectCorrectAnswer { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
+            questionScreen = <SelectCorrectAnswer { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction, spectatorMode }} />;
             break;
         case QUESTION_TYPES_ENUM.SELECT_CORRECT_ORDER:
-            questionScreen = <SelectCorrectOrder { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
+            questionScreen = <SelectCorrectOrder { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction, spectatorMode }} />;
             break;
         case QUESTION_TYPES_ENUM.SINGLE_CHOOSE:
-            questionScreen = <SingleChoose { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
+            questionScreen = <SingleChoose { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction, spectatorMode }} />;
             break;
         case QUESTION_TYPES_ENUM.TRUE_FALSE:
-            questionScreen = <TrueFalse { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction }} />;
+            questionScreen = <TrueFalse { ...{questionData: currentSubquestion, showAnswers: shouldAnswersBeVisible(), sendAnswerAction, spectatorMode }} />;
             break;
         default: 
             questionScreen = <></>;

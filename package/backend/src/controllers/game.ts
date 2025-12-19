@@ -57,7 +57,7 @@ async function joinGame(req: Request, res: Response) {
     const { userId } = req.params;
     const role = req.params.role as ConstantsGlobal.Account.ROLES_ENUM;
     const { invitationCode }: { invitationCode: string } = req.body;
-    let playerRole = req.body.playerRole;
+    let playerRole: ConstantsGame.Game.PLAYER_ROLE = req.body.playerRole;
     if (!playerRole || role === ConstantsGlobal.Account.ROLES_ENUM.STUDENT) playerRole = ConstantsGame.Game.PLAYER_ROLE.player;
     const user = await accountService.DB.Find.byId(userId);
     if (!user) throw errorsAdapter.Global.createError(errorsAdapter.Global.ErrorsEnum.USER_NOT_FOUND);

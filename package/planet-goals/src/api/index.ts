@@ -42,7 +42,6 @@ export async function sendData<T>(
             url,
             withCredentials: true,
         }).catch();
-        console.log(response);
         return response.data as T;
     } catch (error) {
         throw error?.response?.data;

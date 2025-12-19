@@ -10,7 +10,7 @@ import { constantsGame } from "../../../helpers/constants";
 
 const colors: TButtonColor[] = ["orange", "blue"];
 
-const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers }) => {
+const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers, spectatorMode }) => {
     const startCoordRef = useRef<number | null>(null);
     const isMouseDownRef = useRef(false);
     const isDraggingRef = useRef(false);
@@ -38,13 +38,13 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
             setShowFeedbackCorrect(false); 
             return;
         }
-        if (showFeedbackCorrect) return;
+        if (showFeedbackCorrect && !spectatorMode) return;
         const timer = setTimeout(() => {
             setShowFeedbackCorrect(true);
         }, constantsGame.FEEDBACK_INCORRECT_TIME);
         return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [showAnswers]);
+    }, [showAnswers, questionData]);
 
     const onAnswer = (index: number) => {
         if (answer > -1) return;
@@ -79,7 +79,6 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
         const threshold = 40;
         
         let newPosition = currentPosition;
-        console.log('new position', newPosition, 'delta', delta);
         
         if (delta < -threshold && currentPosition > 0) {
             newPosition = currentPosition - 1;
@@ -87,8 +86,6 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
             newPosition = currentPosition + 1;
         }
 
-        console.log(newPosition);
-        
         // Sprawdź czy to jest odpowiedź (pozycja 0 lub 2)
         if (newPosition === 0) {
             onAnswer(0); // Pierwsza odpowiedź

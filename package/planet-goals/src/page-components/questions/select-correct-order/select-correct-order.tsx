@@ -5,7 +5,7 @@ import { getFeedback } from "../../../helpers/game";
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 
-import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
+import GameButton, { TButtonColor, TFeedbackMode } from "../../../components/game-button/game-button";
 import { constantsGame } from "../../../helpers/constants";
 
 const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers, spectatorMode }) => {
@@ -30,7 +30,7 @@ const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, send
             setShowFeedbackCorrect(false); 
             return;
         }
-        if (showFeedbackCorrect) return;
+        if (showFeedbackCorrect && !spectatorMode) return;
         const timer = setTimeout(() => {
             setShowFeedbackCorrect(true);
         }, constantsGame.FEEDBACK_INCORRECT_TIME);
@@ -59,8 +59,13 @@ const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, send
     }
 
     const getCurrentColor = (index: number) => {
-        if (finalAnswer.includes(index.toString())) return colors[index % 4];
+        if (finalAnswer.includes(index.toString()) || spectatorMode) return colors[index % 4];
         return "white"; 
+    }
+
+    const calculateFeedback = (index: number): TFeedbackMode => {
+        if (spectatorMode) return "none";
+        return getFeedback(showFeedbackCorrect, showAnswers, index, check);
     }
 
     return <div className={styles.questionContainer}>
@@ -76,7 +81,7 @@ const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, send
                             color={getCurrentColor(index)}
                             size="thin"
                             onClick={() => markTile(index)}
-                            feedback={getFeedback(showFeedbackCorrect, showAnswers, index, check)}
+                            feedback={calculateFeedback(index)}
                             font={{
                                 isSmallFont: smallFontInButtons,
                                 setIsSmallFont: setSmallFontInButtons

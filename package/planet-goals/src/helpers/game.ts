@@ -3,7 +3,6 @@ import { IQuestion, ISubquestion, PLAYABLE_QUESTION_TYPES } from "../types/lesso
 import { constantsGame } from "./constants";
 
 export function getFeedback<T extends boolean | number = boolean | number>(showCorrectAnswers: boolean, showIncorrectAnswers: boolean, index: T, check: (index: T) => boolean): TFeedbackMode {
-    console.log(showCorrectAnswers, showIncorrectAnswers, index);
     if (!showCorrectAnswers && !showIncorrectAnswers) return "none";
     if (showCorrectAnswers && check(index)) return "correct";
     if (showIncorrectAnswers && !check(index)) return "incorrect";
@@ -11,7 +10,6 @@ export function getFeedback<T extends boolean | number = boolean | number>(showC
 }
 
 export function calculateTimeUntil(subquestion: ISubquestion, timeUntil?: number): number {
-    console.log(new Date(timeUntil), new Date());
     if (!timeUntil) return (Date.now() + subquestion?.timeInSek * 1000) - (constantsGame.FEEDBACK_TIME - constantsGame.FEEDBACK_SERVER_FALLBACK);
     //const calculatedTimeUntil = subquestion.timeInSek ? (Date.now() + subquestion.timeInSek * 1000) + constantsGame.FEEDBACK_TIME : timeUntil;
     let selectedTimeUntil = timeUntil;

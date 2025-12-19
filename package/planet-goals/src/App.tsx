@@ -33,11 +33,8 @@ function App() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log('🎯 useEffect called, currentUser:', currentUser?._id, 'timestamp:', Date.now());
         const token = localStorage.getItem("token");
         if (!token || !currentUser) return;
-        
-        console.log('🎯 Dispatching socketConnect');
         dispatch(socketConnect(constantsUrls.Socket.url, constantsUrls.Socket.namespace));
     }, [currentUser, dispatch]);
 
