@@ -28,7 +28,7 @@ const FinalPodiumPosition: React.FC<IFinalPodiumPosition> = ({ avatar, nickname,
             <div className={`${styles.circle} ${styles.circleMulti}`}>
                 <img src={avatarsList[avatar]}/>
             </div>
-            <p className={`${commonStyles.basicHeader4}`}>
+            <p className={`${styles.nicknamePodiumHeader} ${commonStyles.basicHeader4}`}>
                 {nickname || ""}
             </p>
         </PrimaryContainer>

@@ -109,24 +109,37 @@
         }
         
         .rank {
-            font-size: 60px;
+            font-size: 54px;
         }
         
         .score {
-            font-size: 40px;
+            font-size: 36px;
         }
     }
 
     .cube1 {
-        height: 250px;
+        height: 200px;
     }
 
     .cube2 {
-        height: 200px;
+        height: 160px;
     }
 
     .cube3 {
         height: 120px;
+    }
+
+    .nicknamePodiumHeader {
+        padding: 1em 0 !important;
+        max-width: 200px;
+    }
+
+    .podium {
+        gap: 30px;
+    }
+
+    .podiumPosition {
+        width: auto;
     }
 }
 
@@ -167,9 +180,9 @@
     border-radius: 34px;
 
     @media (min-width: breakpoints.$desktop) {
-        width: 188px;
-        height: 188px;
-        border-radius: 94px;
+        width: 170px;
+        height: 170px;
+        border-radius: 85px;
     }
 }
 
