@@ -13,6 +13,7 @@ interface PrimaryButtonProps {
     onClick?: (event?: MouseEvent<HTMLButtonElement>) => void;
     selected?: boolean;
     size?: TButtonSize;
+    title?: string;
     type?: TButtonType;
 }
 
@@ -24,6 +25,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
     onClick,
     selected,
     size = "regular",
+    title,
     type = "default"
 }) => {
     const locale = localStorage.getItem("locale");
@@ -33,6 +35,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
             onClick={onClick}
             disabled={disabled}
             lang={locale}
+            title={title}
         >
             {children}
         </button>

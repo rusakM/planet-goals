@@ -37,7 +37,7 @@ const MaterialsCard: React.FC<IMaterialsCard> = ({ description, downloadAction, 
                     <PrimaryButton color="orange" size="small" onClick={downloadAction} additionalClasses={commonStyles.width100}>
                         {t("manuals.download.button")}
                     </PrimaryButton>
-                    <PrimaryButton color="white" size="small" onClick={resizeAction}>
+                    <PrimaryButton color="white" size="small" onClick={resizeAction} title={t("manuals.placeholder.open")}>
                         <img src={ResizeIconImg} className={styles.resizeIcon}/>
                     </PrimaryButton>
                 </div>
