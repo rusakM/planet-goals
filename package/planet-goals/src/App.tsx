@@ -26,6 +26,7 @@ import { socketConnect } from "./redux/sockets/socket.actions";
 import { verifyTokenExpiration } from "./helpers/shared.functions";
 import { refreshTokenStart, signOut } from "./redux/user/user.actions";
 import UserProgress from "./pages/user-progress/user-progress";
+import socketService from "./socket";
 
 function App() {
     const currentUser = useSelector(selectCurrentUser);
@@ -46,6 +47,11 @@ function App() {
             dispatch(signOut());
         }
     }, [currentUser, dispatch])
+
+    setTimeout(() => {
+        if (!currentUser || socketService.isConnected()) return;
+        dispatch(socketConnect(constantsUrls.Socket.url, constantsUrls.Socket.namespace));
+    }, 10e3);
 
     return (
         <div lang={tolgee.getLanguage()}>

@@ -1,6 +1,7 @@
 import { Namespace, Server } from 'socket.io';
 import { playerGameService, gameManagerService, accountService } from '../../services';
 import { playerEmitter } from '../../services/socket.service';
+import { debugMiddleware } from '../middleware/debug';
 import { socketAuthMiddleware } from '../middleware/auth';
 import { IExtendedSocket } from 'src/shared/defs';
 import * as playerTypes from '../types/player.types';
@@ -46,6 +47,7 @@ function setupOutcomeListeners(nsp: Namespace) {
 export const registerPlayerNamespace = (io: Server) => {
     const nsp = io.of(appSocket.namespace.PLAYER);
 
+    nsp.use(debugMiddleware);
     nsp.use(socketAuthMiddleware);
     setupOutcomeListeners(nsp);
 

@@ -64,6 +64,12 @@ const Game: React.FC = () => {
     const [questionIndexTemp, setQuestionIndexTemp] = useState(currentQuestionIndex.toString());
     const spectatorMode = playerRole === 'spectator';
     useRefreshPrevention();
+
+    const shouldAnswersBeVisible = () => {
+        if (playerRole === 'spectator' && gameMode === 'multi') return true;
+        if (cmpAnswersVisible) return true;
+        return remainedTime === 0;
+    };
     
     useEffect(() => {
         if (!currentGame) {
@@ -77,6 +83,10 @@ const Game: React.FC = () => {
             dispatch(fetchLessonStart(currentGame?.lesson));
         }
     }, [currentGame, currentLesson, dispatch, navigate ])
+
+    useEffect(() => {
+        setCmpAnswersVisible(false);
+    }, [currentSubquestion]);
 
     useEffect(() => {
         if (remainedTime > 0) {
@@ -137,12 +147,6 @@ const Game: React.FC = () => {
                 }
             }
         }
-    }
-
-    const shouldAnswersBeVisible = () => {
-        if (playerRole === 'spectator' && gameMode === 'multi') return true;
-        if (cmpAnswersVisible) return true;
-        return remainedTime === 0;
     }
     
     switch(currentQuestion?.type) {

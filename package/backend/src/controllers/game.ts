@@ -165,10 +165,9 @@ async function sendAnswer(req: Request, res: Response) {
         points: 0,
         correct: true,
     };
+    const { answer, questionNumber, responseTime, subquestionNumber } = answerData;
 
     if (currentPlayerGame.playerRole !== ConstantsGame.Game.PLAYER_ROLE.spectator) {
-        const { answer, questionNumber, responseTime, subquestionNumber } = answerData;
-
         processedAnswer = await gameManagerService.gameManager.processAnswer(gameId, userId, answer, questionNumber, subquestionNumber, responseTime, new Date(requestTime).getTime());
         const newQuestionScore: playerGameService.Model.IQuestionScore = {
             question: questionNumber,
@@ -192,9 +191,10 @@ async function sendAnswer(req: Request, res: Response) {
             score: currentPlayerGame.score + newQuestionScore.points,
         });
     }
-
-    if (currentPlayerGame.singlePlayerMode) {
-        await gameManagerService.gameManager.enforceNextSubquestion(gameId);
+    const isEveryoneAnswered = await gameManagerService.gameManager.isEveryoneAnswered(gameId, questionNumber, subquestionNumber);
+    console.log('Everyone answered', isEveryoneAnswered);
+    if (currentPlayerGame.singlePlayerMode || isEveryoneAnswered) {
+        await gameManagerService.gameManager.enforceNextSubquestion(gameId, questionNumber);
     }
 
     appResponse.prepareJsonResponse(res, processedAnswer);

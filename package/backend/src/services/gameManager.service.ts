@@ -2,6 +2,7 @@ import { addSeconds } from 'date-fns';
 import { accountService, gameService, lessonService, playerGameService, socketService } from '.';
 import { ConstantsGame } from '../core/constants';
 import { RedisConnector } from '../core/redisConnector';
+import { Helper } from '../shared/defs';
 
 export interface ILeaderboardPlayer {
     playerId: string;
@@ -277,10 +278,6 @@ class GameManagerService {
 
         if (!game.answers[userId]) game.answers[userId] = {};
         if (!game.answers[userId][game.currentQuestionIndex]) game.answers[userId][game.currentQuestionIndex] = {};
-        // if (game.answers[userId][game.currentQuestionIndex][game.currentSubquestionIndex]) {
-        //     // Already replied
-        //     return { points: 0, correct: false, done: false, error: 'ALREADY_ANSWERED' };
-        // }
 
         // Scoring
         let correct = false;
@@ -302,10 +299,34 @@ class GameManagerService {
             }
         }
 
-        const playerInGameId = game.players.findIndex((player) => player.userId === userId);
         game.answers[userId][game.currentQuestionIndex][game.currentSubquestionIndex] = { answer, points, responseTime: responseAt };
         await this.redis.save(gameId, game);
         return { points, correct, done: true };
+    }
+
+    async isEveryoneAnswered(gameId: string, questionIndex: number, subquestionIndex: number): Promise<boolean> {
+        try {
+            if (!gameId || questionIndex < 0 || subquestionIndex < 0) return false;
+            const game = await this.getGame(gameId);
+            if (!game || !game?.players?.length) return false;
+            if (!this.allowEnforceNextQuestion(game)) return false; // Allow for checking only for competition stages
+            if (questionIndex >= game?.questions?.length) return false; 
+            if ( subquestionIndex >= game?.questions?.[questionIndex]?.subquestions?.length) return false;
+
+            for (const player of game.players) {
+                if (player.playerRole === ConstantsGame.Game.PLAYER_ROLE.spectator) continue;
+                const userId = player.userId;
+                
+                if (!(game?.answers?.[userId]?.[questionIndex]?.[subquestionIndex]?.responseTime)) {
+                    // Player has not answered
+                    return false;
+                }
+            }
+
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     /**
@@ -445,10 +466,11 @@ class GameManagerService {
         await this.redis.save(gameId, game);
     }
 
-    public async enforceNextSubquestion(gameId) {
+    public async enforceNextSubquestion(gameId: string, questionIndex?: number): Promise<void> {
         const game = await this.getGame(gameId);
-        if (!game || !game.started || !game.singlePlayerMode) return;
+        if (!game || !game.started || !this.allowEnforceNextQuestion(game)) return;
         if (game.currentQuestionIndex === game.questions.length - 1 && game.currentSubquestionIndex === game.questions?.[game.currentQuestionIndex]?.subquestions?.length - 1) return;
+        if (Helper.isNumber(questionIndex) && game.currentQuestionIndex !== questionIndex) return;
         await this.stopSubquestionTimer(gameId);
         setTimeout(async () => await this.nextSubquestion(gameId), ConstantsGame.Game.GAME_FEEDBACK_TIME_MS);
     }
@@ -580,6 +602,11 @@ class GameManagerService {
 
     getCurrentPlayedGamesIds(): string[] {
         return Array.from(this.games.keys());
+    }
+
+    allowEnforceNextQuestion(game: IGameState): boolean {
+        if (!game) return false;
+        return game.singlePlayerMode || ConstantsGame.Game.COMPETITION_STAGES.includes(game.stage);
     }
 }
 

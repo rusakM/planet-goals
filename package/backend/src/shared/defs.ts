@@ -152,6 +152,10 @@ export namespace Helper {
         return differences;
     }
 
+    export function isNumber(val: any): boolean {
+        return typeof val === 'number' && !isNaN(val);
+    }
+
     export function createPackets<T>(list: T[], packetSize: number): T[][] {
         const packets: T[][] = [];
         let packet: T[] = [];
