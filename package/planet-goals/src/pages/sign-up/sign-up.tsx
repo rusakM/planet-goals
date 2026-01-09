@@ -137,7 +137,7 @@ const SignUp: React.FC<ISignUp> = ({
                     <Checkbox 
                         checked={confirm}
                         error={formError.confirm}
-                        label={<>{t("signup.confirm-regulations")} <span className={commonStyles.blueText} onClick={() => downloadFile(constantsUrls.Footer.conditionTerms)}>{t("main.regulations")}</span></>}
+                        label={<>{t("signup.confirm-regulations")} <span className={commonStyles.blueText} title={t("main.regulations")} onClick={() => downloadFile(constantsUrls.Footer.conditionTerms)}>{t("main.regulations")}</span> {t("main.and")} <span className={commonStyles.blueText} title={t("main.privacy-policy")} onClick={() => downloadFile(constantsUrls.Footer.privacyPolicy)}>{t("main.privacy-policy")}</span>.</>}
                         onChange={handleChange}
                         additionalClasses={`${internalStyles.checkbox} ${commonStyles.centerFlex}`}
                     />

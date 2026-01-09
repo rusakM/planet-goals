@@ -1,10 +1,10 @@
 import { IRemovePlayer } from "../../types/game";
 
 export const Footer = {
-    conditionTerms: "/cdn/materials/manual_01.pdf",
+    conditionTerms: "/cdn/assets/PlanetGoals_Terms_of_Service.pdf",
     instagram: "https://www.instagram.com/planet_goals",
     linkedIn: "https://www.linkedin.com/company/104809294",
-    privacyPolicy: "/cdn/materials/manual_02.pdf",
+    privacyPolicy: "/cdn/assets/PlanetGoals_Privacy_Policy.pdf",
     youtube: "https://www.youtube.com/@PlanetGoals-SDGs",
 };
 
