@@ -213,6 +213,10 @@
     cursor: not-allowed !important;
 }
 
+.pointerCursor {
+    cursor: pointer;
+}
+
 .orangeBackground {
     background-color: colors.$orange;
 }

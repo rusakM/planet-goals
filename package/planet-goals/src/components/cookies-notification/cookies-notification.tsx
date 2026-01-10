@@ -9,6 +9,8 @@ import containerStyles from "../../styles/containers.module.scss";
 
 import PrimaryButton from "../primary-button.tsx/primary-button";
 import PrimaryContainer from "../primary-container/primary-container";
+import { downloadFile } from "../../helpers/events.functions";
+import { constantsUrls } from "../../helpers/constants";
 
 const CookiesNotification: React.FC = () => {
     const { t } = useTranslate();
@@ -40,10 +42,20 @@ const CookiesNotification: React.FC = () => {
                 >
                     <PrimaryContainer direction="column" additionalClassess={!isMobile ? containerStyles.halfScreenContainer : ""}>
                         <p className={`${styles.paragraph} ${commonStyles.justifiedText} ${commonStyles.darkText} ${footerStyles.captionText}`}>
-                            {t("cookies.notification.text")}
-                            <span className={`${commonStyles.blueText} ${footerStyles.privacyRef}`}>
-                                {t("cookies.notification.text.privacy-policy")}
-                            </span>
+                            {t("cookies.notification.text") + " "} 
+                            <span 
+                                className={`${commonStyles.blueText} ${commonStyles.pointerCursor}`} 
+                                title={t("main.regulations")} 
+                                onClick={() => downloadFile(constantsUrls.Footer.conditionTerms)}
+                            >
+                                {t("main.regulations")}
+                            </span> {t("main.and")} <span 
+                                className={`${commonStyles.blueText} ${commonStyles.pointerCursor}`} 
+                                title={t("main.privacy-policy")} 
+                                onClick={() => downloadFile(constantsUrls.Footer.privacyPolicy)}
+                            >
+                                {t("main.privacy-policy")}
+                            </span>.
                         </p>
                     </PrimaryContainer>
                     <PrimaryContainer
