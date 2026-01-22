@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useTranslate } from "@tolgee/react";
 import { ISubquestionComponent } from "../questions.types";
 import { getFeedback } from "../../../helpers/game";
+import { useTranslatedAnswers } from "../../../hooks/useTranslatedAnswers";
 
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
@@ -8,8 +10,11 @@ import commonStyles from "../../../styles/common.module.scss";
 import GameButton, { TButtonColor, TFeedbackMode } from "../../../components/game-button/game-button";
 import { constantsGame } from "../../../helpers/constants";
 
+const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
 const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers, spectatorMode }) => {
-    const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
+    const { t } = useTranslate();
+    const translatedAnswers = useTranslatedAnswers(questionData?.answers);
+    
     const [answers, setAnswers] = useState(new Array(questionData.answers.length).fill(0));
     const [currentAnswer, setCurrentAnswer] = useState(0);
     const [finalAnswer, setFinalAnswer] = useState("");
@@ -69,10 +74,10 @@ const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, send
     }
 
     return <div className={styles.questionContainer}>
-        <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
+        <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{t(questionData?.question)}</p>
         <div className={`${styles.buttonsContainer}`}>
             {
-                questionData.answers?.map((ans, index) => {
+                translatedAnswers?.map((ans, index) => {
                     let tileIndex = answers[index] ? `${answers[index]}. ` : "";
                     if (showAnswers) tileIndex = `${Number(questionData.correctAnswer[index]) + 1}. `;
 

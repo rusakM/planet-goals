@@ -56,7 +56,7 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAct
     }
 
     return <div className={styles.questionContainer}>
-        <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
+        <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{t(questionData?.question)}</p>
         <div className={`${styles.buttonsContainer}`}>
             <div className={styles.buttonContainer}>
                 <GameButton color={getCurrentColor(true)} onClick={() => mark(true)} feedback={getFeedback(showFeedbackCorrect, showAnswers,  true, check)}> 

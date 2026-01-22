@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useTranslate } from "@tolgee/react";
 import { ISubquestionComponent } from "../questions.types";
 import { useDeviceType } from "../../../helpers/responsiveContainers";
 import styles from "../questions.module.scss";
@@ -11,6 +12,7 @@ import { constantsGame } from "../../../helpers/constants";
 const colors: TButtonColor[] = ["orange", "blue"];
 
 const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers, spectatorMode }) => {
+    const { t } = useTranslate();
     const startCoordRef = useRef<number | null>(null);
     const isMouseDownRef = useRef(false);
     const isDraggingRef = useRef(false);
@@ -143,7 +145,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
     return (
         <div className={styles.leftRightContainer}>
             <p className={`${styles.headerText} ${commonStyles.centeredText}`}>
-                {questionData?.question}
+                {t(questionData?.question)}
             </p>
             
             <div 
@@ -163,7 +165,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                             setIsSmallFont: setSmallFontInButtons
                         }}
                     >
-                        {questionData.answers[0]}
+                        {t(questionData.answers[0])}
                     </GameButton>
                 </div>
 
@@ -218,7 +220,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                             setIsSmallFont: setSmallFontInButtons
                         }}
                     >
-                        {getCurrentContent()}
+                        {t(getCurrentContent())}
                     </GameButton>
                 </div>
                 
@@ -235,7 +237,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                             setIsSmallFont: setSmallFontInButtons
                         }}
                     >
-                        {questionData.answers[1]}
+                        {t(questionData.answers[1])}
                     </GameButton>
                 </div>
             </div>

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useTranslate } from "@tolgee/react";
 
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 import { getFeedback } from "../../../helpers/game";
+import { useTranslatedAnswers } from "../../../hooks/useTranslatedAnswers";
 
 import GameButton, { TButtonColor, TFeedbackMode } from "../../../components/game-button/game-button";
 import { ISubquestionComponent } from "../questions.types";
@@ -14,13 +16,20 @@ const mapAnswersToDescription = (description: string, answers: string[], answers
     return final;
 };
 
+const setInitialDescription = (descriptionTranslated: string, translatedAnswers: string[], answersCorrect: string, spectatorMode: boolean) => (
+    spectatorMode 
+        ? mapAnswersToDescription(descriptionTranslated, translatedAnswers, answersCorrect) 
+        : descriptionTranslated
+);
+
 const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
 const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAnswers, sendAnswerAction, spectatorMode}) => {
+    const { t } = useTranslate();
+    const translatedAnswers = useTranslatedAnswers(questionData.answers);
+    const questionTranslated = t(questionData?.question);
     const [answers, setAnswers] = useState(new Array(questionData.answers.length).fill(0));
     const [currentAnswer, setCurrentAnswer] = useState(0);
-    const [description, setDescription] = useState(spectatorMode 
-        ? mapAnswersToDescription(questionData.question, questionData.answers, questionData.correctAnswer) 
-        : questionData.question);
+    const [description, setDescription] = useState(setInitialDescription(questionTranslated, translatedAnswers, questionData?.correctAnswer, spectatorMode));
     const [finalAnswer, setFinalAnswer] = useState("");
     const [showFeedbackCorrect, setShowFeedbackCorrect] = useState(false);
     const [smallFontInButtons, setSmallFontInButtons] = useState(false);
@@ -29,7 +38,7 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
         if (!questionData) return;
         setAnswers(new Array(questionData.answers.length).fill(0));
         setCurrentAnswer(0);
-        setDescription(questionData.question);
+        setDescription(setInitialDescription(questionTranslated, translatedAnswers, questionData?.correctAnswer, spectatorMode));
         setFinalAnswer("");
         setShowFeedbackCorrect(false);
         setSmallFontInButtons(false);
@@ -59,7 +68,7 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
             tempCurrentAnswers++;
             tempAnswers[index] = tempCurrentAnswers;
             tempFinalAnswer = `${tempFinalAnswer}${index}`;
-            setDescription(description.replace("...", questionData.answers[index]));
+            setDescription(description.replace("...", translatedAnswers[index]));
         }
         
         setFinalAnswer(tempFinalAnswer);
@@ -83,7 +92,7 @@ const FillCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, showAn
         <p className={`${commonStyles.basicHeader3} ${commonStyles.justifiedText}`}>{description}</p>
         <div className={`${styles.buttonsContainer}`}>
             {
-                questionData.answers?.map((ans, index) => {
+                translatedAnswers?.map((ans, index) => {
                     let tileIndex = answers[index] ? `${answers[index]}. ` : "";
                     if (showAnswers) tileIndex = `${Number(questionData.correctAnswer[index]) + 1}. `;
                     return (

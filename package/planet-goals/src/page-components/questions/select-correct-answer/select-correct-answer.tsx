@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslate } from "@tolgee/react";
 import { ISubquestionComponent } from "../questions.types";
 import { getFeedback } from "../../../helpers/game";
 
@@ -7,11 +8,13 @@ import commonStyles from "../../../styles/common.module.scss";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 import { constantsGame } from "../../../helpers/constants";
+import { useTranslatedAnswers } from "../../../hooks/useTranslatedAnswers";
 
 const colors: TButtonColor[] = ["orange", "blue"];
 
 const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers, spectatorMode }) => {
-
+    const { t } = useTranslate();
+    const translatedAnswers = useTranslatedAnswers(questionData?.answers);
     const [answer, setAnswer] = useState(-1);
     const [answered, setAnswered] = useState(false);
     const [showFeedbackCorrect, setShowFeedbackCorrect] = useState(false);
@@ -57,10 +60,10 @@ const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, se
     }
 
     return <div className={styles.questionContainer}>
-        <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
+        <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{t(questionData?.question)}</p>
         <div className={`${styles.buttonsContainer}`}>
             {
-                questionData.answers?.map((ans, index) => 
+                translatedAnswers?.map((ans, index) => 
                     <div className={styles.buttonContainer} key={index}>
                         <GameButton 
                             color={getCurrentColor(index)} 

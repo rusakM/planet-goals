@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
-
+import { useTranslate } from "@tolgee/react";
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 import { ISubquestionComponent } from "../questions.types";
 import { getFeedback } from "../../../helpers/game";
+import { useTranslatedAnswers } from "../../../hooks/useTranslatedAnswers";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 import { constantsGame } from "../../../helpers/constants";
 
+const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
+
 const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers, spectatorMode }) => {
-    const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
+    const { t } = useTranslate();
+    const translatedAnswers = useTranslatedAnswers(questionData?.answers);
     const answersLength = questionData.answers.length;
     const correctAnswersParsed: number[] = JSON.parse(questionData.correctAnswer);
     const [ answers, setAnswers ] = useState(new Array<number>(answersLength).fill(-1));
@@ -63,10 +67,10 @@ const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswer
     }   
 
     return <div className={styles.questionContainer}>
-        <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{questionData?.question}</p>
+        <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{t(questionData?.question)}</p>
         <div className={`${styles.buttonsContainer}`}>
             {
-                questionData.answers?.map((ans, index) => {
+                translatedAnswers?.map((ans, index) => {
                     let color: TButtonColor = (!answers.includes(index)) ? "white" : colors[index % 4];
                     const feedback = getFeedback(showFeedbackCorrect, showAnswers, index, check);
                     if (showAnswers) color = check(index) ? colors[index % 4] : "white";

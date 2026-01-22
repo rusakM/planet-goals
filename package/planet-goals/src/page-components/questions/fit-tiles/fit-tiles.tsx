@@ -6,6 +6,7 @@ import styles from "../questions.module.scss";
 
 import GameButton, { TButtonColor, TFeedbackMode } from "../../../components/game-button/game-button";
 import { constantsGame } from "../../../helpers/constants";
+import { useTranslatedAnswers } from "../../../hooks/useTranslatedAnswers";
 
 const colorsMap: { [key: number]: TButtonColor } = {
     "-1": "red",
@@ -17,6 +18,7 @@ const colorsMap: { [key: number]: TButtonColor } = {
 const colors: TButtonColor[] = ["green", "blue", "orange"];
 
 const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers, spectatorMode}) => {
+    const answersTranslated = useTranslatedAnswers(questionData?.answers);
     // correct answers JSON.parse("[[1,3], [0,2], [4,5]]")
     const [answers, setAnswers] = useState(new Array(Math.floor(questionData.answers.length / 2)).fill(new Array(2).fill(0)));
     const [results, setResults] = useState(new Array(questionData.answers.length).fill(0));
@@ -103,7 +105,7 @@ const FitTiles: React.FC<ISubquestionComponent> = ({questionData, sendAnswerActi
     return <div className={styles.questionContainer}>
         <div className={`${styles.buttonsContainer}`}>
             {
-                questionData.answers?.map((ans, index) => 
+                answersTranslated?.map((ans, index) => 
                     <div className={styles.buttonContainer} key={index}>
                         <GameButton 
                             color={getCurrentColor(index)} 

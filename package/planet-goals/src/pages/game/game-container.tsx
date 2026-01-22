@@ -116,6 +116,7 @@ const GameContainer: React.FC<IGameContainer> = ({ children, currentQuestionInde
             {children}
         </div>
         <div className={styles.footer}>
+            <p>Question no: [{currentQuestionIndex[0]}, {currentQuestionIndex[1]}]</p>
             <img src={exitIcon} alt="exitIcon" className={styles.settingsBtn} onClick={() => setExitVisible(true)}/>
         </div>
         <Popup visible={ exitVisible}>
