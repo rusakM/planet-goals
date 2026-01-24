@@ -1,10 +1,11 @@
-import React from "react";
+import React, { lazy } from "react";
 import { useSelector } from "react-redux";
 
-import FinalSingle from "./final-single";
-import FinalMulti from "./final-multi";
 import { selectCurrentLeaderboard, selectGameMode, selectPlayerRole } from "../../../redux/game/game.selectors";
 import filterLeaderboard from "../leaderboard/filter-leaderboard";
+
+const FinalMulti = lazy(() => import("./final-multi"));
+const FinalSingle = lazy(() => import("./final-single"));
 
 const Final: React.FC = () => {
     const gameMode = useSelector(selectGameMode);

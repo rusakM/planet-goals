@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, lazy } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { useTranslate } from '@tolgee/react';
@@ -17,8 +17,9 @@ import containersStyles from "../../styles/containers.module.scss";
 
 import TeacherImg from "../../assets/teachers-materials/teacher_standing_against_blackboard.svg";
 import Footer from '../../components/footer/footer';
-import Flipbook from '../../page-components/flipbook/flipbook';
 import { downloadFile } from '../../helpers/events.functions';
+
+const Flipbook = lazy(() => import("../../page-components/flipbook/flipbook"))
 
 interface IMaterials {
     currentUser?: IUser

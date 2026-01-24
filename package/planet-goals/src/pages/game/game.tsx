@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { lazy, useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import GameContainer from "./game-container";
-import ContentInstruction from "../../page-components/questions/content-instruction/content-instruction";
 import { convertTimeUntilToRemainedSeconds } from "../../helpers/shared.functions";
 import useRefreshPrevention from "../../hooks/useRefreshPrevention";
 
@@ -13,22 +12,24 @@ import { constantsGame, constantsUrls } from "../../helpers/constants";
 import { fetchLessonStart, resetGame, sendAnswerStart, setCurrentQuestion, setWaitingForPlayers } from "../../redux/game/game.actions";
 import useGame from "../../hooks/useGame";
 import { getNextSubquestionIndex } from "../../hooks/useLesson";
-import ContentTitle from "../../page-components/questions/content-title/content-title";
-import ContentText from "../../page-components/questions/content-text/content-text";
-import SingleChoose from "../../page-components/questions/single-choose/single-choose";
-import MultiChoose from "../../page-components/questions/multi-choose/multi-choose";
-import TrueFalse from "../../page-components/questions/true-false/true-false";
-import SelectCorrectAnswer from "../../page-components/questions/select-correct-answer/select-correct-answer";
-import SelectCorrectOrder from "../../page-components/questions/select-correct-order/select-correct-order";
-import ContentQuestion from "../../page-components/questions/content-question/content-question";
-import FillCorrectOrder from "../../page-components/questions/fill-in-correct-order/fill-in-correct-order";
-import FitTiles from "../../page-components/questions/fit-tiles/fit-tiles";
-import Final from "../../page-components/questions/final/final";
-import LeftRight from "../../page-components/questions/left-right/left-right";
-import Leaderboard from "../../page-components/questions/leaderboard/leaderboard";
-import WaitingForPlayers from "../../page-components/questions/waiting-for-players/waiting-for-players";
 import { gameTypes } from "../../types";
-import ContentIntroduction from "../../page-components/questions/content-introduction/content-introduction";
+
+const ContentInstruction = lazy(() => import("../../page-components/questions/content-instruction/content-instruction"));
+const ContentIntroduction = lazy(() => import("../../page-components/questions/content-introduction/content-introduction"));
+const ContentQuestion = lazy(() => import("../../page-components/questions/content-question/content-question"));
+const ContentText = lazy(() => import("../../page-components/questions/content-text/content-text"));
+const ContentTitle = lazy(() => import("../../page-components/questions/content-title/content-title"));
+const FillCorrectOrder = lazy(() => import("../../page-components/questions/fill-in-correct-order/fill-in-correct-order"));
+const Final = lazy(() => import("../../page-components/questions/final/final"));
+const FitTiles = lazy(() => import("../../page-components/questions/fit-tiles/fit-tiles"));
+const Leaderboard = lazy(() => import("../../page-components/questions/leaderboard/leaderboard"));
+const LeftRight = lazy(() => import("../../page-components/questions/left-right/left-right"));
+const MultiChoose = lazy(() => import("../../page-components/questions/multi-choose/multi-choose"));
+const SelectCorrectAnswer = lazy(() => import("../../page-components/questions/select-correct-answer/select-correct-answer"));
+const SelectCorrectOrder = lazy(() => import("../../page-components/questions/select-correct-order/select-correct-order"));
+const SingleChoose = lazy(() => import("../../page-components/questions/single-choose/single-choose"));
+const TrueFalse = lazy(() => import("../../page-components/questions/true-false/true-false"));
+const WaitingForPlayers = lazy(() => import("../../page-components/questions/waiting-for-players/waiting-for-players"));
 
 const calculateTimeUntil = (stateTimeUntil: number, questionTimeSek: number): number  => {
     if (!stateTimeUntil || Date.now() >= stateTimeUntil) {

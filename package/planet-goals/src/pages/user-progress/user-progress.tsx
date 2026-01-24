@@ -28,11 +28,11 @@ const UserProgress: React.FC = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { isMobile } = useDeviceType();
-    const { playerStats, lessonsStats } = useSelector(selectUserStats);
+    const userStats = useSelector(selectUserStats);
     const isLoading = useSelector(selectIsLoadingData);
 
     useEffect(() => {
-        if (isLoading || playerStats) return;
+        if (isLoading || userStats?.playerStats) return;
         dispatch(getPlayerStatsStart());
     })
 
@@ -53,7 +53,7 @@ const UserProgress: React.FC = () => {
     return (<PageContainer>
         <PrimaryContainer direction={isMobile ? "column" : "row"} additionalClassess={`${containersStyles.pagePadding}`}>
             <img src={ProgressImg} className={`${commonStyles.sectionImg} ${styles.img}`} alt="User stats" />
-            <PrimaryContainer direction="column" additionalClassess={`${!isMobile ? `${containersStyles.halfScreenContainer} ${styles.headerContainer}` : containersStyles.buttonsContainer}`}>
+            <PrimaryContainer direction="column" additionalClassess={`${commonStyles.transparentBackground} ${!isMobile ? `${containersStyles.halfScreenContainer} ${styles.headerContainer}` : containersStyles.buttonsContainer}`}>
                 <p className={`${commonStyles.basicHeader} ${commonStyles.orangeText} ${styles.headerText}`}>{t("player.stats.header")}</p>
                 <p className={`${commonStyles.darkText} ${styles.headerText} ${styles.headerDescription} ${commonStyles.noMargin}`}>{t("player.stats.description")}</p>
             </PrimaryContainer>
@@ -61,12 +61,12 @@ const UserProgress: React.FC = () => {
         <PrimaryContainer direction="column" additionalClassess={`${commonStyles.transparentBackground} ${containersStyles.pagePadding}${isMobile ? '' : ` ${styles.listContainer} ${containersStyles.restrictedFlexibleContainer2} ${containersStyles.centerFlexibleContainer2} ${containersStyles.alignFlexStart}`}`}>
             <p className={`${commonStyles.basicHeader3} ${commonStyles.darkText} ${styles.cardListHeader}`}>{t("player.stats.lessons.list.header")}</p>
             {
-                isLoading || !playerStats ? <Spinner /> :
+                isLoading || !userStats?.playerStats ? <Spinner /> :
                 <PrimaryContainer additionalClassess={`${styles.cardListContainer}`}>
                     {
                         constantsGame.LESSONS_IDS.map((id, index) => {
-                            const gameStat = playerStats?.find(({ _id }) => _id === id);
-                            const lessonStat = lessonsStats?.find(({ _id }) => _id === id);
+                            const gameStat = userStats?.playerStats?.find(({ _id }) => _id === id);
+                            const lessonStat = userStats?.lessonsStats?.find(({ _id }) => _id === id);
                             const color = cardColorsList[index % 3];
                             const colorCircle: TCircleColor = color === "blue" ? "darkBlue" : color;
                             return (<ProgressCard 

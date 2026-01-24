@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, lazy } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import Join from "./join/join";
-import ChoosePlayerRole from "./choose-player-role/choose-player-role";
-import LobbyScreen from "./lobby/lobby";
-import SelectLesson from "./select-lesson/select-lesson";
-import Wait from "./wait/wait";
-
 import { selectGameStage } from "../../redux/game/game.selectors";
 import { constantsUrls } from "../../helpers/constants";
+
+const ChoosePlayerRole = lazy(() => import("./choose-player-role/choose-player-role"));
+const Join = lazy(() => import("./join/join"));
+const LobbyScreen = lazy(() => import("./lobby/lobby"));
+const SelectLesson = lazy(() => import("./select-lesson/select-lesson"));
+const Wait = lazy(() => import("./wait/wait"));
 
 const Lobby: React.FC = () => {
     const navigate = useNavigate();

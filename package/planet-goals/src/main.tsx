@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
+import { Suspense } from "react";
 import { TolgeeProvider } from "@tolgee/react";
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
@@ -18,7 +19,9 @@ createRoot(document.getElementById("root")!).render(
         <BrowserRouter>
             <PersistGate persistor={persistor}>
                 <TolgeeProvider tolgee={tolgeeConfig} fallback={<Spinner/>}>
-                    <App />
+                    <Suspense fallback={<Spinner />}>
+                        <App />
+                    </Suspense>
                 </TolgeeProvider>
             </PersistGate>
         </BrowserRouter>

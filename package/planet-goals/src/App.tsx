@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, lazy } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTolgee } from "@tolgee/react";
 
@@ -7,26 +7,28 @@ import "./App.css";
 import { constantsUrls } from "./helpers/constants";
 import { selectCurrentUser } from "./redux/user/user.selectors";
 import { UserRoleEnum } from "./types/user";
-
-import ChooseGameMode from "./pages/choose-game-mode/choose-game-mode";
-import Confirm from "./pages/confirm/confirm";
-import EditProfile from "./pages/edit-profile/edit-profile";
-import FillRegisterData from "./pages/fill-register-data/fill-register-data";
-import Game from "./pages/game/game";
-import LandingPage from "./pages/landing-page/landing-page";
-import Lobby from "./pages/lobby/lobby";
-import Materials from "./pages/materials/materials";
-import RedirectAfterLogin from "./components/redirect-after-login/redirect-after-login";
-import RootContainer from "./components/root-container/root-container";
-import SignIn from "./pages/sign-in/sign-in";
-import SignUp from "./pages/sign-up/sign-up";
+import socketService from "./socket";
 
 import { checkCurrentUser } from "./helpers/events.functions";
 import { socketConnect } from "./redux/sockets/socket.actions";
 import { verifyTokenExpiration } from "./helpers/shared.functions";
 import { refreshTokenStart, signOut } from "./redux/user/user.actions";
-import UserProgress from "./pages/user-progress/user-progress";
-import socketService from "./socket";
+
+import RedirectAfterLogin from "./components/redirect-after-login/redirect-after-login";
+import RootContainer from "./components/root-container/root-container";
+import SignIn from "./pages/sign-in/sign-in";
+
+const LandingPage = lazy(() => import("./pages/landing-page/landing-page"));
+const ChooseGameMode = lazy(() => import("./pages/choose-game-mode/choose-game-mode"));
+const Confirm = lazy(() => import("./pages/confirm/confirm"));
+const EditProfile = lazy(() => import("./pages/edit-profile/edit-profile"));
+const FillRegisterData = lazy(() => import("./pages/fill-register-data/fill-register-data"));
+const Game = lazy(() => import("./pages/game/game"));
+const Lobby = lazy(() => import("./pages/lobby/lobby"));
+const Materials = lazy(() => import("./pages/materials/materials"));
+const UserProgress = lazy(() => import("./pages/user-progress/user-progress"));
+const SignUp = lazy(() => import("./pages/sign-up/sign-up"));
+
 
 function App() {
     const currentUser = useSelector(selectCurrentUser);
