@@ -8,12 +8,17 @@ import commonStyles from "../../../styles/common.module.scss";
 
 const ContentText: React.FC<ISubquestion> = (questionData) => {
     const { t } = useTranslate();
+    const descriptions = questionData?.description?.split("|") ?? [];
     return <div className={styles.questionContainer}>
         <div>
             {
                 questionData?.question && <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{t(questionData?.question)}</p>
             }
-            <p className={`${styles.basicText}`}>{parse(t(questionData?.description))}</p>
+            {
+                descriptions?.length && descriptions.map((item: string) => (<p className={`${styles.basicText}`}>
+                    {parse(t(item))}
+                </p>))
+            }
         </div>
     </div>
 }
