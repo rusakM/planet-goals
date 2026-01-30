@@ -1,98 +1,127 @@
-import React, { ChangeEvent, useState } from "react";
-import { useTranslate } from "@tolgee/react";
+import React, { ChangeEvent, useState, useRef, useEffect } from "react";
 import styles from "./select-input.module.scss";
 import errorStyles from "../../styles/errors.module.scss";
-import containerStyles from "../../styles/containers.module.scss";
-
-import PrimaryButton from "../primary-button.tsx/primary-button";
-import PrimaryContainer from "../primary-container/primary-container";
 
 export interface ISelectInputOption {
-    label: string,
-    value: string,
+	label: string;
+	value: string;
 }
 
 interface ISelectInputProps {
-    disabled?: boolean;
-    error?: boolean;
-    name?: string;
-    onChange?: (value: string) => void;
-    placeholder?: string;
-    options: ISelectInputOption[];
-    value?: string;
+	disabled?: boolean;
+	error?: boolean;
+	name?: string;
+	onChange?: (value: string) => void;
+	placeholder?: string;
+	options: ISelectInputOption[];
+	value?: string;
 }
 
 const SelectInput: React.FC<ISelectInputProps> = ({
-    disabled, error, name, onChange, placeholder, options, value
+	disabled,
+	error,
+	name,
+	onChange,
+	placeholder,
+	options,
+	value
 }) => {
-    const { t } = useTranslate();
-    const [ isOpened, setIsOpened ] = useState<boolean>(false);
-    const [ filteredList, setFilteredList ] = useState<ISelectInputOption[]>(options);
-    const [ filteredPhrase, setFilteredPhrase ] = useState<string>("");
-    const [ selectedValue, setSelectedValue ] = useState<string>(value || "");
+	const [isOpened, setIsOpened] = useState<boolean>(false);
+	const [filteredList, setFilteredList] = useState<ISelectInputOption[]>(options);
+	const [filteredPhrase, setFilteredPhrase] = useState<string>("");
+	const containerRef = useRef<HTMLDivElement>(null);
+	const inputRef = useRef<HTMLInputElement>(null);
 
-    const clearState = () => {
-        setIsOpened(false);
-        setFilteredPhrase("");
-        setFilteredList(options);
-        setSelectedValue(value || "");
-    }
+	// Obsługa kliknięcia poza komponentem
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+				setIsOpened(false);
+				setFilteredPhrase("");
+				setFilteredList(options);
+			}
+		};
 
-    const handleChange = () => {
-        setIsOpened(false);
-        onChange(selectedValue);
-        clearState();
-    }
+		if (isOpened) {
+			document.addEventListener("mousedown", handleClickOutside);
+		}
 
-    const handleSelect = ({ value }: ISelectInputOption) => {
-        setSelectedValue(value);
-    };
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [isOpened, options]);
 
-    const handleFilter = (event: ChangeEvent<HTMLInputElement>) => {
-        event.preventDefault();
-        setFilteredPhrase(event.target.value);
-        setFilteredList(event.target.value === "" 
-            ? options 
-            : options.filter(({ label }) =>
-                label.toLowerCase().includes(event.target.value.toLowerCase())
-            ));
-    }
+	// Aktualizacja listy filtrowanej gdy zmienią się opcje
+	useEffect(() => {
+		setFilteredList(options);
+	}, [options]);
 
-    return (
-        <>
-            <input className={`${styles.selectInput} ${error ? errorStyles.errorInput : ""}`} 
-                placeholder={placeholder}
-                value={value ? options.find((item) => item.value === value)?.label : ""}
-                name={name}
-                disabled={disabled}
-                onClick={() => setIsOpened(!disabled && true)}
-                onChange={handleChange}
-            />
-            {
-                isOpened && 
-                    <aside className={`${styles.selectContainer}`}>
-                        <div className={styles.searchBarContainer}>
-                            <input value={filteredPhrase} onChange={handleFilter} className={styles.selectInput}/>
-                        </div>
-                        <ul className={styles.list} >
-                            {
-                                filteredList.map(item => (
-                                    <li onClick={() => handleSelect(item)} className={`${styles.listItem}${item.value === selectedValue ? ` ${styles.listItemActive}` : ''}`}>
-                                        {item.label}
-                                    </li>
-                                ))
-                            }
-                        </ul>
-                        <PrimaryContainer direction="row" additionalClassess={`${styles.buttonsContainer} ${containerStyles.buttonsContainer}`}>
-                            <PrimaryButton size="small" color="orange" onClick={handleChange}>{t("main.confirm")}</PrimaryButton>
-                            <PrimaryButton size="small" color="white" onClick={() => clearState()}>
-                                {t("main.back")}
-                            </PrimaryButton>
-                        </PrimaryContainer>
-                    </aside>
-            }
-        </>
-    )
-}
+	const handleInputClick = () => {
+		if (!disabled) {
+			setIsOpened(true);
+			inputRef.current?.focus();
+		}
+	};
+
+	const handleSelect = (option: ISelectInputOption) => {
+		if (onChange) {
+			onChange(option.value);
+		}
+		setIsOpened(false);
+		setFilteredPhrase("");
+		setFilteredList(options);
+	};
+
+	const handleFilter = (event: ChangeEvent<HTMLInputElement>) => {
+		const phrase = event.target.value;
+		setFilteredPhrase(phrase);
+		setFilteredList(
+			phrase === ""
+				? options
+				: options.filter(({ label }) =>
+					label.toLowerCase().includes(phrase.toLowerCase())
+				)
+		);
+	};
+
+	const displayValue = isOpened
+		? filteredPhrase
+		: options.find((item) => item.value === value)?.label || "";
+
+	return (
+		<div ref={containerRef} className={styles.selectContainer}>
+			<input
+				ref={inputRef}
+				className={`${styles.selectInput} ${error ? errorStyles.errorInput : ""}`}
+				placeholder={placeholder}
+				value={displayValue}
+				name={name}
+				disabled={disabled}
+				onClick={handleInputClick}
+				onChange={handleFilter}
+				autoComplete="off"
+			/>
+			{isOpened && (
+				<ul className={styles.selectDropdown}>
+					{filteredList.length > 0 ? (
+						filteredList.map((option) => (
+							<li
+								key={option.value}
+								className={`${styles.selectOption} ${
+									option.value === value ? styles.selectedOption : ""
+								}`}
+								onClick={() => handleSelect(option)}
+							>
+								{option.label}
+							</li>
+						))
+					) : (
+						<li className={styles.selectOptionEmpty}>Brak wyników</li>
+					)}
+				</ul>
+			)}
+		</div>
+	);
+};
 
 export default SelectInput;

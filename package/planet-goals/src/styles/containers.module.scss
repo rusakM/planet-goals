@@ -16,6 +16,33 @@
     }
 }
 
+.bottomButtonsContainer {
+	gap: 1em;
+    padding: 1.5em 0.5em 0.5em 0.5em;
+	flex-direction: column;
+	position: relative;
+	bottom: 0;
+	margin-top: auto;
+	margin-bottom: 25px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+	@media (min-width: breakpoints.$desktop) {
+		gap: 2.5em;
+		padding-top: 3em;
+		flex-direction: row;
+	}
+}
+
+.basicGap {
+    gap: 1em;
+
+    @media (min-width: breakpoints.$desktop) {
+        gap: 36px;
+    }
+}
+
 .halfScreenContainer {
     width: 50%;
     background-color: inherit;

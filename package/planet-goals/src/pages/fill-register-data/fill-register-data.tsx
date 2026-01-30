@@ -107,7 +107,7 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
 
     return (
         <PageContainer>
-            <PrimaryContainer direction="column">
+            <PrimaryContainer direction="column" additionalClassess={styles.container}>
                 <img
                     src={SmilingEarthImg}
                     alt="Sign in"
@@ -171,20 +171,14 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                         {isLoadingData && <Spinner />}
                         {signUpError && <p>{signUpError}</p>}
                     </PrimaryContainer>
-                    <PrimaryContainer
-                        direction={isMobile ? "column" : "row"}
-                        additionalClassess={isMobile 
-                            ? `${containerStyles.buttonsContainer} ${commonStyles.bottom} ${signInStyles.bottomButtons}`
-                            : signInStyles.bottomButtons
-                        }
-                    >
+                    <div className={isMobile ? containerStyles.bottomButtonsContainer : `${commonStyles.row} ${commonStyles.centerFlex} ${containerStyles.basicGap} ${containerStyles.buttonsContainer}`}>
                         <PrimaryButton color="orange" onClick={handleSubmit} type={buttonstype}>
                             {t("main.confirm")}
                         </PrimaryButton>
                         <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)} type={buttonstype}>
                             {t("main.back")}
                         </PrimaryButton>
-                    </PrimaryContainer>
+                    </div>
             </PrimaryContainer>
         </PageContainer>
     );

@@ -12,7 +12,7 @@ import PrimaryContainer from '../../components/primary-container/primary-contain
 import PrimaryButton, { TButtonSize } from '../../components/primary-button.tsx/primary-button';
 import TextInput from '../../components/text-input/text-input';
 import Footer from '../../components/footer/footer';
-import SelectInput, {ISelectInputOption} from '../../components/select-input/select-input';
+import SelectInput, { ISelectInputOption } from '../../components/select-input/select-input';
 import ToggleSwitch from '../../components/toggle-switch/toggle-switch';
 import Popup from '../../components/popup/popup';
 import Spinner from '../../components/spinner/spinner.component';

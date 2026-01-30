@@ -1,3 +1,16 @@
+@use "@styles/breakpoints.scss";
+
+.container {
+    min-height: breakpoints.$max-height;
+    margin: -50px 0;
+    flex-wrap: nowrap;
+    padding-top: 50px;
+
+    @media (min-width: breakpoints.$desktop) {
+        margin: -100px 0;
+    }
+}
+
 .paddingInputLeft {
     padding-left: 5px;
 }
