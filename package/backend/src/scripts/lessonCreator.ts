@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-import { ConstantsGame } from "src/core/constants";
+import { ConstantsGame } from "../core/constants";
 import { lessonService } from "../services";
 //import inputData from './inputData';
 

@@ -31,7 +31,8 @@ import {
     toggleHeaderMenuHidden,
     toggleLanguagesMenuHidden,
 } from "../../redux/dropdown-menu/dropdown-menu.actions";
-import { signOut } from "../../redux/user/user.actions";
+import { signOut, userEditStart } from "../../redux/user/user.actions";
+import { IUser } from "../../types/user";
 
 //helpers
 
@@ -41,6 +42,7 @@ type MainPropsT = {
     hideAllMenus?: () => void;
     isHeaderMenuHidden?: boolean;
     isLanguagesMenuHidden?: boolean;
+    saveSelectedLanguage?: (language: IUser['userInterfaceLanguage']) => void;
     signOutStart?: () => void;
     toggleHeaderMenu?: () => void;
     toggleLanguagesMenu?: () => void;
@@ -59,6 +61,7 @@ const Header: React.FC<MainPropsT> = ({
     hideAllMenus,
     isHeaderMenuHidden,
     isLanguagesMenuHidden,
+    saveSelectedLanguage,
     signOutStart,
     toggleHeaderMenu,
     toggleLanguagesMenu,
@@ -122,6 +125,7 @@ const Header: React.FC<MainPropsT> = ({
     const selectLanguage = (language: constantsTranslations.TLocale) => {
         tolgeeConfig.changeLanguage(language);
         localStorage.setItem("locale", language);
+        if (currentUser?._id) saveSelectedLanguage(language);
         toggleLanguagesMenu();
     };
 
@@ -232,6 +236,7 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = (dispatch) => ({
     hideAllMenus: () => dispatch(hideAll()),
+    saveSelectedLanguage: (language: IUser['userInterfaceLanguage']) => dispatch(userEditStart({ userInterfaceLanguage: language })),
     signOutStart: () => dispatch(signOut()),
     toggleHeaderMenu: () => dispatch(toggleHeaderMenuHidden()),
     toggleLanguagesMenu: () => dispatch(toggleLanguagesMenuHidden()),

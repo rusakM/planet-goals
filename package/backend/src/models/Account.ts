@@ -25,7 +25,7 @@ export interface IAccountBasic {
     latestUserAgentData?: string;
     role?: ConstantsGlobal.Account.ROLES_ENUM;
     rodoAgreement?: boolean;
-    userInterfaceLanguage?: string;
+    userInterfaceLanguage?: ConstantsGlobal.App.USER_INTERFACE_LANGUAGES;
     verificationCodes?: IVerificationCodes[];
 }
 export interface IAccount extends IAccountBasic, SchemasGlobal.Schemas.IDocument {}
@@ -61,7 +61,7 @@ export const accountValidators = {
         .equal(...Object.values(ConstantsGlobal.Account.ROLES_ENUM))
         .default(ConstantsGlobal.Account.ROLES_ENUM.STUDENT)
         .optional(),
-    userInterfaceLanguage: Joi.string().optional(),
+    userInterfaceLanguage: Joi.string().equal(...Object.values(ConstantsGlobal.App.USER_INTERFACE_LANGUAGES)).allow('', null).optional(),
 };
 
 const AccountSchema = new Schema<IDBAccount>(

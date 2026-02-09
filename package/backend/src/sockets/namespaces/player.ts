@@ -3,7 +3,7 @@ import { playerGameService, gameManagerService, accountService } from '../../ser
 import { playerEmitter } from '../../services/socket.service';
 import { debugMiddleware } from '../middleware/debug';
 import { socketAuthMiddleware } from '../middleware/auth';
-import { IExtendedSocket } from 'src/shared/defs';
+import { IExtendedSocket } from '../../shared/defs';
 import * as playerTypes from '../types/player.types';
 import { appSocket } from '../../shared/route';
 import { ConstantsGame } from '../../core/constants';

@@ -1,6 +1,6 @@
 import { createTransport, TransportOptions, SendMailOptions } from 'nodemailer';
 import { accountService, templateService } from '.';
-import { ConstantsEnv } from '../core/constants';
+import { ConstantsEnv, ConstantsGlobal } from '../core/constants';
 
 export class Email {
     protected to: string;
@@ -43,8 +43,10 @@ export class Email {
         await this.newTransport().sendMail(options);
     }
 
-    async sendVerificationCode(verificationCode: string) {
-        const [template, text] = await templateService.Login.renderLogin('en', verificationCode);
-        await this.send(template, 'Your PlanetGoals login code', text);
+    async sendVerificationCode(verificationCode: string, locale: ConstantsGlobal.App.USER_INTERFACE_LANGUAGES = ConstantsGlobal.App.USER_INTERFACE_LANGUAGES.en, register: boolean = false) {
+        const [template, text, subject] = register 
+            ? await templateService.Register.renderRegister(locale, verificationCode)
+            : await templateService.Login.renderLogin(locale, verificationCode);
+        await this.send(template, subject, text);
     }
 }

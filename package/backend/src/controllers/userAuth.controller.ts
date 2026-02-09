@@ -7,14 +7,13 @@ import { security } from '../shared/security';
 import * as accountValidation from '../middlewares/validators/userAuth';
 
 import {
-    //mailService,
     accountService,
     mailService,
 } from '../services';
 
-import { ConstantsGlobal, ConstantsEnv } from '../core/constants';
+import { ConstantsGlobal } from '../core/constants';
 import * as errorsAdapter from '../core/errorAdapter';
-import { IAccount } from 'src/models/Account';
+import { IAccount } from '../models/Account';
 
 async function register(req: Request, res: Response) {
     let user = await accountService.DB.findByEmail(req.body?.email?.toLowerCase());
@@ -35,10 +34,10 @@ async function register(req: Request, res: Response) {
 
         user = await accountService.DB.create(newUser);
     } else {
-        await accountService.DB.update(user._id, { verificationCodes: [{ createdAt: new Date().toISOString(), value: verificationCode }, ...(user?.verificationCodes || [])].slice(0, ConstantsGlobal.App.VERIFICATION_CODES_ARRAY_LENGTH) });
+        user = await accountService.DB.update(user._id, { verificationCodes: [{ createdAt: new Date().toISOString(), value: verificationCode }, ...(user?.verificationCodes || [])].slice(0, ConstantsGlobal.App.VERIFICATION_CODES_ARRAY_LENGTH) });
     }
 
-    new mailService.Email(user).sendVerificationCode(verificationCode);
+    new mailService.Email(user).sendVerificationCode(verificationCode, user?.userInterfaceLanguage);
 
     const responseBody = {
         message: 'Verification required',
@@ -63,7 +62,7 @@ async function login(req: Request, res: Response) {
     // });
 
     // await sendEmail(req.body.email, 'Account verification', verificationCode);
-    new mailService.Email(user).sendVerificationCode(verificationCode);
+    new mailService.Email(user).sendVerificationCode(verificationCode, user.userInterfaceLanguage, false);
     const userAccountUpdate: IAccount = {
         verificationCodes: [{ createdAt: new Date().toISOString(), value: verificationCode }, ...(user?.verificationCodes || [])].slice(0, ConstantsGlobal.App.VERIFICATION_CODES_ARRAY_LENGTH),
     };
