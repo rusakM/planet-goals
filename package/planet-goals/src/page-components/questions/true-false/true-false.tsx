@@ -9,8 +9,6 @@ import commonStyles from "../../../styles/common.module.scss";
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 import { constantsGame } from "../../../helpers/constants";
 
-const colors: TButtonColor[] = ["red", "green"];
-
 const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers, spectatorMode}) => {
     const { t } = useTranslate();
     const [ answer, setAnswer ] = useState(false);
@@ -47,12 +45,9 @@ const TrueFalse: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAct
     }
 
     const getCurrentColor = (ans: boolean): TButtonColor => {
-        let color: TButtonColor = colors[Number(ans)];
-        if (!answered || (answered && answer === ans && !showAnswers)) return color;
-        else color = "white";
-        if (showAnswers) color = check(ans) ? colors[Number(ans)] : "white"; 
-
-        return color;
+        if (showAnswers && spectatorMode) return check(ans) ? constantsGame.DEFAULT_BTN_COLOR : "white"; 
+        if (!answered || (answered && answer !== ans)) return "white";
+        return constantsGame.DEFAULT_BTN_COLOR;
     }
 
     return <div className={styles.questionContainer}>

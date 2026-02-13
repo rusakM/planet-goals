@@ -9,7 +9,6 @@ import { getFeedback } from "../../../helpers/game";
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 import { constantsGame } from "../../../helpers/constants";
 
-const colors: TButtonColor[] = ["blue", "green", "orange", "red"];
 const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers, spectatorMode}) => {
     const { t } = useTranslate();
     const translatedAnswers = useTranslatedAnswers(questionData?.answers);
@@ -52,17 +51,20 @@ const SingleChoose: React.FC<ISubquestionComponent> = ({questionData, sendAnswer
         sendAnswerAction(questionData.answers[index]);
     }
 
+    const getCurrentColor = (index: number): TButtonColor => {
+        if (showAnswers && spectatorMode) return check(index) ? constantsGame.DEFAULT_BTN_COLOR : "white";
+        return (answer !== index) ? "white" : constantsGame.DEFAULT_BTN_COLOR;
+    }
+
     return <div className={styles.questionContainer}>
         <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{t(questionData?.question)}</p>
         <div className={`${styles.buttonsContainer}`}>
             {
                 translatedAnswers?.map((ans, index) => {
-                    let color: TButtonColor = (answer === -1 || answer === index) ? colors[index % 4] : "white";
                     const feedback = getFeedback(showFeedbackCorrect ,showAnswers, index, check);
-                    if (showAnswers) color = check(index) ? colors[index % 4] : "white";
                     return <div className={styles.buttonContainer} key={index}>
                         <GameButton 
-                            color={color}
+                            color={getCurrentColor(index)}
                             size="thin" 
                             additionalClasses={commonStyles.leftSideText}
                             onClick={() => onSelect(index)} feedback={feedback}

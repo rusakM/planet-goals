@@ -1,3 +1,5 @@
+import { TButtonColor } from "../../components/game-button/game-button";
+
 export const FEEDBACK_INCORRECT_TIME = 1500;
 export const FEEDBACK_CORRECT_TIME = 2500;
 export const FEEDBACK_TIME = FEEDBACK_CORRECT_TIME + FEEDBACK_INCORRECT_TIME;
@@ -5,6 +7,8 @@ export const FEEDBACK_FALLBACK = 1000;
 export const FEEDBACK_SERVER_FALLBACK = 200;
 
 export const DEFAULT_WAITING_TIME_FOR_START_GAME_SEK = 10;
+export const DEFAULT_BTN_COLOR: TButtonColor = "blue";
+export const DEFAULT_BTN_COLORS: TButtonColor[] = ["red", "orange", "blue", "green"];
 
 export const LESSONS_IDS = [
     '6828addbd6da31b9e245207b', // 1

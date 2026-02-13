@@ -10,8 +10,6 @@ import GameButton, { TButtonColor } from "../../../components/game-button/game-b
 import { constantsGame } from "../../../helpers/constants";
 import { useTranslatedAnswers } from "../../../hooks/useTranslatedAnswers";
 
-const colors: TButtonColor[] = ["orange", "blue"];
-
 const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers, spectatorMode }) => {
     const { t } = useTranslate();
     const translatedAnswers = useTranslatedAnswers(questionData?.answers);
@@ -50,13 +48,11 @@ const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, se
         sendAnswerAction(questionData.answers[index]);
     }
 
-    const getCurrentColor = (index: number) => {
-        let color: TButtonColor = colors[index % 2];
-        if (!answered || (answered && answer === index && !showAnswers)) return color;
-        else color = "white";
-        if (showAnswers) color = check(index) ? colors[index % 2] : "white"; 
+    const getCurrentColor = (index: number): TButtonColor => {
+        if (showAnswers && spectatorMode) return check(index) ? constantsGame.DEFAULT_BTN_COLOR : "white"; 
+        if (!answered || (answered && answer !== index)) return "white";
+        return constantsGame.DEFAULT_BTN_COLOR;
 
-        return color;
     }
 
     return <div className={styles.questionContainer}>

@@ -9,8 +9,6 @@ import { useTranslatedAnswers } from "../../../hooks/useTranslatedAnswers";
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 import { constantsGame } from "../../../helpers/constants";
 
-const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
-
 const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAction, showAnswers, spectatorMode }) => {
     const { t } = useTranslate();
     const translatedAnswers = useTranslatedAnswers(questionData?.answers);
@@ -66,17 +64,20 @@ const MultiChoose: React.FC<ISubquestionComponent> = ({ questionData, sendAnswer
         if (tempAnswerNo >= correctAnswersParsed.length) sendAnswerAction(JSON.stringify(tempAnswers.filter(ans => ans != -1)));
     }   
 
+    const getCurrentColor = (index: number): TButtonColor => {
+        if (showAnswers && spectatorMode) return check(index) ? constantsGame.DEFAULT_BTN_COLOR : "white";
+        return (!answers.includes(index)) ? "white" : constantsGame.DEFAULT_BTN_COLOR;
+    }
+
     return <div className={styles.questionContainer}>
         <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{t(questionData?.question)}</p>
         <div className={`${styles.buttonsContainer}`}>
             {
                 translatedAnswers?.map((ans, index) => {
-                    let color: TButtonColor = (!answers.includes(index)) ? "white" : colors[index % 4];
                     const feedback = getFeedback(showFeedbackCorrect, showAnswers, index, check);
-                    if (showAnswers) color = check(index) ? colors[index % 4] : "white";
                     return <div className={styles.buttonContainer} key={index}>
                         <GameButton 
-                            color={color} 
+                            color={getCurrentColor(index)} 
                             size="thin" 
                             additionalClasses={commonStyles.leftSideText} 
                             onClick={() => mark(index)} feedback={feedback}

@@ -14,7 +14,7 @@ $dark-green: #8FAC94;
 $white: white;
 $dark-white: #ECEDEC;
 
-$feedback-correct: #71B44B;
-$feedback-correct-dark: #519E25;
-$feedback-incorrect: #E84650;
-$feedback-incorrect-dark: #CF323C;
+$feedback-correct: $green;
+$feedback-correct-dark: $dark-green;
+$feedback-incorrect: $red;
+$feedback-incorrect-dark: $dark-red;

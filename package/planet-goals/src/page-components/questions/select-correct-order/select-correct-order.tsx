@@ -7,10 +7,9 @@ import { useTranslatedAnswers } from "../../../hooks/useTranslatedAnswers";
 import styles from "../questions.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 
-import GameButton, { TButtonColor, TFeedbackMode } from "../../../components/game-button/game-button";
+import GameButton, { TFeedbackMode } from "../../../components/game-button/game-button";
 import { constantsGame } from "../../../helpers/constants";
 
-const colors: TButtonColor[] = ["red", "orange", "blue", "green"];
 const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, sendAnswerAction, showAnswers, spectatorMode }) => {
     const { t } = useTranslate();
     const translatedAnswers = useTranslatedAnswers(questionData?.answers);
@@ -64,7 +63,7 @@ const SelectCorrectOrder: React.FC<ISubquestionComponent> = ({questionData, send
     }
 
     const getCurrentColor = (index: number) => {
-        if (finalAnswer.includes(index.toString()) || spectatorMode) return colors[index % 4];
+        if (finalAnswer.includes(index.toString()) || spectatorMode) return constantsGame.DEFAULT_BTN_COLOR;
         return "white"; 
     }
 
