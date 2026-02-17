@@ -120,7 +120,7 @@ async function removePlayer(req: Request, res: Response) {
     let game = await gameService.DB.Find.byId(gameId);
     let playerGames: playerGameService.Model.IPlayerGame[];
     if (!game) throw errorsAdapter.Game.createError(errorsAdapter.Game.ErrorsEnum.GAME_NOT_FOUND);
-    if (game.owner !== userId || playerId === userId) throw errorsAdapter.Global.createError(errorsAdapter.Global.ErrorsEnum.INSUFFICIENT_PERMISSIONS);
+    if (game.owner !== userId && playerId !== userId) throw errorsAdapter.Global.createError(errorsAdapter.Global.ErrorsEnum.INSUFFICIENT_PERMISSIONS);
 
     const players = game.players.filter(({ _id }) => _id.toString() !== playerId);
     [game, playerGames] = await Promise.all([gameService.DB.update(gameId, { players }), playerGameService.DB.Find.byMultipleKeys({ gameId })]);

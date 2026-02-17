@@ -54,6 +54,13 @@ const LobbyComponent: React.FC = () => {
     const leaveLobbyCancel = () => setIsLeaving(false);
 
     const leaveLobbyConfirm = () => {
+        if (!isGameCreatedByCurrentUser) {
+            dispatch(removePlayerStart({
+                playerId: currentUser._id,
+                gameId: currentGame._id
+            }));
+        }
+        
         setTimeout(() => dispatch(resetGame()), 500);
         navigate(constantsUrls.Main.startLessons);
     }  

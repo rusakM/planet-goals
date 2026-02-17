@@ -7,7 +7,6 @@ import "./App.css";
 import { constantsUrls } from "./helpers/constants";
 import { selectCurrentUser } from "./redux/user/user.selectors";
 import { UserRoleEnum } from "./types/user";
-import socketService from "./socket";
 
 import { checkCurrentUser } from "./helpers/events.functions";
 import { socketConnect } from "./redux/sockets/socket.actions";
@@ -45,15 +44,18 @@ function App() {
         const token = localStorage.getItem("token");
         if (token && currentUser && !verifyTokenExpiration(token)) {
             dispatch(refreshTokenStart());
+            dispatch(socketConnect(constantsUrls.Socket.url, constantsUrls.Socket.namespace));
         } else if (!token && currentUser) {
             dispatch(signOut());
         }
     }, [currentUser, dispatch])
 
-    setTimeout(() => {
-        if (!currentUser || socketService.isConnected()) return;
+    useEffect(() => {
+        if (!currentUser || !localStorage.getItem("token")) return;
         dispatch(socketConnect(constantsUrls.Socket.url, constantsUrls.Socket.namespace));
-    }, 10e3);
+    }, [ currentUser ])
+
+
 
     return (
         <div lang={tolgee.getLanguage()}>
