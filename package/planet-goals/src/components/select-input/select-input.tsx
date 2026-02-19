@@ -98,6 +98,7 @@ const SelectInput: React.FC<ISelectInputProps> = ({
 				name={name}
 				disabled={disabled}
 				onClick={handleInputClick}
+				onFocus={handleInputClick}
 				onChange={handleFilter}
 				autoComplete="off"
 			/>
