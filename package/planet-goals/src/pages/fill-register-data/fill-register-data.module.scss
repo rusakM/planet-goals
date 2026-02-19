@@ -8,6 +8,8 @@
 
     @media (min-width: breakpoints.$desktop) {
         margin: -100px 0;
+        justify-content: start;
+        padding-top: 100px;
     }
 }
 
@@ -21,4 +23,10 @@
 
 .roleButtonsContainer {
     gap: 10px;
+}
+
+.controlsContainer {
+    @media (min-width: breakpoints.$desktop) {
+        padding-bottom: 3em;
+    }
 }

@@ -120,7 +120,7 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
                 </p>
                     <PrimaryContainer
                     direction="column"
-                    additionalClassess={`${commonStyles.padding1em} ${containerStyles.buttonsContainer}`}
+                    additionalClassess={`${commonStyles.padding1em} ${containerStyles.buttonsContainer} ${styles.controlsContainer}`}
                     >
                         <PrimaryContainer direction="row" additionalClassess={''}>
                             <div className={`${containerStyles.halfScreenContainer} ${styles.paddingInputRight}`}>
