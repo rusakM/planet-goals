@@ -151,7 +151,7 @@ fetch_translations() {
 
     while IFS= read -r -d '' json_file; do
         filename="$(basename "$json_file")"
-        output_path="$CATALOGLOCATION/$filename"
+        output_path="$TRANSLATIONS_DIR/$filename"
 
         if [[ "$jq_available" == true ]] && jq -c '.' "$json_file" > "$output_path"; then
             log_info "  ✓ $filename (zminifikowany)"
