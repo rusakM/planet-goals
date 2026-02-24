@@ -5,7 +5,7 @@ services:
             context: .
             dockerfile: Dockerfile
         image: node:22
-        container_name: planet-goals-backend
+        container_name: 'planet-goals-backend-${APP_MODE}'
         restart: always
         ports:
             - '${PORT}:${PORT}'
@@ -16,13 +16,22 @@ services:
             - ${TOLGEE_CATALOG}:${TOLGEE_CATALOG}
         depends_on:
             - redis
+        networks:
+            - backend
 
     redis:
         image: redis:7-alpine
-        container_name: planet-goals-redis
+        container_name: 'planet-goals-redis-${APP_MODE}'
         restart: always
         ports:
             - '${REDIS_HOST_PORT}:${REDIS_HOST_PORT}'
         command: redis-server --appendonly yes --port ${REDIS_HOST_PORT}
         volumes:
             - ${REDIS_CATALOG}:/data
+        networks:
+            - backend
+
+networks:
+    backend:
+        driver: bridge
+        name: 'backend-${APP_MODE}'
