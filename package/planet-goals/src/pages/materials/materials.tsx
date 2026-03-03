@@ -44,11 +44,18 @@ const Materials: React.FC<IMaterials> = () => {
             header: t("manuals.manual02.header"),
             resizeAction: () => openFlipbook(1),
         },
+        {
+            description: t("manuals.manual02.info"),
+            downloadAction: () => downloadMaterial(2),
+            header: t("manuals.manual03.header"),
+            resizeAction: () => openFlipbook(2),
+        },
     ];
 
     const documentsUrls: string[] = [
         '/cdn/materials/manual_01.pdf',
-        '/cdn/materials/manual_02.pdf'
+        '/cdn/materials/manual_02.pdf',
+        '/cdn/materials/manual_03.pdf',
     ]
 
     const downloadMaterial = (num: number) => downloadFile(documentsUrls[num]);
