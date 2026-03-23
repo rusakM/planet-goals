@@ -1,5 +1,7 @@
 import React from "react";
 
+export const getCurrentLocale = (): string => localStorage.getItem("locale");
+
 export const formatNewLines = (text: string) => (
     <>
         {text.split("<br>").map((line, index) => (
@@ -15,7 +17,7 @@ export const parseBoldTags = (text: string, additionalClassess?: string) => (
     <>
         {text.split(/<b>|<\/b>/g).map((part, index) => (
             <React.Fragment key={index}>
-                {index % 2 === 1 ? <strong className={additionalClassess || ""} lang={localStorage.getItem("locale")}>{part}</strong> : part}
+                {index % 2 === 1 ? <strong className={additionalClassess || ""} lang={getCurrentLocale()}>{part}</strong> : part}
             </React.Fragment>
         ))}
     </>

@@ -34,6 +34,7 @@ import SmilingEarthImg from "../../assets/login-page/smiling_earth.svg";
 import { createStructuredSelector } from "reselect";
 import { constantsUrls } from "../../helpers/constants";
 import { UserValidators } from "../../helpers/validators.ts/user";
+import { getCurrentLocale } from "../../translations/utils";
 
 
 interface ISignUp {
@@ -86,13 +87,8 @@ const SignUp: React.FC<ISignUp> = ({
                 return;
             }
             setLoginStarted(true);
-            await signUp({ email });
-            console.log("here1", loginError);
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error) {
-            console.log("here err");
-            //console.error(error);
-        }
+            signUp({ email, userInterfaceLanguage: getCurrentLocale() });
+        } catch { /* empty */ }
     };
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

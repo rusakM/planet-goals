@@ -1,5 +1,6 @@
 import React, { MouseEvent } from "react";
 import styles from "./primary-button.module.scss";
+import { getCurrentLocale } from "../../translations/utils";
 
 export type TButtonColor = "orange" | "white" | "blue" | "red";
 export type TButtonSize = "regular" | "small" | "desktopSmall";
@@ -28,13 +29,12 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
     title,
     type = "default"
 }) => {
-    const locale = localStorage.getItem("locale");
     return (
         <button
             className={`${styles.button} ${styles[color]} ${size !== 'regular' ? styles[size] : ''}${selected ? ` ${styles[`selected${color}`]}` : ''}${additionalClasses ? ` ${additionalClasses}` : ''}${type !== "default" ? ` ${styles[type]}` : ''}`}
             onClick={onClick}
             disabled={disabled}
-            lang={locale}
+            lang={getCurrentLocale()}
             title={title}
         >
             {children}

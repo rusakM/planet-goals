@@ -1,6 +1,7 @@
 import React, { MouseEvent, useEffect, useRef, useState } from "react";
 import styles from "./game-button.module.scss";
 import { useDeviceType } from "../../helpers/responsiveContainers";
+import { getCurrentLocale } from "../../translations/utils";
 
 export type TButtonColor = "orange" | "blue" | "green" | "red" | "white";
 export type TButtonSize = "default" | "thin";
@@ -54,7 +55,7 @@ const GameButton: React.FC<GameButtonProps> = ({
     selected,
     unchangable = false,
 }) => {
-    const locale = localStorage.getItem("locale");
+    const locale = getCurrentLocale();
     const { isMobile } = useDeviceType();
     const [multiLines, setMultiLines] = useState(false);
     const buttonRef = useRef<HTMLButtonElement>(null);

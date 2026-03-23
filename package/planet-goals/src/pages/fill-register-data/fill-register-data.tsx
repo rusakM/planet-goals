@@ -32,6 +32,7 @@ import signInStyles from "../sign-in/sign-in.module.scss";
 
 import SmilingEarthImg from "../../assets/login-page/smiling_earth.svg";
 import { constantsUrls } from "../../helpers/constants";
+import { getCurrentLocale } from "../../translations/utils";
 
 interface IFillRegisterData {
     currentUser: IUser,
@@ -62,7 +63,7 @@ const FillRegisterData: React.FC<IFillRegisterData> = ({
         lastName: "",
         rodoAgreement: true,
         role: UserRoleEnum.STUDENT,
-        userInterfaceLanguage: localStorage.getItem("locale") || "en"
+        userInterfaceLanguage: getCurrentLocale() || "en"
     })
 
     const [validateRegisterForm, setValidateRegisterForm] = useState({
