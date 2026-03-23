@@ -81,7 +81,7 @@
 
     @include mixins.desktop-hover {
         &:not(.unchangable):hover {
-            background-color: colors.$light-blue;
+            background-color: game-colors.$gradient-blue;
         }
     }
 }
