@@ -10,6 +10,7 @@
     justify-content: space-around;
     height: 100%;
     max-width: 1440px;
+    width: 100%;
 }
 
 .headerText {
@@ -62,6 +63,16 @@
     @media (min-width: breakpoints.$desktop) {
         flex-direction: row;
         flex-wrap: wrap;
+    }
+}
+
+.contentText {
+    & > h1 {
+        font-size: 26px;
+
+        @media (min-width: breakpoints.$desktop) {
+            font-size: 30px;
+        }
     }
 }
 

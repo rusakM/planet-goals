@@ -4,6 +4,7 @@ import { ISubquestionComponent } from "../questions.types";
 import { getFeedback } from "../../../helpers/game";
 
 import styles from "../questions.module.scss";
+import selectCorrectAnswerStyles from "./select-correct-answer.module.scss";
 import commonStyles from "../../../styles/common.module.scss";
 
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
@@ -60,7 +61,7 @@ const SelectCorrectAnswer: React.FC<ISubquestionComponent> = ({ questionData, se
         <div className={`${styles.buttonsContainer}`}>
             {
                 translatedAnswers?.map((ans, index) => 
-                    <div className={styles.buttonContainer} key={index}>
+                    <div className={`${styles.buttonContainer} ${selectCorrectAnswerStyles.buttonsRow}`} key={index}>
                         <GameButton 
                             color={getCurrentColor(index)} 
                             size="thin"

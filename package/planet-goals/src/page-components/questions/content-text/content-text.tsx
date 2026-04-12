@@ -15,7 +15,7 @@ const ContentText: React.FC<ISubquestion> = (questionData) => {
                 questionData?.question && <p className={`${styles.headerText} ${commonStyles.centeredText}`}>{t(questionData?.question)}</p>
             }
             {
-                descriptions?.length && descriptions.map((item: string) => (<p className={`${styles.basicText}`}>
+                descriptions?.length && descriptions.map((item: string) => (<p className={`${styles.basicText} ${styles.contentText}`}>
                     {parse(t(item))}
                 </p>))
             }

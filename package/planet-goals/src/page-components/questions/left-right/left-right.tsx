@@ -143,7 +143,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
     };
 
     return (
-        <div className={styles.leftRightContainer}>
+        <div className={styles.questionContainer}>
             <p className={`${styles.headerText} ${commonStyles.centeredText}`}>
                 {t(questionData?.question)}
             </p>
