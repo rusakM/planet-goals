@@ -45,7 +45,9 @@ const Materials: React.FC = () => {
 	const getMaterialUrl = (materialNumber: number): string => {
 		const material = materials.find(m => m.materialNumber === materialNumber);
 		if (!material) return '';
-		return `${constantsUrls.Materials.cdnMaterials}/${material.names[getCurrentLocale()]}`;
+		let materialName = material.names[getCurrentLocale()];
+		if (!materialName) materialName = material.names["en"];
+		return `${constantsUrls.Materials.cdnMaterials}/${materialName}`;
 	};
  
 	const downloadMaterial = (materialNumber: number): void => {
