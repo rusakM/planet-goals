@@ -1,3 +1,3 @@
-import { DbConnector as dbConnector } from './dbConnector';
+import { DbConnector as dbConnector, DbConnectorCache as dbConnectorCache } from './dbConnector';
 
-export { dbConnector };
+export { dbConnector, dbConnectorCache };

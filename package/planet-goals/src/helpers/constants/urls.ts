@@ -37,12 +37,17 @@ export const Main = {
     myProgress: "/my-progress",
     materials: "/materials",
     myProfile: "/my-profile",
-}
+};
+
+export const Materials = {
+    cdnMaterials: "/cdn/materials",
+    getMaterials: "/api/materials",
+};
 
 export const Socket = {
     namespace: "/socket.io",
     url: "/player",
-}
+};
 
 export const User = {
     checkEmail: "/api/user/auth/login",

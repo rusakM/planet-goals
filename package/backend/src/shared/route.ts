@@ -65,6 +65,10 @@ export namespace appRoute {
             lesson: {
                 get: `${servicesPrefix.api}/lesson/:lessonId`,
             },
+
+            material: {
+                get: `${servicesPrefix.api}/materials`
+            }
         };
     }
 }

@@ -4,9 +4,10 @@ import * as gameService from './game.service';
 import * as lessonService from './lesson.service';
 import * as templateService from './template.service';
 import * as mailService from './mail.service';
+import * as materialService from './material.service';
 import * as playerGameService from './playerGame.service';
 import * as socketService from './socket.service';
 import * as gameManagerService from './gameManager.service';
 import * as translationsService from './translationsService';
 
-export { accountService, fileService, gameManagerService, gameService, lessonService, mailService, playerGameService, socketService, templateService, translationsService };
+export { accountService, fileService, gameManagerService, gameService, lessonService, mailService, materialService, playerGameService, socketService, templateService, translationsService };
