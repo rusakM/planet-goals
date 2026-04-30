@@ -2,14 +2,17 @@
     "compilerOptions": {
         "target": "ES2022",
         "module": "ESNext",
-        "outDir": "dist",
+        "outDir": "./dist",
         "esModuleInterop": true,
-        "moduleResolution": "Node",
         "sourceMap": true,
-        "baseUrl": ".",
+        "rootDir": "./",
         "isolatedModules": true,
         "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "strictNullChecks": false,
+        "strictBindCallApply": false,
+        "strictFunctionTypes": false,
+        "useUnknownInCatchVariables": false
     },
     "include": ["src/**/*"],
     "ts-node": {
