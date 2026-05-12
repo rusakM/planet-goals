@@ -58,8 +58,9 @@ export interface IPlayerJoin extends IBasicGameSocketType {
 }
 
 export type TConnect = { 
-	namespace: string,
 	url: string,
+	reconnect?: boolean,
+	token?: string,
 };
 
 export type TSocketEmit = { 

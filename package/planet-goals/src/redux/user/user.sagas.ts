@@ -75,7 +75,7 @@ function* refreshToken() {
         if (res?.token) {
             localStorage.setItem("token", res.token);
             yield put(refreshTokenSuccess(res.token));
-            yield put(socketConnect(constantsUrls.Socket.url, constantsUrls.Socket.namespace));
+            yield put(socketConnect(constantsUrls.Socket.url, true, res.token));
         } else {
             yield put(signOut());
         }

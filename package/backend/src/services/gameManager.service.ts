@@ -310,14 +310,14 @@ class GameManagerService {
             const game = await this.getGame(gameId);
             if (!game || !game?.players?.length) return false;
             if (!this.allowEnforceNextQuestion(game)) return false; // Allow for checking only for competition stages
-            if (questionIndex >= game?.questions?.length) return false; 
-            if ( subquestionIndex >= game?.questions?.[questionIndex]?.subquestions?.length) return false;
+            if (questionIndex >= game?.questions?.length) return false;
+            if (subquestionIndex !== game?.questions?.[questionIndex]?.subquestions?.length - 1) return false;
 
             for (const player of game.players) {
                 if (player.playerRole === ConstantsGame.Game.PLAYER_ROLE.spectator) continue;
                 const userId = player.userId;
-                
-                if (!(game?.answers?.[userId]?.[questionIndex]?.[subquestionIndex]?.responseTime)) {
+
+                if (!game?.answers?.[userId]?.[questionIndex]?.[subquestionIndex]?.responseTime) {
                     // Player has not answered
                     return false;
                 }

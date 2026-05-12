@@ -8,6 +8,7 @@ import commonStyles from "../../../styles/common.module.scss";
 import GameButton, { TButtonColor } from "../../../components/game-button/game-button";
 import { getFeedback } from "../../../helpers/game";
 import { constantsGame } from "../../../helpers/constants";
+import { capitalizeFirstLetter } from "../../../helpers/shared.functions";
 
 const colors: TButtonColor[] = ["orange", "blue"];
 
@@ -123,19 +124,6 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
             : `translateX(${totalOffset}px)`;
     };
 
-    const getCurrentContent = () => {
-        switch (currentPosition) {
-            case 0:
-                return questionData.answers[0];
-            case 1:
-                return questionData.description;
-            case 2:
-                return questionData.answers[1];
-            default:
-                return questionData.description;
-        }
-    };
-
     const getCurrentColor = (index: number) => {
         if (!showAnswers || check(index)) return colors[index % 2];
         return "white"; 
@@ -145,7 +133,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
     return (
         <div className={styles.questionContainer}>
             <p className={`${styles.headerText} ${commonStyles.centeredText}`}>
-                {t(questionData?.question)}
+                {capitalizeFirstLetter(t(questionData?.question))}
             </p>
             
             <div 
@@ -157,7 +145,6 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                         color={getCurrentColor(0)} 
                         noBoxShadow={true}
                         size="thin" 
-                        additionalClasses={`${commonStyles.leftSideText}`}
                         unchangable={true}
                         feedback={getFeedback(showFeedbackCorrect, showAnswers, 0, check)}
                         font={{
@@ -212,7 +199,6 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                     <GameButton 
                         color={"white"}
                         size="thin" 
-                        additionalClasses={`${commonStyles.leftSideText}`}
                         noBoxShadow={true}
                         unchangable={true}
                         font={{
@@ -220,7 +206,7 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                             setIsSmallFont: setSmallFontInButtons
                         }}
                     >
-                        {t(getCurrentContent())}
+                        {t("game.left-right.move-button")}
                     </GameButton>
                 </div>
                 
@@ -229,7 +215,6 @@ const LeftRight: React.FC<ISubquestionComponent> = ({ questionData, sendAnswerAc
                         color={getCurrentColor(1)} 
                         size="thin" 
                         noBoxShadow={true}
-                        additionalClasses={`${commonStyles.leftSideText}`}
                         unchangable={true}
                         feedback={getFeedback(showFeedbackCorrect, showAnswers, 1, check)}
                         font={{

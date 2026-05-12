@@ -17,6 +17,10 @@ export function convertTimeUntilToRemainedSeconds(timeUntil: number): number {
     return seconds;
 }
 
+export function capitalizeFirstLetter(text: string): string {
+	return text.charAt(0)?.toUpperCase() + text.slice(1);
+}
+
 function getTokenExp(token: string): Date {
   if (!token) return null;
   try {

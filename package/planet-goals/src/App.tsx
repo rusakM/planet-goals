@@ -37,25 +37,17 @@ function App() {
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token || !currentUser) return;
-        dispatch(socketConnect(constantsUrls.Socket.url, constantsUrls.Socket.namespace));
+        dispatch(socketConnect(constantsUrls.Socket.url));
     }, [currentUser, dispatch]);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (token && currentUser && !verifyTokenExpiration(token)) {
             dispatch(refreshTokenStart());
-            dispatch(socketConnect(constantsUrls.Socket.url, constantsUrls.Socket.namespace));
         } else if (!token && currentUser) {
             dispatch(signOut());
         }
     }, [currentUser, dispatch])
-
-    useEffect(() => {
-        if (!currentUser || !localStorage.getItem("token")) return;
-        dispatch(socketConnect(constantsUrls.Socket.url, constantsUrls.Socket.namespace));
-    }, [ currentUser ])
-
-
 
     return (
         <div lang={tolgee.getLanguage()}>

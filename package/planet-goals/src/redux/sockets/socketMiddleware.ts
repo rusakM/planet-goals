@@ -17,7 +17,7 @@ export const socketMiddleware: Middleware = store => next =>
   	(action: IAction<socketTypes.TConnect & socketTypes.TSocketEmit>)  => {
 		switch (action.type) {
 			case socketTypes.SocketActionTypes.SOCKET_CONNECT: {
-				socketService.connect(action.payload?.url, action.payload?.namespace);
+				socketService.connect(action.payload?.url, action.payload?.reconnect, action.payload?.token);
 
 				socketService.on(socketTypes.SocketActionTypes.GAME_ENDED, (payload: socketTypes.IGameEnded) => {
 					useValidateGameId(store, socketActions.gameEnded, payload);

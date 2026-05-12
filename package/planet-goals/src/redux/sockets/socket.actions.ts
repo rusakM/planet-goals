@@ -1,8 +1,8 @@
 import * as socketTypes from "./socket.types";
 
-export const socketConnect = (url: string, namespace: string) => ({ 
+export const socketConnect = (url: string, reconnect?: boolean, token?: string) => ({ 
     type: socketTypes.SocketActionTypes.SOCKET_CONNECT, 
-    payload: { url, namespace } 
+    payload: { url, reconnect, token } 
 });
 
 export const socketDisconnect = () => ({ 

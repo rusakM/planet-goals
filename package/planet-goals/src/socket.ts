@@ -3,14 +3,14 @@ import { io, Socket } from "socket.io-client";
 class SocketService {
     private socket: Socket | null = null;
 
-    connect(url: string, namespace: string) {
-        const token = localStorage.getItem("token") || "";
-        console.log(namespace, url);
+    connect(url: string, reconnect?: boolean, token?: string) {
+        const connectionToken = token ?? localStorage.getItem("token") ?? "";
+        if (this.socket && reconnect) this.disconnect();
         if (!this.socket) {
             this.socket = io(`${url}`, {
                 autoConnect: true,
                 auth: {
-                    token: `Bearer ${token}`
+                    token: `Bearer ${connectionToken}`
                 },
                 randomizationFactor: 0.5,
                 reconnection: true,
