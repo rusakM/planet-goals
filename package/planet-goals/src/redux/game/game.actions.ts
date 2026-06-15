@@ -162,3 +162,18 @@ export const startGameFailure = (error) => ({
     type: GameActionTypes.START_GAME_FAILURE,
     payload: error
 });
+
+export const stopGameStart = (gameId: string) => ({
+    type: GameActionTypes.STOP_GAME_START,
+    payload: gameId
+});
+
+export const stopGameSuccess = (payload: gameTypes.IGameStop) => ({
+    type: GameActionTypes.STOP_GAME_SUCCESS,
+    payload
+});
+
+export const stopGameFailure = (error) => ({
+    type: GameActionTypes.STOP_GAME_FAILURE,
+    payload: error
+});

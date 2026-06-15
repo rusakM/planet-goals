@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Popup from "../../components/popup/popup";
 import PrimaryButton from "../../components/primary-button.tsx/primary-button";
-import { resetGame, setCurrentQuestion } from "../../redux/game/game.actions";
+import { resetGame, setCurrentQuestion, stopGameStart } from "../../redux/game/game.actions";
 import { secondsToMinutes } from "../../helpers/shared.functions";
 import { constantsUrls } from "../../helpers/constants";
 import { useDeviceType } from "../../helpers/responsiveContainers";
@@ -14,7 +14,7 @@ import styles from "./game.module.scss";
 import commonStyles from "../../styles/common.module.scss";
 import exitIcon from "../../assets/icons/exit_icon.svg";
 import { TCurrentQuestion } from "../../types/lesson";
-import { selectCurrentLesson, selectCurrentQuestionSetAt, selectGameMode, selectPlayerRole } from "../../redux/game/game.selectors";
+import { selectCurrentGame, selectCurrentLesson, selectCurrentQuestionSetAt, selectGameMode, selectIsGameStopped, selectPlayerRole } from "../../redux/game/game.selectors";
 import { GAME_PLAY_STAGE_ENUM } from "../../types/game";
 
 import bgIntroductionMobile from "../../assets/game/topic_1_mobile.svg";
@@ -28,6 +28,7 @@ import bgCompetition from "../../assets/game/topic_4_pc.svg";
 import bgFinalMobile from "../../assets/game/topic_5_mobile.svg";
 import bgFinal from "../../assets/game/topic_5_pc.svg";
 import PrimaryContainer from "../../components/primary-container/primary-container";
+import { selectCurrentUser } from "../../redux/user/user.selectors";
 
 const getBackgroundImg = (stage: GAME_PLAY_STAGE_ENUM, isMobile: boolean) => {
     if (isMobile) {
@@ -76,10 +77,13 @@ const GameContainer: React.FC<IGameContainer> = ({ children, currentQuestionInde
     const { t } = useTranslate();
     const { isMobile } = useDeviceType();
     const navigate = useNavigate();
+    const currentGame = useSelector(selectCurrentGame);
     const currentLesson = useSelector(selectCurrentLesson);
     const playerRole = useSelector(selectPlayerRole);
     const gameMode = useSelector(selectGameMode);
+    const currentUser = useSelector(selectCurrentUser);
     const currentQuestionSetAt = useSelector(selectCurrentQuestionSetAt);
+    const isGameStopped = useSelector(selectIsGameStopped);
     const [exitVisible, setExitVisible] = useState(false);  
     const backgroundImage = getBackgroundImg(currentLesson?.questions?.[currentQuestionIndex[0]]?.gameStage, isMobile);
 
@@ -96,6 +100,10 @@ const GameContainer: React.FC<IGameContainer> = ({ children, currentQuestionInde
         const secondsElapsed = Math.ceil((Date.now() - currentQuestionSetAt) / 1000);
         if (currentQuestion?.subquestions?.[currentQuestionIndex[1]]?.timeInSek > 0 && secondsElapsed > currentQuestion?.subquestions?.[currentQuestionIndex[1]]?.timeInSek) nextSLide();
     }, [playerRole, gameMode, currentLesson, currentQuestionIndex, currentQuestionSetAt, nextSLide]);
+
+    const stopGame = () => {
+        if (currentGame) dispatch(stopGameStart(currentGame?._id));
+    }
 
     const closePopups = () => {
         setExitVisible(false);
@@ -116,6 +124,12 @@ const GameContainer: React.FC<IGameContainer> = ({ children, currentQuestionInde
             {children}
         </div>
         <div className={styles.footer}>
+            {
+                currentUser?.role === "TEACHER" && <div>
+                    <button onClick={stopGame} disabled={isGameStopped}>STOP</button>
+                    <button onClick={nextSLide} disabled={!isGameStopped}>next</button>
+                </div>
+            }
             <p>Question no: [{currentQuestionIndex[0]}, {currentQuestionIndex[1]}]</p>
             <img src={exitIcon} alt="exitIcon" className={styles.settingsBtn} onClick={() => setExitVisible(true)}/>
         </div>

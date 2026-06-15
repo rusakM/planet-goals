@@ -1,8 +1,10 @@
 import { addSeconds } from 'date-fns';
-import { accountService, gameService, lessonService, playerGameService, socketService } from '.';
+import { accountService, gameService, lessonService, loggerService, playerGameService, socketService } from '.';
 import { ConstantsGame } from '../core/constants';
 import { RedisConnector } from '../core/redisConnector';
 import { Helper } from '../shared/defs';
+
+const logger = new loggerService.Logger('/services/gameManager.service');
 
 export interface ILeaderboardPlayer {
     playerId: string;
@@ -71,13 +73,13 @@ class GameManagerService {
     }
 
     public async initializeStartedGames() {
-        console.log('Initialize games...');
+        logger.info('Initialize games...');
         const allGames = await this.redis.getAll();
-        console.log(allGames?.length);
+        logger.info('Games to initialize:', allGames?.length ?? 0);
         allGames.forEach((game) => {
             this.games.set(game.gameId, game);
             this.broadcastSubquestion(game.gameId, game?.subquestionEndTime || null);
-            console.log(`Game ${game.gameId} initialized.`);
+            logger.info(`Game ${game.gameId} initialized.`);
         });
     }
 
@@ -95,7 +97,7 @@ class GameManagerService {
      * Inicjalizuje nową grę w silniku, po wywołaniu startGame
      */
     async initializeGame(game: gameService.Model.IGame, lesson: lessonService.Model.ILesson, playerGames: playerGameService.Model.IPlayerGame[]) {
-        console.log(`Initialize game, ${game._id} with lesson: ${lesson._id}`);
+        logger.silly(`Initialize game, ${game._id} with lesson: ${lesson._id}`);
         const questions = lesson.questions ?? [];
         const stage = questions[0]?.gameStage ?? ConstantsGame.Game.STAGE_ENUM.QUICK_CONTENT;
         const state: IGameState = {
@@ -129,7 +131,7 @@ class GameManagerService {
     async startGame(gameId: string, startNow?: boolean) {
         const game = await this.getGame(gameId);
         if (!game) {
-            console.log(`No game with id: ${gameId}`);
+            logger.warn(`No game with id: ${gameId}`);
             return null;
         }
         if (game.started) {
@@ -177,9 +179,9 @@ class GameManagerService {
      */
     async joinPlayer(user: accountService.Model.IAccount, gameId: string, playerGameData: IActivePlayer) {
         const game = await this.getGame(gameId);
-        console.log('Joining to game gameId');
+        logger.silly('Joining to game gameId');
         if (!game) {
-            console.log('Player join: game not exist');
+            logger.warn('Player join: game not exist');
             return 'NO_GAME';
         }
         // Można dodać logikę blokowania dołączenia kiedy gra jest zakończona
@@ -215,7 +217,7 @@ class GameManagerService {
     }
 
     async deletePlayer(playerId: string, gameId: string) {
-        console.log('Remove player from game: ', gameId);
+        logger.info('Remove player from game: ', gameId);
         const game = await this.getGame(gameId);
         if (!game) return;
         const users = this.getPlayersList(gameId);
@@ -223,7 +225,7 @@ class GameManagerService {
         if (playerGameIdx < 0) return;
         game.players.splice(playerGameIdx, 1);
         await this.redis.save(gameId, game);
-        console.log('Remove player success');
+        logger.info('Remove player success');
         socketService.Player.onPlayerDelete({ users, gameId, playerId });
     }
 
@@ -260,7 +262,7 @@ class GameManagerService {
      * Akceptuj odpowiedź dla aktywnego gracza – obsługuje scoring, timeout, blokuje wielokrotne odpowiedzi itp.
      */
     async processAnswer(gameId: string, userId: string, answer: string, questionIndex: number, subquestionIndex: number, responseTime: number, responseAt: number): Promise<IProcessedAnswer> {
-        console.log(gameId, userId, answer, questionIndex);
+        logger.silly(`process answer, gameId: ${gameId}, userId: ${userId}, answer: ${answer}, questionIndex: ${questionIndex}`);
         const game = await this.getGame(gameId);
         if (!game) return { points: 0, correct: false, done: false, error: 'NO_GAME' };
         const q = game.questions[game.currentQuestionIndex];
@@ -268,11 +270,11 @@ class GameManagerService {
         const sq = q.subquestions?.[game.currentSubquestionIndex];
         if (!sq) return { points: 0, correct: false, done: false, error: 'NO_SUBQUESTION' };
         if ((questionIndex !== game.currentQuestionIndex || subquestionIndex !== game.currentSubquestionIndex) && game.stage === ConstantsGame.Game.STAGE_ENUM.KNOWLEDGE && !game.singlePlayerMode) {
-            console.log('questionIndexes:', game.currentQuestionIndex, questionIndex, 'subquestionIndexes:', game.currentSubquestionIndex, subquestionIndex);
+            logger.warn(`incorrect question, questionIndexes: ${game.currentQuestionIndex}, questionIndex: ${questionIndex}, subquestionIndexes: [${game.currentSubquestionIndex}, ${subquestionIndex}]`);
             return { points: 0, correct: false, done: false, error: 'INCORRECT_QUESTION' };
         }
         if (questionIndex !== game.currentQuestionIndex && !game.singlePlayerMode) {
-            console.log('questionIndexes:', game.currentQuestionIndex, questionIndex, 'subquestionIndexes:', game.currentSubquestionIndex, subquestionIndex);
+            logger.warn(`incorrect question, questionIndexes: ${game.currentQuestionIndex}, questionIndex: ${questionIndex}, subquestionIndexes: [${game.currentSubquestionIndex}, ${subquestionIndex}]`);
             return { points: 0, correct: false, done: false, error: 'INCORRECT_QUESTION' };
         }
 
@@ -341,7 +343,7 @@ class GameManagerService {
 
     async startSubquestionTimer(gameId: string, timeUntil: number) {
         const game = this.games.get(gameId);
-        if (!game) console.log('no game in startSubquestionTimer');
+        if (!game) logger.error('no game in startSubquestionTimer', gameId);
         if (!game) return;
         await this.stopSubquestionTimer(gameId);
         game.subquestionEndTime = timeUntil;
@@ -352,7 +354,7 @@ class GameManagerService {
 
     async stopSubquestionTimer(gameId: string) {
         const game = this.games.get(gameId);
-        if (!game) console.log('no game in stopSubquestionTimer');
+        if (!game) logger.error('no game in stopSubquestionTimer', gameId);
         if (game?.subquestionTimer) {
             clearTimeout(game.subquestionTimer);
             game.subquestionTimer = undefined;
@@ -561,7 +563,7 @@ class GameManagerService {
 
     async endGame(gameId: string) {
         const game = await this.getGame(gameId);
-        console.log(`Game ${gameId} finished`);
+        logger.info(`Game ${gameId} finished`);
         if (!game) return;
         await this.stopSubquestionTimer(gameId);
         const leaderboard = await this.getLeaderboard(gameId);
@@ -592,6 +594,29 @@ class GameManagerService {
         await this.redis.delete(gameId);
     }
 
+    async stopGame(gameId: string) {
+        const game = await this.getGame(gameId);
+        logger.info(`Game ${gameId} finished`);
+        if (!game) return;
+        await this.stopSubquestionTimer(gameId);
+        await gameService.DB.update(gameId, {
+            endedAt: new Date().toISOString(),
+            status: ConstantsGame.Game.STATUS_ENUM.FINISHED,
+            winnerPoints: 0,
+        });
+
+        for (const player of game.players) {
+            if (player.playerGame) {
+                playerGameService.DB.update(player.playerGame._id, {
+                    isFinished: true,
+                });
+            }
+        }
+
+        this.games.delete(gameId);
+        await this.redis.delete(gameId);
+    }
+
     setUserAvailable(userId: string) {
         if (!this.currentConnectedPlayers.has(userId)) this.currentConnectedPlayers.add(userId);
     }
@@ -612,5 +637,5 @@ class GameManagerService {
 
 export function initializeGame() {
     gameManager = new GameManagerService();
-    console.log('Game manager initialized...');
+    logger.info('Game manager initialized...');
 }

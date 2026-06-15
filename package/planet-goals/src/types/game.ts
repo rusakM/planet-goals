@@ -95,6 +95,10 @@ export interface ILeaderboardPlayer {
 }
 
 //requests
+export interface IGameStop {
+    gameId?: string;
+}
+
 export interface IRemovePlayer {
     playerId: string,
     gameId: string,

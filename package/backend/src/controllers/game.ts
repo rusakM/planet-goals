@@ -2,11 +2,13 @@ import { Request, Response, Router } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { appResponse, appRoute } from '../shared/route';
 import { security } from '../shared/security';
-import { accountService, gameManagerService, gameService, lessonService, playerGameService } from '../services';
+import { accountService, gameManagerService, gameService, lessonService, loggerService, playerGameService } from '../services';
 import { ConstantsGame, ConstantsGlobal } from '../core/constants';
 import * as errorsAdapter from '../core/errorAdapter';
 import { validateAnswer } from '../middlewares/validators/game';
 import { useRequestTime } from '../middlewares/requestTime';
+
+const logger = new loggerService.Logger('/controllers/game');
 
 interface IAnswerRequest {
     answer: string;
@@ -192,12 +194,29 @@ async function sendAnswer(req: Request, res: Response) {
         });
     }
     const isEveryoneAnswered = await gameManagerService.gameManager.isEveryoneAnswered(gameId, questionNumber, subquestionNumber);
-    console.log('Everyone answered', isEveryoneAnswered);
+    logger.silly('Everyone answered', isEveryoneAnswered);
     if (currentPlayerGame.singlePlayerMode || isEveryoneAnswered) {
         await gameManagerService.gameManager.enforceNextSubquestion(gameId, questionNumber);
     }
 
     appResponse.prepareJsonResponse(res, processedAnswer);
+}
+
+async function stopGame(req: Request, res: Response) {
+    const { userId, gameId, role } = req.params;
+
+    if (role === ConstantsGlobal.Account.ROLES_ENUM.STUDENT) return appResponse.prepareSuccessNoContentResponse(res);
+    const game = await gameService.DB.Find.byId(gameId);
+    if (!game) {
+        throw errorsAdapter.Game.createError(errorsAdapter.Game.ErrorsEnum.GAME_NOT_FOUND);
+    }
+    if (game.status !== ConstantsGame.Game.STATUS_ENUM.STARTED) {
+        throw errorsAdapter.Game.createError(errorsAdapter.Game.ErrorsEnum.GAME_NOT_STARTED);
+    }
+    await gameManagerService.gameManager.stopGame(gameId);
+    logger.info(`Player ${userId} stopped game`);
+
+    appResponse.prepareJsonResponse(res, { gameId });
 }
 
 export default function setup(router: Router) {
@@ -206,4 +225,5 @@ export default function setup(router: Router) {
     router.post(appRoute.getMap().game.join, security.validateAuthenticatedRequest, joinGame);
     router.patch(appRoute.getMap().game.start, security.validateParams, security.validateAuthenticatedRequest, startGame);
     router.post(appRoute.getMap().game.sendAnswer, useRequestTime, security.validateParams, security.validateAuthenticatedRequest, validateAnswer, sendAnswer);
+    router.post(appRoute.getMap().game.stop, security.validateParams, security.validateAuthenticatedRequest, stopGame);
 }

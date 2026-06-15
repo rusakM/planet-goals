@@ -33,6 +33,9 @@ export const GameActionTypes = {
     START_GAME_START: "START_GAME_START",
     START_GAME_SUCCESS: "START_GAME_SUCCESS",
     START_GAME_FAILURE: "START_GAME_FAILURE",
+    STOP_GAME_START: "STOP_GAME_START",
+    STOP_GAME_SUCCESS: "STOP_GAME_SUCCESS",
+    STOP_GAME_FAILURE: "STOP_GAME_FAILURE" 
 };
 
 export interface IGameState {
@@ -46,6 +49,7 @@ export interface IGameState {
     gameStage: gameTypes.TGameStage,
     isGameCreatedByCurrentUser: boolean,
     isGameStarted: boolean,
+    isGameStopped: boolean,
     lessonError: string,
     playerRole: gameTypes.TPlayerRole,
     selectedLesson: number,

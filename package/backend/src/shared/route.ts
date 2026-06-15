@@ -60,6 +60,7 @@ export namespace appRoute {
                 removePlayer: `${servicesPrefix.api}/game/:gameId/remove-player/:playerId`,
                 start: `${servicesPrefix.api}/game/:gameId/start`,
                 sendAnswer: `${servicesPrefix.api}/game/:gameId/answer`,
+                stop: `${servicesPrefix.api}/game/:gameId/stop`,
             },
 
             lesson: {
@@ -67,8 +68,8 @@ export namespace appRoute {
             },
 
             material: {
-                get: `${servicesPrefix.api}/materials`
-            }
+                get: `${servicesPrefix.api}/materials`,
+            },
         };
     }
 }

@@ -68,3 +68,8 @@ export const selectWaitingTimeUntil = createSelector(
 	[selectGameState],
 	(game) => game.waitingTimeUntil
 );
+
+export const selectIsGameStopped = createSelector(
+	[selectGameState],
+	(game) => game.isGameStopped
+);

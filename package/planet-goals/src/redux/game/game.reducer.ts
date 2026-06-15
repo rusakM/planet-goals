@@ -15,6 +15,7 @@ const INITIAL_STATE: IGameState = {
     gameStage: null,
     isGameCreatedByCurrentUser: false,
     isGameStarted: false,
+    isGameStopped: false,
     lessonError: "",
     playerRole: null,
     selectedLesson: 0,
@@ -117,6 +118,11 @@ const gameReducer = (state: IGameState = INITIAL_STATE, action): IGameState => {
             return {
                 ...state,
                 waitingTimeUntil: action.payload
+            }
+        case GameActionTypes.STOP_GAME_SUCCESS:
+            return {
+                ...state,
+                isGameStopped: true
             }
         default:
             return state;

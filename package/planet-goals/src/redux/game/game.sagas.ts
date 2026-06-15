@@ -18,6 +18,8 @@ import {
     sendAnswerSuccess,
     startGameFailure,
     startGameSuccess,
+    stopGameFailure,
+    stopGameSuccess,
 } from "./game.actions";
 import { IGame, IRemovePlayer, ISendAnswer, TPlayerRole } from "../../types/game";
 import { ILesson } from "../../types/lesson";
@@ -32,6 +34,8 @@ const joinGameStart = createAction(GameActionTypes.JOIN_GAME_START);
 const removePlayerStart = createAction(GameActionTypes.REMOVE_PLAYER_START);
 const sendAnswerStart = createAction(GameActionTypes.SEND_ANSWER_START);
 const startGameStart = createAction(GameActionTypes.START_GAME_START);
+const stopGameStart = createAction(GameActionTypes.STOP_GAME_START);
+
 const getCurrentUserState = (state: IStore) => state.user;
 const getPlayerRoleState = (state: IStore) => state.game.playerRole;
 
@@ -124,6 +128,23 @@ function* startGame({ payload }: { payload: string }) {
     }
 }
 
+function* stopGame({ payload }: { payload: string }) {
+    try {
+        const gameStop: gameTypes.IGameStop = yield call(Api.sendData,
+            constantsUrls.Game.management.stop(payload),
+            {},
+            "POST"
+        );
+
+        if (gameStop?.gameId) {
+            yield put(stopGameSuccess(gameStop));
+            alert('Game stopped');
+        }
+    } catch (error) {
+        yield put(stopGameFailure(error.name));
+    }
+}
+
 function* onCreateGameStart(): Generator {
     yield takeLatest(createGameStart, createGame);
 }
@@ -148,6 +169,10 @@ function* onStartGameStart(): Generator {
     yield takeLatest(startGameStart, startGame);
 }
 
+function* onStopGameStart(): Generator {
+    yield takeLatest(stopGameStart, stopGame);
+}
+
 export function* gameSagas() {
     yield all([
         call(onCreateGameStart),
@@ -155,6 +180,7 @@ export function* gameSagas() {
         call(onJoinGameStart),
         call(onRemovePlayerStart),
         call(onSendAnswer),
-        call(onStartGameStart)
+        call(onStartGameStart),
+        call(onStopGameStart)
     ]);
 }

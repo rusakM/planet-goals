@@ -2,6 +2,7 @@ import * as accountService from './account.service';
 import * as fileService from './fileService';
 import * as gameService from './game.service';
 import * as lessonService from './lesson.service';
+import * as loggerService from './logger.service';
 import * as templateService from './template.service';
 import * as mailService from './mail.service';
 import * as materialService from './material.service';
@@ -10,4 +11,4 @@ import * as socketService from './socket.service';
 import * as gameManagerService from './gameManager.service';
 import * as translationsService from './translationsService';
 
-export { accountService, fileService, gameManagerService, gameService, lessonService, mailService, materialService, playerGameService, socketService, templateService, translationsService };
+export { accountService, fileService, gameManagerService, gameService, lessonService, loggerService, mailService, materialService, playerGameService, socketService, templateService, translationsService };

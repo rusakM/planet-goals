@@ -18,6 +18,7 @@ export const Game = {
         join: "/api/game/join",
         removePlayer: ({ gameId, playerId }: IRemovePlayer) => `/api/game/${gameId}/remove-player/${playerId}`,
         start: (gameId: string) => `/api/game/${gameId}/start`,
+        stop: (gameId: string) => `/api/game/${gameId}/stop`
     }
 };
 
