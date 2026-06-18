@@ -23,7 +23,12 @@ import { downloadFile } from '../../helpers/events.functions';
 import { getCurrentLocale } from '../../translations/utils';
 import { constantsUrls } from '../../helpers/constants';
 
+import handbook1img from "../../assets/teachers-materials/handbook1.svg";
+import handbook2img from "../../assets/teachers-materials/handbook2.svg";
+
 const Flipbook = lazy(() => import("../../page-components/flipbook/flipbook"))
+
+const materialsImages = [handbook1img, handbook2img];
 
 const Materials: React.FC = () => {
 	const { t } = useTranslate();
@@ -63,11 +68,12 @@ const Materials: React.FC = () => {
 		}
 	};
  
-	const documentsList: IMaterialsCard[] = materials?.map(material => ({
+	const documentsList: IMaterialsCard[] = materials?.map((material, index) => ({
 		description: t("manuals.manual01.info"),
 		downloadAction: () => downloadMaterial(material.materialNumber),
 		header: t(material.translation),
 		resizeAction: () => openFlipbook(material.materialNumber),
+		picture: materialsImages[index] || null,
 	})) ?? [];
  
 	return (

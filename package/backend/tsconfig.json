@@ -8,11 +8,15 @@
         "rootDir": "./",
         "isolatedModules": true,
         "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": true,
         "strictNullChecks": false,
         "strictBindCallApply": false,
         "strictFunctionTypes": false,
-        "useUnknownInCatchVariables": false
+        "useUnknownInCatchVariables": false,
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"]
+        }
     },
     "include": ["src/**/*"],
     "ts-node": {

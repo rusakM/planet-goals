@@ -28,7 +28,7 @@ const MaterialsCard: React.FC<IMaterialsCard> = ({ description, downloadAction, 
                         <p className={`${commonStyles.basicHeader4}`}>
                             {header || ""}
                         </p>
-                        <p className={`${commonStyles.darkText}`}>
+                        <p className={`${commonStyles.darkText} ${styles.description}`}>
                             {description || ""}
                         </p>
                     </div>
