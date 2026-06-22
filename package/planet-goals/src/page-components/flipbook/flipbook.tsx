@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from "react";
 import { pdfjs } from "react-pdf";
+import { useTranslate } from "@tolgee/react";
 import HTMLFlipBook from "react-pageflip";
 import { useDeviceType } from "../../helpers/responsiveContainers";
 import styles from "./flipbook.module.scss";
@@ -23,7 +24,6 @@ const Page = React.forwardRef<HTMLDivElement, { children: React.ReactNode; numbe
 			<div className={styles.page} ref={ref}>
 				<div className={styles.pageContent}>
 					{props.children}
-					<div className={styles.pageFooter}>{props.number + 1}</div>
 				</div>
 			</div>
 		);
@@ -38,6 +38,7 @@ const Flipbook: React.FC<IFlipbook> = ({ pdfUrl, onClose }) => {
 	const [pageImages, setPageImages] = useState<string[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
     const { isMobile } = useDeviceType();
+	const { t } = useTranslate();
     const dimensions = {
         width: (window.innerWidth >> 1) - 50,
         height: window.innerHeight - 100
@@ -163,7 +164,7 @@ const Flipbook: React.FC<IFlipbook> = ({ pdfUrl, onClose }) => {
 					color="orange" 
 					size="small"
 				>
-					Prev
+					{t("buttons.previous")}
 				</PrimaryButton>
 				<span className={styles.pageCounter}>
 					{currentPage + 1} / {numPages}
@@ -174,10 +175,10 @@ const Flipbook: React.FC<IFlipbook> = ({ pdfUrl, onClose }) => {
 					color="orange" 
 					size="small"
 				>
-					Next
+					{t("buttons.next")}
 				</PrimaryButton>
 				<PrimaryButton onClick={onClose} size="small" color="orange">
-					Close
+					{t("buttons.close")}
 				</PrimaryButton>
 			</div>
 			{

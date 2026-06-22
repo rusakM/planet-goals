@@ -57,21 +57,6 @@
 		display: block;
 	}
 
-	.pageFooter {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		height: 30px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background-color: rgba(255, 255, 255, 0.8);
-		border-top: solid 1px hsl(35, 55%, 90%);
-		font-size: 80%;
-		color: hsl(35, 20%, 50%);
-	}
-
 	&:global(.--left) {
 		border-right: 0;
 		box-shadow: inset -7px 0 30px -7px rgba(0, 0, 0, 0.4);
@@ -80,11 +65,6 @@
 	&:global(.--right) {
 		border-left: 0;
 		box-shadow: inset 7px 0 30px -7px rgba(0, 0, 0, 0.4);
-
-		.pageFooter {
-			text-align: right;
-			padding-right: 10px;
-		}
 	}
 }
 
