@@ -26,6 +26,7 @@ export const LandingPage = {
     blog: "https://planet-goals.eu",
     confirm: "/confirm",
     fillRegisterData: "/signup-finish",
+    instruction: "/cdn/assets/PlanetGoals_Instruction_game.pdf",
     main: "/",
     signIn: "/signin",
     signUp: "/signup",

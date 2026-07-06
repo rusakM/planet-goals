@@ -65,4 +65,12 @@
     }
 }
 
+.instructionLink {
+    padding-bottom: 18px;
+
+    @media (min-width: breakpoints.$desktop) {
+        padding-bottom: 28px;
+    }
+}
+
 

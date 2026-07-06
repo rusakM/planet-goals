@@ -3,6 +3,8 @@ import { useTranslate } from "@tolgee/react";
 
 import { useDeviceType } from "../../helpers/responsiveContainers";
 import { formatNewLines } from "../../translations/utils";
+import { downloadFile } from "../../helpers/events.functions";
+import { constantsUrls } from "../../helpers/constants";
 
 //components
 import PrimaryButton from "../../components/primary-button.tsx/primary-button";
@@ -189,6 +191,9 @@ export const Screen6: React.FC = () => {
                 </p>
                 <p className={`${styles.primaryText} ${styles.startLessonsDescription}`}>
                     {t("landing-page.descriptions.time-for-first-step")}
+                </p>
+                <p className={`${commonStyles.href} ${commonStyles.basicHeader5}`} onClick={() => downloadFile(constantsUrls.LandingPage.instruction)}>
+                    {t("user.manual")}&nbsp;&#65310;
                 </p>
                 <PrimaryButton color="orange">
                     {t("landing-page.buttons.start-lessons")}

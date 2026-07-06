@@ -21,6 +21,7 @@ import { selectCurrentUser } from '../../redux/user/user.selectors';
 import joinTheLessonImg from "../../assets/lessons-creator/i_compete_with_others.svg";
 import createANewLobbyImg from "../../assets/lessons-creator/create_a_new_room.svg";
 import startTheLessonImg from "../../assets/lessons-creator/start_lesson.svg";
+import { downloadFile } from '../../helpers/events.functions';
 
 const ChooseGameMode: React.FC = () => {
     const { t } = useTranslate();
@@ -67,6 +68,11 @@ const ChooseGameMode: React.FC = () => {
     return (
         <PageContainer>
             <PrimaryContainer direction="column" additionalClassess={containersStyles.pagePadding2}>
+                <PrimaryContainer direction="column">
+                    <p className={`${commonStyles.href} ${commonStyles.basicHeader5} ${styles.instructionLink}`} onClick={() => downloadFile(constantsUrls.LandingPage.instruction)}>
+                        {t("user.manual")}&nbsp;&#65310;
+                    </p>
+                </PrimaryContainer>
                 <PrimaryContainer direction={isMobile ? "column" : "row"} additionalClassess={`${styles.cardsContainer}`}>
                     <div className={styles.cardContainer}>
                         <div className={styles.card}>

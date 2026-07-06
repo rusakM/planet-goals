@@ -232,3 +232,14 @@
 .transparentBackground {
     background-color: transparent !important;
 }
+
+.href {
+    color: colors.$blue;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+        color: colors.$lightest-blue;
+        text-decoration: none;
+    }
+}
