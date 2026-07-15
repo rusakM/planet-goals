@@ -3,7 +3,7 @@
 @use "@styles/fonts.scss";
 
 .dropdownButtonContainer {
-    width: 90%;
+    width: 98%;
     display: flex;
     padding: 0.5em;
     max-width: breakpoints.$desktop;
@@ -24,6 +24,7 @@
 
         .lessonButton {
             width: 100%;
+            padding: 10px 8px;
         }
 
         .chevronButton {
@@ -31,7 +32,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4px 12px 16px 12px;
+            padding: 0px 12px 16px 12px;
         }
     }
 
@@ -55,8 +56,12 @@
             gap: 1em;
 
             & > button {
-                height: 118px;
-                min-width: 118px;
+                height: 100px;
+                min-width: 118px;  
+            }
+
+            .lessonButton {
+                padding: 10px 20px;
             }
 
             .chevronButton {
