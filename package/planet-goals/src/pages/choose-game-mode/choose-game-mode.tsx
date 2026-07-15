@@ -14,6 +14,8 @@ import containersStyles from "../../styles/containers.module.scss";
 
 import { constantsUrls } from '../../helpers/constants';
 import { useDeviceType } from '../../helpers/responsiveContainers';
+import { downloadFile } from '../../helpers/events.functions';
+import { getInstructionUrl } from '../../helpers/shared.functions';
 
 import { setGameMode, setGameStage, setIsGameCreatedByCurrentUser, setPlayerRole } from '../../redux/game/game.actions';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
@@ -21,7 +23,6 @@ import { selectCurrentUser } from '../../redux/user/user.selectors';
 import joinTheLessonImg from "../../assets/lessons-creator/i_compete_with_others.svg";
 import createANewLobbyImg from "../../assets/lessons-creator/create_a_new_room.svg";
 import startTheLessonImg from "../../assets/lessons-creator/start_lesson.svg";
-import { downloadFile } from '../../helpers/events.functions';
 
 const ChooseGameMode: React.FC = () => {
     const { t } = useTranslate();
@@ -69,7 +70,7 @@ const ChooseGameMode: React.FC = () => {
         <PageContainer>
             <PrimaryContainer direction="column" additionalClassess={containersStyles.pagePadding2}>
                 <PrimaryContainer direction="column">
-                    <p className={`${commonStyles.href} ${commonStyles.basicHeader5} ${styles.instructionLink}`} onClick={() => downloadFile(constantsUrls.LandingPage.instruction)}>
+                    <p className={`${commonStyles.href} ${commonStyles.basicHeader5} ${styles.instructionLink}`} onClick={() => downloadFile(getInstructionUrl())}>
                         {t("user.manual")}&nbsp;&#65310;
                     </p>
                 </PrimaryContainer>

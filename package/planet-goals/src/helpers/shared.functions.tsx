@@ -1,4 +1,6 @@
 import { addHours, isAfter } from 'date-fns';
+import { getCurrentLocale } from '../translations/utils';
+import { constantsUrls } from './constants';
 
 export function secondsToMinutes(timeInSeconds: number) {
     const minutes = Math.floor(timeInSeconds / 60);
@@ -19,6 +21,11 @@ export function convertTimeUntilToRemainedSeconds(timeUntil: number): number {
 
 export function capitalizeFirstLetter(text: string): string {
 	return text.charAt(0)?.toUpperCase() + text.slice(1);
+}
+
+export function getInstructionUrl(): string {
+  const locale = getCurrentLocale().toUpperCase();
+  return constantsUrls.LandingPage.instruction + `/${constantsUrls.MANUAL_FILE_NAME}_${locale}.pdf`;
 }
 
 function getTokenExp(token: string): Date {

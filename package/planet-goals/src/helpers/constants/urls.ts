@@ -26,7 +26,7 @@ export const LandingPage = {
     blog: "https://planet-goals.eu",
     confirm: "/confirm",
     fillRegisterData: "/signup-finish",
-    instruction: "/cdn/assets/PlanetGoals_Instruction_game.pdf",
+    instruction: "/cdn/assets/manual",
     main: "/",
     signIn: "/signin",
     signUp: "/signup",
@@ -60,3 +60,5 @@ export const User = {
     signUp: "/api/user/auth/register",
     stats: "/api/user/stats",
 };
+
+export const MANUAL_FILE_NAME = "WP4A7_Workshop_manual_Final";
