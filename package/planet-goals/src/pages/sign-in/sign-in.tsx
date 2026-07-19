@@ -54,6 +54,12 @@ const SignIn: React.FC = () => {
         }
     }, [navigate, loginError, loginStarted, loginEmail, isLoadingData]);
 
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === "Enter") {
+            handleSubmit(event);
+        }
+    };
+
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
         setLoginStarted(true);
@@ -88,6 +94,7 @@ const SignIn: React.FC = () => {
                         placeholder="E-mail"
                         type="email"
                         value={email}
+                        onKeyDown={handleKeyDown}
                     />
                     <p
                         className={`${commonStyles.blueText} ${footerStyles.privacyRef} ${commonStyles.noPadding} ${commonStyles.noMargin} ${commonStyles.centeredText}`}

@@ -72,6 +72,12 @@ const Confirm: React.FC<IConfirm> = ({
         }
     }, [nextResendCodeInSeconds, setNextResendCodeInSeconds]);
 
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === "Enter") {
+            handleSubmit(event);
+        }
+    };  
+
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
         try {
@@ -122,6 +128,7 @@ const Confirm: React.FC<IConfirm> = ({
                         type="text"
                         value={verificationCode}
                         error={loginError === ERRORS_ENUM.INCORRECT_VERIFICATION_CODE}
+                        onKeyDown={handleKeyDown}
                     />
                     <p
                         className={`${commonStyles.blueText} ${footerStyles.privacyRef} ${commonStyles.noPadding} ${commonStyles.noMargin} ${commonStyles.centeredText}${nextResendCodeInSeconds > 0 ? ` ${commonStyles.nonClickableCursor}` : ''}`}

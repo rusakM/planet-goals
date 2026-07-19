@@ -70,6 +70,12 @@ const SignUp: React.FC = () => {
         }
     }, [inputWasChanged, loginEmail]);
 
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === "Enter") {
+            handleSubmit(event);
+        }
+    };
+
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
         try {
@@ -122,6 +128,7 @@ const SignUp: React.FC = () => {
                             setFormError({ ...formError, email: false })
                             setInputWasChanged(true);
                         })}
+                        onKeyDown={handleKeyDown}
                         placeholder="E-mail"
                         type="email"
                         value={email}

@@ -70,7 +70,7 @@ const ChooseGameMode: React.FC = () => {
         <PageContainer>
             <PrimaryContainer direction="column" additionalClassess={containersStyles.pagePadding2}>
                 <PrimaryContainer direction="column">
-                    <p className={`${commonStyles.href} ${commonStyles.basicHeader5} ${styles.instructionLink}`} onClick={() => downloadFile(getInstructionUrl())}>
+                    <p className={`${commonStyles.href} ${commonStyles.basicHeader4} ${styles.instructionLink}`} onClick={() => downloadFile(getInstructionUrl())}>
                         {t("user.manual")}&nbsp;&#65310;
                     </p>
                 </PrimaryContainer>

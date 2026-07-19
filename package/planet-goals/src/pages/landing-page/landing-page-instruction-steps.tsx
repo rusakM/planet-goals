@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useTranslate } from "@tolgee/react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { useDeviceType } from "../../helpers/responsiveContainers";
 import { formatNewLines } from "../../translations/utils";
 import { downloadFile } from "../../helpers/events.functions";
 import { getInstructionUrl } from "../../helpers/shared.functions";
+import { selectCurrentUser } from "../../redux/user/user.selectors";
+import { constantsUrls } from "../../helpers/constants";
 
 //components
 import PrimaryButton from "../../components/primary-button.tsx/primary-button";
@@ -172,6 +176,17 @@ export const Screen6: React.FC = () => {
     const { t } = useTranslate();
     const { isMobile } = useDeviceType();
     const containersDirection = isMobile ? "column" : "row";
+    const currentUser = useSelector(selectCurrentUser);
+    const navigate = useNavigate();
+
+    const handleStartLessons = useCallback(() => {
+        if (currentUser) { 
+            navigate(constantsUrls.Main.startLessons);
+        } else {
+            navigate(constantsUrls.LandingPage.signIn);
+        }
+    }, [currentUser, navigate]);
+
     return (
         <PrimaryContainer
             direction={containersDirection}
@@ -192,10 +207,10 @@ export const Screen6: React.FC = () => {
                 <p className={`${styles.primaryText} ${styles.startLessonsDescription}`}>
                     {t("landing-page.descriptions.time-for-first-step")}
                 </p>
-                <p className={`${commonStyles.href} ${commonStyles.basicHeader5}`} onClick={() => downloadFile(getInstructionUrl())}>
+                <p className={`${commonStyles.href} ${commonStyles.basicHeader4}`} onClick={() => downloadFile(getInstructionUrl())}>
                     {t("user.manual")}&nbsp;&#65310;
                 </p>
-                <PrimaryButton color="orange">
+                <PrimaryButton color="orange" onClick={handleStartLessons}>
                     {t("landing-page.buttons.start-lessons")}
                 </PrimaryButton>
             </PrimaryContainer>

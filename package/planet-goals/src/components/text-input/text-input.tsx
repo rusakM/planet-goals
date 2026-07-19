@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, KeyboardEvent } from "react";
 import styles from "./text-input.module.scss";
 import errorStyles from "../../styles/errors.module.scss";
 
@@ -7,6 +7,7 @@ interface ITextInputProps {
     error?: boolean;
     name?: string;
     onChange?: (event?: ChangeEvent<HTMLInputElement>) => void;
+    onKeyDown?: (event?: KeyboardEvent<HTMLInputElement>) => void;
     placeholder?: string;
     type?: "email" | "password" | "text";
     value?: string;
@@ -17,6 +18,7 @@ const TextInput: React.FC<ITextInputProps> = ({
     error,
     name,
     onChange,
+    onKeyDown,
     placeholder,
     type = "text",
     value,
@@ -24,6 +26,7 @@ const TextInput: React.FC<ITextInputProps> = ({
     <input
         type={type}
         onChange={onChange}
+        onKeyDown={onKeyDown}
         placeholder={placeholder}
         name={name}
         disabled={disabled}
