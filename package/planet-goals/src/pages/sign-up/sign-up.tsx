@@ -1,7 +1,7 @@
-import React, { useState, useEffect, FormEvent, MouseEvent, ChangeEvent } from "react";
+import React, { useState, useEffect, FormEvent, MouseEvent, ChangeEvent, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslate } from "@tolgee/react";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Checkbox from "../../components/checkbox/checkbox";
 import PageContainer from "../../page-components/page-container/page-container";
@@ -14,8 +14,7 @@ import Spinner from "../../components/spinner/spinner.component";
 import { downloadFile, handleInputText } from "../../helpers/events.functions";
 import { useDeviceType } from "../../helpers/responsiveContainers";
 
-import { checkEmailStart, signUpStart } from "../../redux/user/user.actions";
-import { IUserRegistration } from "../../types/user";
+import { checkEmailStart, clearUserState, signUpStart } from "../../redux/user/user.actions";
 import {
     selectIsLoadingData,
     selectLoginEmail,
@@ -31,32 +30,21 @@ import styles from "../sign-in/sign-in.module.scss";
 import internalStyles from "./sign-up.module.scss";
 
 import SmilingEarthImg from "../../assets/login-page/smiling_earth.svg";
-import { createStructuredSelector } from "reselect";
 import { constantsUrls } from "../../helpers/constants";
 import { UserValidators } from "../../helpers/validators.ts/user";
 import { getCurrentLocale } from "../../translations/utils";
 
-
-interface ISignUp {
-    signUp?: (payload: IUserRegistration) => void;
-    signIn?: (payload: string) => void,
-    isLoadingData: boolean;
-    loginEmail: string;
-    loginError: string;
-}
-
-const SignUp: React.FC<ISignUp> = ({
-    signUp,
-    signIn,
-    isLoadingData,
-    loginEmail,
-    loginError,
-}) => {
+const SignUp: React.FC = () => {
     const { t } = useTranslate();
     const { isMobile } = useDeviceType();
+    const dispatch = useDispatch();
+    const loginEmail = useSelector(selectLoginEmail);
+    const loginError = useSelector(selectUserError);
+    const isLoadingData = useSelector(selectIsLoadingData);
     const buttonsType: TButtonType = isMobile ? "default" : "action";
     const navigate = useNavigate();
-    const [email, setEmail] = useState("");
+    const [email, setEmail] = useState(loginEmail || "");
+    const [inputWasChanged, setInputWasChanged] = useState(false);
     const [confirm, setConfirm] = useState(false);
     const [formError, setFormError] = useState({
         confirm: false,
@@ -69,11 +57,18 @@ const SignUp: React.FC<ISignUp> = ({
             loginError === ERRORS_ENUM.USER_EMAIL_EXIST &&
             loginStarted
         ) {
-            signIn(email);
+            dispatch(checkEmailStart(email))
         } else if (!loginError && loginStarted && loginEmail) {
+            console.log('navigate to confirm', loginEmail);
             navigate(constantsUrls.LandingPage.confirm);
         }
-    }, [navigate, loginError, loginStarted, loginEmail, signIn, email]);
+    }, [navigate, loginError, loginStarted, loginEmail]);
+
+    useEffect(() => {
+        if (!inputWasChanged && loginEmail && !email) {
+            setEmail(loginEmail);
+        }
+    }, [inputWasChanged, loginEmail]);
 
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
@@ -87,7 +82,7 @@ const SignUp: React.FC<ISignUp> = ({
                 return;
             }
             setLoginStarted(true);
-            signUp({ email, userInterfaceLanguage: getCurrentLocale() });
+            dispatch(signUpStart({ email, userInterfaceLanguage: getCurrentLocale() }));
         } catch { /* empty */ }
     };
 
@@ -98,6 +93,11 @@ const SignUp: React.FC<ISignUp> = ({
             confirm: false
         });
     }
+
+    const goBack = useCallback(() => {
+        dispatch(clearUserState())
+        navigate(constantsUrls.LandingPage.main);
+    }, [dispatch, navigate]);
 
     return (
         <PageContainer>
@@ -118,7 +118,10 @@ const SignUp: React.FC<ISignUp> = ({
                 >
                     <TextInput
                         name="email"
-                        onChange={handleInputText(setEmail, () => setFormError({ ...formError, email: false }))}
+                        onChange={handleInputText(setEmail, () => {
+                            setFormError({ ...formError, email: false })
+                            setInputWasChanged(true);
+                        })}
                         placeholder="E-mail"
                         type="email"
                         value={email}
@@ -163,7 +166,7 @@ const SignUp: React.FC<ISignUp> = ({
                 <PrimaryButton color="orange" onClick={handleSubmit} type={buttonsType}>
                     {t("main.signup")}
                 </PrimaryButton>
-                <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)} type={buttonsType}>
+                <PrimaryButton color="white" onClick={goBack} type={buttonsType}>
                     {t("main.back")}
                 </PrimaryButton>
             </PrimaryContainer>
@@ -171,15 +174,4 @@ const SignUp: React.FC<ISignUp> = ({
     );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-    signUp: (payload: IUserRegistration) => dispatch(signUpStart(payload)),
-    signIn: (payload: string) => dispatch(checkEmailStart(payload))
-});
-
-const mapStateToProps = createStructuredSelector({
-    loginEmail: selectLoginEmail,
-    loginError: selectUserError,
-    isLoadingData: selectIsLoadingData,
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
+export default SignUp;

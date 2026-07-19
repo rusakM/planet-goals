@@ -14,6 +14,12 @@ const INITIAL_STATE: IUserState = {
 const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
     switch (action.type) {
         case UserActionTypes.CHECK_EMAIL_START:
+            return {
+                ...state,
+                isFetching: true,
+                signInEmail: action.payload,
+                userError: "",
+            };
         case UserActionTypes.SIGN_UP_START:
         case UserActionTypes.USER_EDIT_START:
         case UserActionTypes.VERIFY_CODE_START:
@@ -57,6 +63,7 @@ const userReducer = (state: IUserState = INITIAL_STATE, action): IUserState => {
                 userError: "",
                 isFetching: false
             };
+        case UserActionTypes.CLEAR_USER_STATE:
         case UserActionTypes.SIGN_OUT:
         case UserActionTypes.DISABLE_USER_SUCCESS:
             return INITIAL_STATE;

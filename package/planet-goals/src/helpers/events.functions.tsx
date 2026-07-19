@@ -17,11 +17,11 @@ export function generateRandomId(length?: number): string {
     return id;
 }
 
-export function handleInputText(dispatch: Dispatch<SetStateAction<string>>, cb: () => void = void 0) {
+export function handleInputText(dispatch: Dispatch<SetStateAction<string>>, cb?: () => void) {
     return (event: ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         dispatch(event.target.value);
-        cb();
+        if (cb) cb();
     };
 }
 

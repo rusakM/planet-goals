@@ -21,6 +21,10 @@ export const checkUserSessiom = () => ({
     type: UserActionTypes.CHECK_USER_SESSION,
 });
 
+export const clearUserState = () => ({
+    type: UserActionTypes.CLEAR_USER_STATE,
+});
+
 export const disableUserStart = () => ({
     type: UserActionTypes.DISABLE_USER_START
 });

@@ -1,8 +1,7 @@
-import React, { useState, useEffect, FormEvent, MouseEvent } from "react";
+import React, { useState, useEffect, FormEvent, MouseEvent, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslate } from "@tolgee/react";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
+import { useDispatch, useSelector } from "react-redux";
 
 import PageContainer from "../../page-components/page-container/page-container";
 import PrimaryContainer from "../../components/primary-container/primary-container";
@@ -11,7 +10,7 @@ import TextInput from "../../components/text-input/text-input";
 
 import { handleInputText } from "../../helpers/events.functions";
 import { useDeviceType } from "../../helpers/responsiveContainers";
-import { checkEmailStart } from "../../redux/user/user.actions";
+import { checkEmailStart, clearUserState } from "../../redux/user/user.actions";
 import {
     selectIsLoadingData,
     selectLoginEmail,
@@ -29,22 +28,16 @@ import Spinner from "../../components/spinner/spinner.component";
 import SmilingEarthImg from "../../assets/login-page/smiling_earth.svg";
 import { constantsUrls } from "../../helpers/constants";
 
-interface ISignIn {
-    checkEmail?: (email: string) => void;
-    isLoadingData: boolean;
-    loginEmail: string;
-    loginError: string;
-}
 
-const SignIn: React.FC<ISignIn> = ({
-    checkEmail,
-    isLoadingData,
-    loginEmail,
-    loginError,
-}) => {
+const SignIn: React.FC = () => {
     const navigate = useNavigate();
     const { t } = useTranslate();
+    const dispatch = useDispatch();
     const { isMobile } = useDeviceType();
+
+    const loginEmail = useSelector(selectLoginEmail);
+    const loginError = useSelector(selectUserError);
+    const isLoadingData = useSelector(selectIsLoadingData);
     const buttonstype: TButtonType = isMobile ? "default" : "action";
     const [email, setEmail] = useState("");
     const [loginStarted, setLoginStarted] = useState(false);
@@ -52,26 +45,25 @@ const SignIn: React.FC<ISignIn> = ({
     useEffect(() => {
         if (
             loginError === ERRORS_ENUM.USER_WITH_EMAIL_NOT_FOUND &&
-            loginStarted
+            loginStarted && !isLoadingData
         ) {
             navigate(constantsUrls.LandingPage.signUp);
-        } else if (!loginError && loginStarted && loginEmail) {
+        } else if (!loginError && loginStarted && loginEmail && !isLoadingData) {
+            console.log('navigate to confirm from sign in', loginEmail, loginError);
             navigate(constantsUrls.LandingPage.confirm);
         }
-    }, [navigate, loginError, loginStarted, loginEmail]);
+    }, [navigate, loginError, loginStarted, loginEmail, isLoadingData]);
 
     const handleSubmit = async (event: FormEvent | MouseEvent) => {
         event.preventDefault();
-        try {
-            setLoginStarted(true);
-            await checkEmail(email);
-            console.log("here1", loginError);
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error) {
-            console.log("here err");
-            //console.error(error);
-        }
+        setLoginStarted(true);
+        dispatch(checkEmailStart(email));
     };
+
+    const goBack = useCallback(() => {
+        dispatch(clearUserState())
+        navigate(constantsUrls.LandingPage.main);
+    }, [dispatch, navigate]);
 
     return (
         <PageContainer>
@@ -104,7 +96,6 @@ const SignIn: React.FC<ISignIn> = ({
                         {t("main.register-question")}
                     </p>
                     {isLoadingData && <Spinner />}
-                    {loginError && <p>{loginError}</p>}
                 </PrimaryContainer>
             </PrimaryContainer>
             <PrimaryContainer
@@ -117,7 +108,7 @@ const SignIn: React.FC<ISignIn> = ({
                 <PrimaryButton color="orange" onClick={handleSubmit} type={buttonstype}>
                     {t("main.signin")}
                 </PrimaryButton>
-                <PrimaryButton color="white" onClick={() => navigate(constantsUrls.LandingPage.main)} type={buttonstype}>
+                <PrimaryButton color="white" onClick={goBack} type={buttonstype}>
                     {t("main.back")}
                 </PrimaryButton>
             </PrimaryContainer>
@@ -125,14 +116,4 @@ const SignIn: React.FC<ISignIn> = ({
     );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-    checkEmail: (email: string) => dispatch(checkEmailStart(email)),
-});
-
-const mapStateToProps = createStructuredSelector({
-    loginEmail: selectLoginEmail,
-    loginError: selectUserError,
-    isLoadingData: selectIsLoadingData,
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+export default SignIn;
