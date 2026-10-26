@@ -1,4 +1,5 @@
 import { IRemovePlayer } from "../../types/game";
+import { LocalesEnum } from "./translations";
 
 export const Footer = {
     conditionTerms: "/cdn/assets/PlanetGoals_Terms_of_Service.pdf",
@@ -26,7 +27,7 @@ export const LandingPage = {
     blog: "https://planet-goals.eu",
     confirm: "/confirm",
     fillRegisterData: "/signup-finish",
-    instruction: "/cdn/assets/manual",
+    instruction: "/cdn/assets/manual/instructions",
     main: "/",
     signIn: "/signin",
     signUp: "/signup",
@@ -61,4 +62,13 @@ export const User = {
     stats: "/api/user/stats",
 };
 
-export const MANUAL_FILE_NAME = "WP4A7_Workshop_manual_Final";
+export const MANUALS_NAMES: { lang: LocalesEnum; filename: string }[] = [
+  { lang: LocalesEnum.pl, filename: "Podręcznik warsztatów (PL).pdf" },
+  { lang: LocalesEnum.en, filename: "Workshop Manual (EN).pdf" },
+  { lang: LocalesEnum.es, filename: "Manual de directrices (ES).pdf" },
+  { lang: LocalesEnum.it, filename: "Manuale per la realizzazione dei workshop (IT).pdf" },
+  { lang: LocalesEnum.sl, filename: "Priročnik za izvajanje delavnic (SL).pdf" },
+  { lang: LocalesEnum.nb, filename: "Verkstedsmanual (NO).pdf" },
+  { lang: LocalesEnum.sv, filename: "Workshophandbok (SE).pdf" },
+  { lang: LocalesEnum.el, filename: "Εγχειρίδιο Εργαστηρίου (EL).pdf" },
+];
