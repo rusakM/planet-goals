@@ -11,11 +11,11 @@ export const DEFAULT_BTN_COLOR: TButtonColor = "blue";
 export const DEFAULT_BTN_COLORS: TButtonColor[] = ["red", "orange", "blue", "green"];
 
 export const LESSONS_IDS = [
-    '6aa1a9cadeb4c2d60457390f', // 1
+    '6972775be3a2171445693041', // 1
     '507f1f77bcf86cd799439011', // 2
     '68cc2a36f2516e1b47b74a8a', // 3
-    '6aa1a9cadeb4c2d60457390f', // 4
-    '6aa1a9cadeb4c2d60457390f', // 5
+    '6972775be3a2171445693044', // 4
+    '6972775be3a2171445693045', // 5
     '6972775be3a2171445693046', // 6
     '6972775be3a2171445693049', // 7
 ];
